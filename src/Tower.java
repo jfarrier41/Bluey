@@ -2,13 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseMotionListener;
 
 abstract public class Tower {
     // Information the Monkey Needs to know
 
     protected final Container parentWindow;
     protected final JLabel towerJLabel;
-    protected JLabel rangeJLabel;
+    protected BufferedImage currentMap;
 
 
     protected int fireSpeed;
@@ -23,12 +26,12 @@ abstract public class Tower {
     protected int yPosition;
 
     public Tower(JFrame TowerJframe, int fire_Speed, int diameter
-            ,int projectile_Speed, int projectile_Damage) {
+            , int projectile_Speed, int projectile_Damage) {
 
 
         parentWindow = TowerJframe.getContentPane();
         towerJLabel = new JLabel();
-        towerJLabel.setBounds(15,15,15,15);
+        towerJLabel.setBounds(15, 15, 15, 15);
         this.fireSpeed = fire_Speed;
         this.diameter = diameter;
         this.projectileSpeed = projectile_Speed;
@@ -37,70 +40,86 @@ abstract public class Tower {
         placeable = false;
 
 
-
-
     }
 
-    public void startPlacement(BufferedImage currentTower){
-        addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseMoved(MouseEvent e) {
-                xPosition = e.getX();
-                yPosition = e.getY();
-                if(isPlaceable(currentMap)){
-                    setCursor(new Cursor(Cursor.CUSTOM_CURSOR))
-                    updateDisplay(xPosition,yPosition,true);
-                }else{
-                    setCursor(new Cursor(Cursor.CUSTOM_CURSOR))
-                    updateDisplay(xPosition,yPosition,false);
-                }
-            }
-        });
-    }
+
 
     // Helper method to determine valid pixel color
     // ChatGPT
-    public boolean isGreen(Color color){
+    public boolean isGreen(Color color) {
         return color.getGreen() > 150 && color.getRed() < 100 && color.getBlue() < 100;
     }
+
     //Method to determine if monkey can be set down
-    public boolean isPlaceable(BufferdImage currentMap){
-
-
-        return placeable;
-    }
-
-    public void updateDisplay(int xPosition, int yPosition, boolean placeable){
-        rangeJLabel.setBounds(xPosition - diameter / 2, yPosition - diameter / 2, diameter, diameter);
-        if(placeable){
-            rangeJLabel.setOpaque(true);
-            rangeJLabel.setBackground(new Color(128,128,128,128));
-        }else{
-            rangeJLabel.setOpaque(true);
-            rangeJLabel.setBackground(new Color(128,0,0,128));
+    public boolean isPlaceable(int x, int y) {
+        for(int i = -2; i<= 2; i++){
+           for(int j = -2; j<=2; j++){
+               int pixelColor = currentMap.getRGB(x+i,y+j);
+               Color col = new Color(pixelColor);
+               if(!isGreen(col)){
+                   placeable = false;
+                   return false;
+               }
+            }
         }
-        rangeJLabel.setVisible(true);
+        placeable = true;
+        return true;
     }
+
+
     // Method to determine attack
     abstract int attack();
 
-    public  Balloon Tracking(List<Balloon> balloons){
+    public Balloon Tracking(List<Balloon> balloons) {
         return ballon;
     }
 
-    public int getFireSpeed() {return fireSpeed;}
-    public int getRange() {return range;}
-    public int getProjectileSpeed() {return projectileSpeed;}
-    public int getProjectileDamage() {return projectileDamage;}
-    public Point getPosition() {return new Point (xPosition, yPosition);}
-
-    public void setFireSpeed(int fireSpeed) {this.fireSpeed = fireSpeed;}
-    public void setRange(int range) {this.range = range;}
-    public void setProjectileSpeed(int projectileSpeed) {this.projectileSpeed = projectileSpeed;}
-    public void setProjectileDamage(int projectileDamage) {this.projectileDamage = projectileDamage;}
-    
-
-    public void setPostion(int xPostion, int yPosition) {this.xPosition = xPostion; this.yPosition =  yPosition; }
 
 
+    public int getFireSpeed() {
+        return fireSpeed;
+    }
+
+    public int getDiameter(){
+        return diameter;
+    }
+
+    public int getProjectileSpeed() {
+        return projectileSpeed;
+    }
+
+    public int getProjectileDamage() {
+        return projectileDamage;
+    }
+
+    public Point getPosition() {
+        return new Point(xPosition, yPosition);
+    }
+
+    public void setFireSpeed(int fireSpeed) {
+        this.fireSpeed = fireSpeed;
+    }
+
+    public void setRange(int diameter){
+        this.diameter = diameter;
+    }
+
+    public void setProjectileSpeed(int projectileSpeed) {
+        this.projectileSpeed = projectileSpeed;
+    }
+
+    public void setProjectileDamage(int projectileDamage) {
+        this.projectileDamage = projectileDamage;
+    }
+
+
+    public void setPostion(int xPostion, int yPosition) {
+        this.xPosition = xPostion;
+        this.yPosition = yPosition;
+    }
+
+    public boolean getValid(){
+        return placeable;
+    }
 
 }
