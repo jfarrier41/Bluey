@@ -1,66 +1,105 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 abstract public class Tower {
     // Information the Monkey Needs to know
 
     protected final Container parentWindow;
     protected final JLabel towerJLabel;
-    protected final JLabel projectileJLabel;
+    protected JLabel rangeJLabel;
 
-    protected int fire_Speed;
-    protected int range;
-    protected int projectile_Speed;
-    protected int projectile_Damage;
+
+    protected int fireSpeed;
+    protected int diameter;
+    protected int projectileSpeed;
+    protected int projectileDamage;
+
     protected boolean placeable;
-    protected boolean set;
+    protected boolean isSelected = false;
 
     protected int xPosition;
     protected int yPosition;
 
-    public Tower(JFrame TowerJframe, int fire_Speed, int range
+    public Tower(JFrame TowerJframe, int fire_Speed, int diameter
             ,int projectile_Speed, int projectile_Damage) {
 
 
         parentWindow = TowerJframe.getContentPane();
         towerJLabel = new JLabel();
         towerJLabel.setBounds(15,15,15,15);
-        projectileJLabel = new JLabel();
-        projectileJLabel.setBounds(5,5,10,10);
-        this.fire_Speed = fire_Speed;
-        this.range = range;
-        this.projectile_Speed = projectile_Speed;
-        this.projectile_Damage = projectile_Damage;
+        this.fireSpeed = fire_Speed;
+        this.diameter = diameter;
+        this.projectileSpeed = projectile_Speed;
+        this.projectileDamage = projectile_Damage;
 
         placeable = false;
-        set = false;
+
+
 
 
     }
-    // Method to determine if monkey can be set down
-    public boolean isPlaceable(){return placeable;}
-    // Method to determine attack
 
+    public void startPlacement(BufferedImage currentTower){
+        addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseMoved(MouseEvent e) {
+                xPosition = e.getX();
+                yPosition = e.getY();
+                if(isPlaceable(currentMap)){
+                    setCursor(new Cursor(Cursor.CUSTOM_CURSOR))
+                    updateDisplay(xPosition,yPosition,true);
+                }else{
+                    setCursor(new Cursor(Cursor.CUSTOM_CURSOR))
+                    updateDisplay(xPosition,yPosition,false);
+                }
+            }
+        });
+    }
+
+    // Helper method to determine valid pixel color
+    // ChatGPT
+    public boolean isGreen(Color color){
+        return color.getGreen() > 150 && color.getRed() < 100 && color.getBlue() < 100;
+    }
+    //Method to determine if monkey can be set down
+    public boolean isPlaceable(BufferdImage currentMap){
+
+
+        return placeable;
+    }
+
+    public void updateDisplay(int xPosition, int yPosition, boolean placeable){
+        rangeJLabel.setBounds(xPosition - diameter / 2, yPosition - diameter / 2, diameter, diameter);
+        if(placeable){
+            rangeJLabel.setOpaque(true);
+            rangeJLabel.setBackground(new Color(128,128,128,128));
+        }else{
+            rangeJLabel.setOpaque(true);
+            rangeJLabel.setBackground(new Color(128,0,0,128));
+        }
+        rangeJLabel.setVisible(true);
+    }
+    // Method to determine attack
     abstract int attack();
 
+    public  Balloon Tracking(List<Balloon> balloons){
+        return ballon;
+    }
 
-
-    public int getFire_Speed() {return fire_Speed;}
+    public int getFireSpeed() {return fireSpeed;}
     public int getRange() {return range;}
-    public int getProjectile_Speed() {return projectile_Speed;}
-    public int getProjectile_Damage() {return projectile_Damage;}
-    public int getXPostion() {return xPosition;}
-    public int getYPostion() {return yPosition;}
+    public int getProjectileSpeed() {return projectileSpeed;}
+    public int getProjectileDamage() {return projectileDamage;}
+    public Point getPosition() {return new Point (xPosition, yPosition);}
 
-    public void setFire_Speed(int fire_Speed) {this.fire_Speed = fire_Speed;}
+    public void setFireSpeed(int fireSpeed) {this.fireSpeed = fireSpeed;}
     public void setRange(int range) {this.range = range;}
-    public void setProjectile_Speed(int projectile_Speed) {this.projectile_Speed = projectile_Speed;}
-    public void setProjectile_Damage(int projectile_Damage) {this.projectile_Damage = projectile_Damage;}
+    public void setProjectileSpeed(int projectileSpeed) {this.projectileSpeed = projectileSpeed;}
+    public void setProjectileDamage(int projectileDamage) {this.projectileDamage = projectileDamage;}
     
 
-    public void setXPostion(int xPostion) {this.xPosition = xPostion;}
-    public void setYPostion(int yPostion) {this.yPosition = yPostion;}
-
+    public void setPostion(int xPostion, int yPosition) {this.xPosition = xPostion; this.yPosition =  yPosition; }
 
 
 
