@@ -1,10 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-
-import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseMotionListener;
+import java.util.PriorityQueue;
 
 abstract public class Tower {
     // Information the Monkey Needs to know
@@ -13,6 +10,9 @@ abstract public class Tower {
     protected final JLabel towerJLabel;
     protected BufferedImage currentMap;
 
+    private PriorityQueue<Balloon> targets = new PriorityQueue<>(
+            (b1,b2) -> Double.compare(b2.getLevel(), b1.getLevel())
+    );
 
     protected int fireSpeed;
     protected int diameter;
@@ -21,12 +21,15 @@ abstract public class Tower {
 
     protected boolean placeable;
     protected boolean isSelected = false;
+    protected boolean placed = false;
 
     protected int xPosition;
     protected int yPosition;
 
+    protected Image towerImage;
+
     public Tower(JFrame TowerJframe, int fire_Speed, int diameter
-            , int projectile_Speed, int projectile_Damage) {
+            , int projectile_Speed, int projectile_Damage, String image) {
 
 
         parentWindow = TowerJframe.getContentPane();
@@ -39,7 +42,15 @@ abstract public class Tower {
 
         placeable = false;
 
+        this.towerImage = new ImageIcon(image).getImage();
+        towerJLabel.setIcon(new ImageIcon(towerImage));
+        parentWindow.add(towerJLabel);
 
+        if (towerImage != null && towerImage.getWidth(null) > 0) {
+            System.out.println("towerImage working");
+        } else {
+            System.out.println("Failed to load image.");
+        }
     }
 
 
@@ -70,11 +81,31 @@ abstract public class Tower {
     // Method to determine attack
     abstract int attack();
 
-    public Balloon Tracking(List<Balloon> balloons) {
-        return ballon;
+
+
+    public boolean inRange(Balloon ballon) {
+        int xPos = ballon.getX();
+        int yPos = ballon.getY();
+        int distanceSquared = (xPos - this.xPosition) * (xPos - this.xPosition) +
+                (yPos - this.yPosition) * (yPos - this.yPosition);
+
+        int rangeSquared = (this.diameter / 2) * (this.diameter / 2);
+        return distanceSquared <= rangeSquared;
     }
 
-
+    public void addTarget(Balloon balloon){
+        if(!targets.contains(balloon)){
+            targets.add(balloon);
+        }
+    }
+    public void removeTarget(Balloon balloon){
+        if(balloon.getLevel()<1 || !inRange(balloon)){
+            targets.remove(balloon);
+        }
+    }
+    public Balloon target(){
+        return targets.peek();
+    }
 
     public int getFireSpeed() {
         return fireSpeed;
@@ -114,8 +145,10 @@ abstract public class Tower {
 
 
     public void setPostion(int xPostion, int yPosition) {
-        this.xPosition = xPostion;
-        this.yPosition = yPosition;
+        this.placed = true;
+        towerJLabel.setBounds(100,150,50,50);
+        parentWindow.add(towerJLabel);
+        parentWindow.repaint();
     }
 
     public boolean getValid(){
