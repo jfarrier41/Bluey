@@ -3,3 +3,5 @@
 .idea/
 bin/
 out/
+src/.DS_Store
+

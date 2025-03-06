@@ -176,8 +176,7 @@ public class MapSelectionGUI extends JPanel {
      * Displays a dialog with the selected map name.
      */
     private void confirmSelection() {
-        System.out.println("Map selected: " + mapNames[selectedMapIndex]);
-        JOptionPane.showMessageDialog(this, "You selected: " + mapNames[selectedMapIndex]);  // Show confirmation dialog
+        runGame.startGame(mapNames[selectedMapIndex]);  // Notify RunGame and transition to GameRunningGUI
     }
 
     /**
@@ -198,7 +197,7 @@ public class MapSelectionGUI extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (mapImage != null) {
-            g.drawImage(mapImage, 0, 0, getWidth(), getHeight() - (getHeight() / 10), this);  // Draw the map image stretched to fill the component
+            g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);  // Draw the map image stretched to fill the component
         }
     }
 }
