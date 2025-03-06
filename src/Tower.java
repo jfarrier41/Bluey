@@ -151,8 +151,12 @@ abstract public class Tower {
         parentWindow.repaint();
     }
 
+
     public boolean getValid(){
         return placeable;
     }
-
+    // testing for editing main class
+    public void setXPosition(int xPosition) {
+        this.xPosition = xPosition;
+    }
 }
