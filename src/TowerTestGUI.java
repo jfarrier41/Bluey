@@ -26,8 +26,8 @@ public class TowerTestGUI extends JFrame {
         g2d.dispose();
 
         // Create and add TowerPanel to JFrame
-        tower = new DartMonkey(this, 5, 50, 10, 20, "src/TowerImages/dart monkey.png"); // Example DartMonkey tower
-        System.out.println("Loading image from: " + new File("src/TowerImages/dart monkey.png").getAbsolutePath());
+        tower = new DartMonkey(this, 5, 50, 10, 20, "src/TowerImages/DartMonkey.png"); // Example DartMonkey tower
+        System.out.println("Loading image from: " + new File("src/TowerImages/DartMonkey.png").getAbsolutePath());
         TowerPanel towerPanel = new TowerPanel(tower, currentMap);
         add(towerPanel);
         tower.currentMap = currentMap;
