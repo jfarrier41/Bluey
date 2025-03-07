@@ -6,6 +6,7 @@ import java.io.File;
 public class TowerTestGUI extends JFrame {
     private Tower tower;
     private BufferedImage currentMap;
+    private TowerPanel towerPanel;
     private int xPosition;
     private int yPosition;
 
@@ -15,8 +16,17 @@ public class TowerTestGUI extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center window
+        setLayout(null);
 
         // Create a sample map (Green and Brown areas for testing)
+
+       JPanel buttonsPanel = new JPanel();
+       buttonsPanel.setLayout(null);
+       buttonsPanel.setBounds(600, 0, 200, 600);
+       buttonsPanel.setBackground(Color.BLACK);
+       add(buttonsPanel);
+
+
         currentMap = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = currentMap.createGraphics();
         g2d.setColor(Color.GREEN);
@@ -25,12 +35,35 @@ public class TowerTestGUI extends JFrame {
         g2d.fillRect(400, 0, 400, 600);  // Right half brown (invalid placement)
         g2d.dispose();
 
+        ImageIcon dartMonkeyIcon = new ImageIcon("src/TowerImages/dart monkey.png");
+        JButton dartMonkeyButton = new JButton(dartMonkeyIcon);
+        dartMonkeyButton.setIcon(dartMonkeyIcon);
+        dartMonkeyButton.setBounds(600, 50, 100, 100);
+
+        dartMonkeyButton.addActionListener(e -> {
+            Tower tower = new DartMonkey(this, 5, 50, 10, 20, "src/TowerImages/dart monkey.png"); // Example DartMonkey tower
+            tower.currentMap = currentMap;
+            tower.isSelected = true;
+            System.out.println(tower.isSelected);
+            if(towerPanel != null){
+                remove(towerPanel);
+            }
+            TowerPanel towerPanel = new TowerPanel(tower, currentMap);
+            towerPanel.setBounds(0, 0, 600, 800);
+            add(towerPanel);
+
+            revalidate();
+            repaint();
+
+
+
+        });
+
+
+        add(dartMonkeyButton);
         // Create and add TowerPanel to JFrame
-        tower = new DartMonkey(this, 5, 50, 10, 20, "src/TowerImages/dart monkey.png"); // Example DartMonkey tower
-        System.out.println("Loading image from: " + new File("src/TowerImages/dart monkey.png").getAbsolutePath());
-        TowerPanel towerPanel = new TowerPanel(tower, currentMap);
-        add(towerPanel);
-        tower.currentMap = currentMap;
+
+
 
         // Make the JFrame visible
         setVisible(true);

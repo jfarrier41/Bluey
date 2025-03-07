@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
@@ -15,15 +16,11 @@ public class TowerPanel extends JPanel {
         this.tower = tower;
         this.currentMap = map;
 
-        addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseClicked(MouseEvent j) {
-                if (!tower.isSelected) {
-                    tower.isSelected = true;
-                } else {
-                    tower.isSelected = false;
-                    tower.setPostion(x, y);
-                    repaint();
-                }
+        addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                tower.isSelected = false;
+                tower.setPostion(x, y);
+                repaint();
             }
         });
 
