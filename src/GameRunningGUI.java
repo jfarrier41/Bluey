@@ -26,6 +26,21 @@ public class GameRunningGUI extends JPanel {
         this.selectedMap = selectedMap;
         this.homeScreenGUI = homeScreenGUI;
         this.runGame = runGame;
+
+        //Temporarily used for side panel images
+        java.util.List<String> images = java.util.List.of(
+                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+                "DartMonkey.png", "SuperMonkey.png", "BombTower.png"
+        );
+
+        TowerSelectionButtons towerSelectionButtons = new TowerSelectionButtons(images);
+        towerSelectionButtons.setBounds( screenWidth - 30, screenWidth/6, screenWidth / 8, screenHeight/2);  // Position the button panel on the right
+        add(towerSelectionButtons);
         setLayout(null);  // Set layout to null for absolute positioning
 
         // Load the map and wood texture images
@@ -34,6 +49,7 @@ public class GameRunningGUI extends JPanel {
 
         // Add the return home button
         addReturnHomeButton();
+
 
         // Create and start the game loop for 60 FPS
         gameLoopTimer = new Timer(16, e -> gameLoop()); // 16 ms per frame = 60 FPS
@@ -163,6 +179,7 @@ public class GameRunningGUI extends JPanel {
 
         // Add the button to the panel
         add(returnHomeButton);
+
 
         // Revalidate and repaint to make sure the button appears
         revalidate();
