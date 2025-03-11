@@ -144,9 +144,9 @@ abstract public class Tower {
     }
 
 
-    public void setPostion(int xPostion, int yPosition) {
+    public void setPosition(int xPostion, int yPosition) {
         this.placed = true;
-        towerJLabel.setBounds(100,150,50,50);
+        towerJLabel.setBounds(xPostion,yPosition,50,50);
         parentWindow.add(towerJLabel);
         parentWindow.repaint();
     }

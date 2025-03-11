@@ -19,7 +19,7 @@ public class TowerPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 tower.isSelected = false;
-                tower.setPostion(x, y);
+                tower.setPosition(x, y);
                 repaint();
             }
         });
@@ -41,6 +41,7 @@ public class TowerPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         int diameter = tower.getDiameter();
+        g.drawImage(currentMap,0,0, null);
         if (tower.isSelected) {
             this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                     new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
