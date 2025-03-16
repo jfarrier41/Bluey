@@ -58,16 +58,26 @@ abstract public class Tower {
     // Helper method to determine valid pixel color
     // ChatGPT
     public boolean isGreen(Color color) {
-        return color.getGreen() > 150 && color.getRed() < 100 && color.getBlue() < 100;
+        return color.getGreen() >= 39 && color.getRed() < 110 && color.getBlue() < 100;
     }
 
     //Method to determine if monkey can be set down
     public boolean isPlaceable(int x, int y) {
-        for(int i = -2; i<= 2; i++){
-           for(int j = -2; j<=2; j++){
-               int pixelColor = currentMap.getRGB(x+i,y+j);
-               Color col = new Color(pixelColor);
-               if(!isGreen(col)){
+
+        for(int i = -3; i<= 3; i++){
+           for(int j = -3; j<=3; j++){
+               try{
+                   int pixelColor = currentMap.getRGB(x+i,y+j);
+                   Color col = new Color(pixelColor);
+                   System.out.println("Red" + col.getRed());
+                   System.out.println("Blue" + col.getBlue());
+                   System.out.println("Green" + col.getGreen());
+
+                   if(!isGreen(col)){
+                       placeable = false;
+                       return false;
+                   }
+               }catch(ArrayIndexOutOfBoundsException e){
                    placeable = false;
                    return false;
                }
@@ -144,17 +154,15 @@ abstract public class Tower {
     }
 
 
-    public void setPosition(int xPostion, int yPosition) {
-        this.placed = true;
-        towerJLabel.setBounds(xPostion,yPosition,50,50);
-        parentWindow.add(towerJLabel);
-        parentWindow.repaint();
-    }
+    public abstract void setPosition(int x, int y);
+
 
 
     public boolean getValid(){
         return placeable;
     }
+
+
     // testing for editing main class
     public void setXPosition(int xPosition) {
         this.xPosition = xPosition;

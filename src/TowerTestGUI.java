@@ -1,66 +1,67 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TowerTestGUI extends JFrame {
-    private Tower tower;
     private BufferedImage currentMap;
     private TowerPanel towerPanel;
-    private MapPanel mapPanel;
+    private JLayeredPane layeredPane;
+    private DartMonkey dartMonkey;
 
     public TowerTestGUI() {
-        // Setup JFrame properties
         setTitle("Tower Placement Test");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center window
+        setLocationRelativeTo(null);
         setLayout(null);
 
-        // Load the map image FIRST
+        // Load the map image
         currentMap = loadImage("src/MapImg/Maze.png");
 
-        // Create map panel AFTER the image is loaded
-        mapPanel = new MapPanel(currentMap);
-        mapPanel.setBounds(0, 0, 600, 600);
-        add(mapPanel);
+        // Create layered pane for layering elements
+        layeredPane = new JLayeredPane();
+        layeredPane.setBounds(0, 0, 800, 600);
+        add(layeredPane);
 
-        // Create button panel
+        // Create and add map panel (background layer)
+        JPanel mapPanel = new MapPanel(currentMap);
+        mapPanel.setBounds(0, 0, 600, 600);
+        layeredPane.add(mapPanel, JLayeredPane.DEFAULT_LAYER);
+
+        // Create the Tower Panel (overlay for tower placement)
+        towerPanel = new TowerPanel(layeredPane, currentMap);
+        towerPanel.setBounds(0, 0, 600, 600);
+        towerPanel.setOpaque(false); // Ensure transparency
+        layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
+
+        // Buttons Panel (doesn't change)
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new FlowLayout()); // Ensures button placement
+        buttonsPanel.setLayout(null);
         buttonsPanel.setBounds(600, 0, 200, 600);
         buttonsPanel.setBackground(Color.BLACK);
-        add(buttonsPanel);
+        layeredPane.add(buttonsPanel,JLayeredPane.POPUP_LAYER);
 
-        // Create button for placing a Dart Monkey
+        // Add Tower selection button
         ImageIcon dartMonkeyIcon = new ImageIcon("src/TowerImages/DartMonkey.png");
         JButton dartMonkeyButton = new JButton(dartMonkeyIcon);
-        dartMonkeyButton.setPreferredSize(new Dimension(100, 100)); // Explicitly set button size
+        dartMonkeyButton.setBounds(50, 50, 100, 100);
 
         dartMonkeyButton.addActionListener(e -> {
-            Tower tower = new DartMonkey(this, 5, 50, 10, 20, "src/TowerImages/DartMonkey.png");
+            Tower tower = new DartMonkey(this, 5, 100, 10, 20, "src/TowerImages/DartMonkey.png");
             tower.currentMap = currentMap;
             tower.isSelected = true;
-
-            System.out.println("Tower Selected: " + tower.isSelected);
-
-            if (towerPanel != null) {
-                remove(towerPanel);
-            }
-
-            // Create and add TowerPanel OVER the map
-            towerPanel = new TowerPanel(tower, currentMap);
-            towerPanel.setBounds(0, 0, 600, 600);
-            add(towerPanel);
-            towerPanel.repaint();
-
-            revalidate();
-            repaint();
+            towerPanel.setTower(tower);
+            layeredPane.setLayer(towerPanel, JLayeredPane.DRAG_LAYER);
+            // Update TowerPanel with new tower
+           // towerPanel.repaint();
         });
 
-        buttonsPanel.add(dartMonkeyButton); // ADD BUTTON TO PANEL
+        buttonsPanel.add(dartMonkeyButton);
 
         setVisible(true);
     }
@@ -77,14 +78,10 @@ public class TowerTestGUI extends JFrame {
             super.paintComponent(g);
             if (mapImage != null) {
                 g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
-            } else {
-                g.setColor(Color.GRAY);
-                g.fillRect(0, 0, getWidth(), getHeight()); // Fallback if image fails to load
             }
         }
     }
 
-    // Method to load an image
     private BufferedImage loadImage(String path) {
         try {
             return ImageIO.read(new File(path));

@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class DartMonkey extends Tower{
 
@@ -13,5 +14,14 @@ public class DartMonkey extends Tower{
     @Override
     int attack() {
         return 0;
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+        this.xPosition = x-24;
+        this.yPosition = y-18;
+        this.placed = true;
+        this.isSelected = false;
+        System.out.println("TowerPlaced at" +x + ", " + y );
     }
 }
