@@ -16,12 +16,4 @@ public class DartMonkey extends Tower{
         return 0;
     }
 
-    @Override
-    public void setPosition(int x, int y) {
-        this.xPosition = x-24;
-        this.yPosition = y-18;
-        this.placed = true;
-        this.isSelected = false;
-        System.out.println("TowerPlaced at" +x + ", " + y );
-    }
 }
