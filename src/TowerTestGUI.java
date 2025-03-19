@@ -13,13 +13,20 @@ public class TowerTestGUI extends JFrame {
 
     public TowerTestGUI() {
         setTitle("Tower Placement Test");
-        setSize(800, 600);
+        setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
 
         // Load the map image
-        currentMap = loadImage("src/MapImg/Maze.png");
+        BufferedImage orginalMap = loadImage("src/MapImg/MonkeyLane.png");
+        int guiWidth = orginalMap.getWidth();
+        int guiHeight = orginalMap.getHeight();
+
+        currentMap = new BufferedImage(guiWidth,guiHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = currentMap.createGraphics();
+        g.drawImage(orginalMap, 0, 0, guiWidth, guiHeight, null);
+        g.dispose();
 
         // Create layered pane for layering elements
         layeredPane = new JLayeredPane();
@@ -28,19 +35,19 @@ public class TowerTestGUI extends JFrame {
 
         // Create and add map panel (background layer)
         JPanel mapPanel = new MapPanel(currentMap);
-        mapPanel.setBounds(0, 0, 600, 600);
+        mapPanel.setBounds(0, 0, 700, 510);
         layeredPane.add(mapPanel, JLayeredPane.DEFAULT_LAYER);
 
         // Create the Tower Panel (overlay for tower placement)
         towerPanel = new TowerPanel(layeredPane, currentMap);
-        towerPanel.setBounds(0, 0, 600, 600);
+        towerPanel.setBounds(0, 0, 700, 510);
         towerPanel.setOpaque(false); // Ensure transparency
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
 
         // Buttons Panel (doesn't change)
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(null);
-        buttonsPanel.setBounds(600, 0, 200, 600);
+        buttonsPanel.setBounds(700, 0, 200, 600);
         buttonsPanel.setBackground(Color.BLACK);
         layeredPane.add(buttonsPanel,JLayeredPane.POPUP_LAYER);
 

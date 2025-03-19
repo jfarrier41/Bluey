@@ -55,8 +55,8 @@ public class TowerPanel extends JPanel {
                 // If tower is assigned and selected
                 if (tower != null && tower.isSelected) {
                     // Get where the mouse is currently at
-                    x = e.getX();
-                    y = e.getY();
+                    x = e.getX() -24;
+                    y = e.getY() -18;
                     // Check to see if it is in a placeable area
                     tower.isPlaceable(x, y);
                     repaint();
@@ -67,6 +67,7 @@ public class TowerPanel extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         // Draw all Placed Towers first
         for(Tower tower :placedTowers){
             g.drawImage(tower.towerImage, tower.xPosition,tower.yPosition, 50, 50, this);
@@ -92,13 +93,16 @@ public class TowerPanel extends JPanel {
                 g.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
             } else {
                 // If not placeable make the range a transparent red
-                Color color = new Color(255, 0, 0, 128);
+                Color color = new Color(225, 0, 0, 128);
                 g.setColor(color);
                 g.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
             }
             // Always draw the tower and center it in the range
             Image towerImage = tower.towerImage;
             g.drawImage(towerImage, x-24, y-18,50,50, this);
+            g.setColor(Color.BLACK);
+            System.out.print(x +","+y);
+            g.drawRect(x - 3, y - 3, 7, 7);
         }
     }
     // Assign tower to JPanel

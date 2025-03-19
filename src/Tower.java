@@ -2,14 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.PriorityQueue;
+
 /*
-* Joseph Farrier
-* 3/16/2025
-* Description: This is an abstract class that defines what each tower will need to
-* know and have access to. Mostly contaning getters and setters, but also providing
-* implementations to check placeability, and to handle if enemies are in range, while also
-* allowing each implented tower the ability to attack in their own implemented way
-* */
+ * Joseph Farrier
+ * 3/16/2025
+ * Description: This is an abstract class that defines what each tower will need to
+ * know and have access to. Mostly contaning getters and setters, but also providing
+ * implementations to check placeability, and to handle if enemies are in range, while also
+ * allowing each implented tower the ability to attack in their own implemented way
+ * */
 abstract public class Tower {
     // Information the Monkey Needs to know
 
@@ -19,7 +20,7 @@ abstract public class Tower {
 
     // Queue that allows tower to decide what enemy to shoot
     private PriorityQueue<Balloon> targets = new PriorityQueue<>(
-            (b1,b2) -> Double.compare(b2.getLevel(), b1.getLevel())
+            (b1, b2) -> Double.compare(b2.getLevel(), b1.getLevel())
     );
 
     protected int fireSpeed;
@@ -36,10 +37,11 @@ abstract public class Tower {
     protected int yPosition;
 
     protected Image towerImage;
+
     /*
-    * Constructor for towers
-    * Assigns all needs values and it an image
-    */
+     * Constructor for towers
+     * Assigns all needs values and it an image
+     */
     public Tower(JFrame TowerJframe, int fire_Speed, int diameter
             , int projectile_Speed, int projectile_Damage, String image) {
 
@@ -66,38 +68,50 @@ abstract public class Tower {
     }
 
 
-
     // Helper method to determine valid pixel color
-    public boolean isGreen(Color color) {
-        return color.getGreen() >= 39 && color.getRed() < 110 && color.getBlue() < 100;
+    public boolean isGreen(int red, int green, int blue) {
+        /*if(currentMap.equals("MonkeyLane")){
+            return color.getGreen() >= 39 && color.getRed() < 110 && color.getBlue() < 100;
+        }else if(currentMap.equals("Maze")){
+            return color.getGreen() >= 39 && color.getRed() < 110 && color.getBlue() < 100;
+        }else if(currentMap.equals("ParkPath")){*/
+        return (green > 180 && (red < 150) && (blue < 160));
+        //}
+
     }
 
     //Method to determine if monkey can be placed
     public boolean isPlaceable(int x, int y) {
-       // Grab the the 36 surounding pixels at x,y( Where mouse is at)
-        for(int i = -3; i<= 3; i++){
-           for(int j = -3; j<=3; j++){
-               // Use try catch to stop user from trying to place Tower out of bounds.
-               try{
-                   // Get the the color of each pixel
-                   int pixelColor = currentMap.getRGB(x+i,y+j);
-                   Color col = new Color(pixelColor);
-                   System.out.println("Red" + col.getRed());
-                   System.out.println("Blue" + col.getBlue());
-                   System.out.println("Green" + col.getGreen());
-                    // use helper function to determine placeability
-                   if(!isGreen(col)){
-                       placeable = false;
-                       return false;
-                   }
-               // If out of bounds, show as unplacable
-               }catch(ArrayIndexOutOfBoundsException e){
-                   placeable = false;
-                   return false;
-               }
+        // Grab the the 36 surounding pixels at x,y( Where mouse is at)
+        int missed = 0;
+        for (int i = -3; i <= 3; i++) {
+            for (int j = -3; j <= 3; j++) {
+                // Use try catch to stop user from trying to place Tower out of bounds.
+                if (x + i < 0 || x + i >= currentMap.getWidth() || y + j < 0 || y + j >= currentMap.getHeight()) {
+                    placeable = false;
+                    return false;
+                }
+                int pixelColor = currentMap.getRGB(x + i, y + j);
+                int xpos = (x+i);
+                int ypos = (y+j);
+                int red = (pixelColor >> 16) & 0xFF;
+                int green = (pixelColor >> 8) & 0xFF;
+                int blue = (pixelColor) & 0xFF;
+                System.out.println("Red" + red +"Cord "+ xpos+" , " + ypos);
+                System.out.println("Blue" + blue);
+                System.out.println("Green" + green);
+                // use helper function to determine placeability
+                if (!isGreen(red, green, blue)) {
+                    missed++;
+                    if (missed > 25) {
+                        placeable = false;
+                        return false;
+                    }
+                }
             }
         }
         // Only return true if every pixel meets green requirments
+        missed = 0;
         placeable = true;
         return true;
     }
@@ -118,57 +132,68 @@ abstract public class Tower {
         int rangeSquared = (this.diameter / 2) * (this.diameter / 2);
         return distanceSquared <= rangeSquared;
     }
+
     // Helper function to add ballons to Queue
-    public void addTarget(Balloon balloon){
+    public void addTarget(Balloon balloon) {
         // make sure balloon is not already in list
-        if(!targets.contains(balloon)){
+        if (!targets.contains(balloon)) {
             targets.add(balloon);
         }
     }
+
     // Helper function to remove balloons from Queue
-    public void removeTarget(Balloon balloon){
+    public void removeTarget(Balloon balloon) {
         // If the balloon level is less than one or no longer in range, remove it
-        if(balloon.getLevel()<1 || !inRange(balloon)){
+        if (balloon.getLevel() < 1 || !inRange(balloon)) {
             targets.remove(balloon);
         }
     }
 
     // Give Tower first ballon in Queue
-    public Balloon target(){
+    public Balloon target() {
         return targets.peek();
     }
+
     // Return balloons fire speed
     public int getFireSpeed() {
         return fireSpeed;
     }
+
     // Get Balloons range
-    public int getDiameter(){
+    public int getDiameter() {
         return diameter;
     }
+
     // Return Projectile speed
     public int getProjectileSpeed() {
         return projectileSpeed;
     }
+
     // Return projectile damage
     public int getProjectileDamage() {
         return projectileDamage;
     }
+
     // Get postion of Tower
     public Point getPosition() {
         return new Point(xPosition, yPosition);
     }
+
     // Change FireSpeed of Tower
     public void setFireSpeed(int fireSpeed) {
         this.fireSpeed = fireSpeed;
     }
+
     // Set Range of Tower
-    public void setRange(int diameter){
+    public void setRange(int diameter) {
         this.diameter = diameter;
     }
+
     // Set Projectile Speed
     public void setProjectileSpeed(int projectileSpeed) {
         this.projectileSpeed = projectileSpeed;
     }
+
     // Set projectile Damge
     public void setProjectileDamage(int projectileDamage) {
         this.projectileDamage = projectileDamage;
@@ -184,7 +209,7 @@ abstract public class Tower {
 
 
     // Return if Placeable
-    public boolean getValid(){
+    public boolean getValid() {
         return placeable;
     }
 
