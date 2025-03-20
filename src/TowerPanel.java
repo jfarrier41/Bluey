@@ -101,7 +101,7 @@ public class TowerPanel extends JPanel {
             Image towerImage = tower.towerImage;
             g.drawImage(towerImage, x-24, y-18,50,50, this);
             g.setColor(Color.BLACK);
-            System.out.print(x +","+y);
+            //System.out.print(x +","+y);
             g.drawRect(x - 3, y - 3, 7, 7);
         }
     }

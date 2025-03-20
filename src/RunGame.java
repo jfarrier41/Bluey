@@ -9,9 +9,7 @@ public class RunGame extends JFrame {
     private static final int SCREEN_WIDTH = 1024;
     private static final int SCREEN_HEIGHT = 768;
 
-    private static final int GAME_RUNNING_WIDTH = 1380;
-    private static final int MAP_WIDTH = 1150;
-    private static final int MAP_HEIGHT = SCREEN_HEIGHT-(SCREEN_HEIGHT/28);
+
 
 
     private final HomeScreenGUI homeScreenGUI;  // Keep reference to HomeScreen
@@ -31,9 +29,9 @@ public class RunGame extends JFrame {
     }
 
     // Method to show the GameRunningGUI screen and pass the selected map
-    public void startGame(String selectedMap) {
-        setSize(GAME_RUNNING_WIDTH, SCREEN_HEIGHT);
-        GameRunningGUI gameRunningGUI = new GameRunningGUI(this, MAP_WIDTH, MAP_HEIGHT, selectedMap,homeScreenGUI);  // Pass selected map name to the constructor
+    public void startGame(String selectedMap,int width,int height) {
+        setSize(width + 2 * (width/3), height + height / 18);
+        GameRunningGUI gameRunningGUI = new GameRunningGUI(this, width, height, selectedMap,homeScreenGUI);  // Pass selected map name to the constructor
         setContentPane(gameRunningGUI);  // Switch content pane to GameRunningGUI
         revalidate();  // Revalidate the layout
         repaint();  // Repaint the content

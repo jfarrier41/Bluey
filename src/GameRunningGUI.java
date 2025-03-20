@@ -8,48 +8,50 @@ import java.io.IOException;
 public class GameRunningGUI extends JPanel {
     private BufferedImage mapImage;
     private BufferedImage woodTexture;
-    private final int screenWidth, screenHeight;
+    private final int MAP_WIDTH, HEIGHT;
     private final String selectedMap;
     private final RunGame runGame;
+    private final JLayeredPane layeredPane;
+    private final TowerPanel towerPanel;
     private final HomeScreenGUI homeScreenGUI;
     private final Timer gameLoopTimer;
     private int currentRound;
     private int currentCash;
     private int currentHealth;
     public GameRunningGUI(RunGame runGame, int width, int height, String selectedMap, HomeScreenGUI homeScreenGUI) {
+
         currentRound = 1;
         currentCash = 1000;
         currentHealth = 200;
 
-        this.screenWidth = width;
-        this.screenHeight = height;
+        this.MAP_WIDTH = width;
+        this.HEIGHT = height;
         this.selectedMap = selectedMap;
         this.homeScreenGUI = homeScreenGUI;
         this.runGame = runGame;
 
-        //Temporarily used for side panel images
-        java.util.List<String> images = java.util.List.of(
-                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-                "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-                "DartMonkey.png", "SuperMonkey.png", "BombTower.png"
-        );
+        loadMapImage();
 
-        TowerSelectionButtons towerSelectionButtons = new TowerSelectionButtons(images);
-        towerSelectionButtons.setBounds( screenWidth - 30, screenWidth/6, screenWidth / 8, screenHeight/2);  // Position the button panel on the right
+        layeredPane = new JLayeredPane();
+        layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
+        add(layeredPane);
+
+        towerPanel = new TowerPanel(layeredPane, mapImage);
+        towerPanel.setBounds(0, 0, 700, 510);
+        towerPanel.setOpaque(false); // Ensure transparency
+        layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
+
+        TowerSelectionButtons towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage,towerPanel,layeredPane);
+        towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, MAP_WIDTH/5 + 15, MAP_WIDTH / 6, HEIGHT/2+ HEIGHT / 6);  // Position the button panel on the right
         add(towerSelectionButtons);
         setLayout(null);  // Set layout to null for absolute positioning
 
-        // Load the map and wood texture images
-        loadMapImage();
-        loadWoodTexture();
 
         // Add the return home button
         addReturnHomeButton();
 
+        // Load the map and wood texture images
+        loadWoodTexture();
 
         // Create and start the game loop for 60 FPS
         gameLoopTimer = new Timer(16, e -> gameLoop()); // 16 ms per frame = 60 FPS
@@ -107,14 +109,14 @@ public class GameRunningGUI extends JPanel {
         super.paintComponent(g);
 
         // Draw the wood texture on both sides of the map
-        int woodWidth = screenWidth / 3;
-        g.drawImage(woodTexture, 0, 0, woodWidth, screenHeight, this);  // Left side
-        g.drawImage(woodTexture, screenWidth - (screenWidth / 8), 0, woodWidth, screenHeight, this);  // Right side
+        final int WOOD_WIDTH = MAP_WIDTH / 3;
+        g.drawImage(woodTexture, 0, 0, WOOD_WIDTH, HEIGHT, this);  // Left side
+        g.drawImage(woodTexture, MAP_WIDTH + WOOD_WIDTH, 0, WOOD_WIDTH, HEIGHT, this);  // Right side
 
 
         // Draw the map image in the center
-        int xOffset = screenWidth / 8;
-        g.drawImage(mapImage, xOffset, 0, screenWidth - (screenWidth / 6), screenHeight, this);
+
+        g.drawImage(mapImage, WOOD_WIDTH, 0, MAP_WIDTH, HEIGHT, this);
 
         drawGameInfo(g);
 

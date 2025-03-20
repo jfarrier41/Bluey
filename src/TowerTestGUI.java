@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
+/*
 public class TowerTestGUI extends JFrame {
     private BufferedImage currentMap;
     private TowerPanel towerPanel;
@@ -100,4 +100,4 @@ public class TowerTestGUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TowerTestGUI::new);
     }
-}
+}*/

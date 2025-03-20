@@ -42,17 +42,18 @@ abstract public class Tower {
      * Constructor for towers
      * Assigns all needs values and it an image
      */
-    public Tower(JFrame TowerJframe, int fire_Speed, int diameter
-            , int projectile_Speed, int projectile_Damage, String image) {
+    public Tower(JFrame runGame, int fire_Speed, int diameter
+            , int projectile_Speed, int projectile_Damage, String image, BufferedImage currentMap) {
 
 
-        parentWindow = TowerJframe.getContentPane();
+        parentWindow = runGame.getContentPane();
         towerJLabel = new JLabel();
         towerJLabel.setBounds(15, 15, 15, 15);
         this.fireSpeed = fire_Speed;
         this.diameter = diameter;
         this.projectileSpeed = projectile_Speed;
         this.projectileDamage = projectile_Damage;
+        this.currentMap = currentMap;
 
         placeable = false;
         // give monkey an image icon

@@ -22,6 +22,12 @@ public class MapSelectionGUI extends JPanel {
             "A serene park path with natural challenges.",
             "A spring-themed track with lots of curves."
     };
+    private final int[][] mapDimensions = {
+            {699,519},  // Maze
+            {700,510},  // MonkeyLane
+            {700,510},  // ParkPath
+            {699,519}   // SpringTrack
+    };
 
     private BufferedImage mapImage;  // BufferedImage to hold the current map image
     private final RunGame runGame;  // Instance of RunGame for screen transitions
@@ -176,7 +182,9 @@ public class MapSelectionGUI extends JPanel {
      * Displays a dialog with the selected map name.
      */
     private void confirmSelection() {
-        runGame.startGame(mapNames[selectedMapIndex]);  // Notify RunGame and transition to GameRunningGUI
+        int mapWidth = mapDimensions[selectedMapIndex][0];
+        int mapHeight = mapDimensions[selectedMapIndex][1];
+        runGame.startGame(mapNames[selectedMapIndex],mapWidth,mapHeight);  // Notify RunGame and transition to GameRunningGUI
     }
 
     /**

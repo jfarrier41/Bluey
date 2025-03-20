@@ -1,19 +1,39 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class TowerSelectionButtons extends JPanel {
     private static final int ROWS = 4;
     private static final int COLS = 2;
     private int currentPage = 0;
-    private List<String> imageNames;
-    private JButton[][] buttons = new JButton[ROWS][COLS];
-    private JPanel buttonPanel;
-    private JButton prevButton, nextButton;
+    private final List<String> towerNames;
+    private final JButton[][] buttons = new JButton[ROWS][COLS];
+    private final JPanel buttonPanel;
+    private final JButton prevButton, nextButton;
+    private final JFrame runGame;
+    private BufferedImage currentMap;
+    private final TowerPanel towerPanel;
+    private final JLayeredPane layeredPane;
+    // Temporarily used for side panel images
+    private static final List<String> DEFAULT_TOWER_IMAGES = List.of(
+            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
+            "DartMonkey.png", "SuperMonkey.png", "BombTower.png"
+    );
 
-    public TowerSelectionButtons(List<String> imageNames) {
-        this.imageNames = imageNames;
+    public TowerSelectionButtons(RunGame rungGame, BufferedImage currentMap, TowerPanel towerPanel,JLayeredPane layeredPane) {
+        this.towerNames = DEFAULT_TOWER_IMAGES;
+        this.runGame = rungGame;
+        this.currentMap = currentMap;
+        this.towerPanel = towerPanel;
+        this.layeredPane = layeredPane;
+
         setLayout(new BorderLayout());
 
         // Set transparent background for the panel
@@ -73,13 +93,13 @@ public class TowerSelectionButtons extends JPanel {
     private void updateButtonGrid() {
         buttonPanel.removeAll();
         int startIndex = currentPage * 8;
-        int endIndex = Math.min(startIndex + 8, imageNames.size());
+        int endIndex = Math.min(startIndex + 8, towerNames.size());
 
         int index = startIndex;
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 if (index < endIndex) {
-                    buttonPanel.add(createButton(imageNames.get(index)));
+                    buttonPanel.add(createButton(towerNames.get(index)));
                     index++;
                 } else {
                     buttonPanel.add(new JLabel());
@@ -115,12 +135,15 @@ public class TowerSelectionButtons extends JPanel {
             }
         });
 
-        button.addActionListener(e -> handleButtonClick(imageName));
+        button.addActionListener(e -> handleButtonClick((RunGame) runGame, currentMap,towerPanel,layeredPane));
         return button;
     }
 
-    private void handleButtonClick(String imageName) {
-        System.out.println("Selected tower: " + imageName);
+    private void handleButtonClick(RunGame runGame,BufferedImage currentMap, TowerPanel towerPanel,JLayeredPane layeredPane) {
+        Tower tower = new DartMonkey(runGame, 5, 100, 10, 20, "src/TowerImages/DartMonkey.png",currentMap);
+        tower.isSelected = true;
+        towerPanel.setTower(tower);
+        layeredPane.setLayer(towerPanel, JLayeredPane.DRAG_LAYER);
     }
 
     private void showPrevPage() {
@@ -131,7 +154,7 @@ public class TowerSelectionButtons extends JPanel {
     }
 
     private void showNextPage() {
-        if ((currentPage + 1) * 8 < imageNames.size()) {
+        if ((currentPage + 1) * 8 < towerNames.size()) {
             currentPage++;
             updateButtonGrid();
         }
