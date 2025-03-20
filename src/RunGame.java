@@ -1,19 +1,22 @@
 import javax.swing.*;
-/*
-Filename: RunGame.java
-Authors: Jace Claassen and Joe Farrier
-Description:
+
+/**
+ * Filename: RunGame.java
+ * Authors: Jace Claassen and Joe Farrier
+ * Description: This class serves as the main entry point for the Bloons Tower Defense game.
+ * It initializes the game window and manages the transition between different game screens.
  */
 public class RunGame extends JFrame {
 
     private static final int SCREEN_WIDTH = 1024;
     private static final int SCREEN_HEIGHT = 768;
 
-
-
-
     private final HomeScreenGUI homeScreenGUI;  // Keep reference to HomeScreen
 
+    /**
+     * Constructor for RunGame.
+     * Initializes the game window and displays the home screen.
+     */
     public RunGame() {
         setTitle("Bloons Tower Defense");
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -28,23 +31,37 @@ public class RunGame extends JFrame {
         setVisible(true);
     }
 
-    // Method to show the GameRunningGUI screen and pass the selected map
-    public void startGame(String selectedMap,int width,int height) {
-        setSize(width + 2 * (width/3), height + height / 18);
-        GameRunningGUI gameRunningGUI = new GameRunningGUI(this, width, height, selectedMap,homeScreenGUI);  // Pass selected map name to the constructor
+    /**
+     * Starts the game by switching to the GameRunningGUI screen.
+     *
+     * @param selectedMap The name of the selected map.
+     * @param width       The width of the game map.
+     * @param height      The height of the game map.
+     */
+    public void startGame(String selectedMap, int width, int height) {
+        setSize(width + 2 * (width / 3), height + height / 18);
+        GameRunningGUI gameRunningGUI = new GameRunningGUI(this, width, height, selectedMap, homeScreenGUI);
         setContentPane(gameRunningGUI);  // Switch content pane to GameRunningGUI
         revalidate();  // Revalidate the layout
         repaint();  // Repaint the content
     }
 
-    // Method to start the map selection screen
+    /**
+     * Displays the map selection screen, allowing the player to choose a map before starting the game.
+     */
     public void showMapSelectionScreen() {
-        MapSelectionGUI mapSelectionGUI = new MapSelectionGUI(this, SCREEN_WIDTH, SCREEN_HEIGHT, new HomeScreenGUI(this, getWidth(), getHeight()));
+        MapSelectionGUI mapSelectionGUI = new MapSelectionGUI(this, SCREEN_WIDTH, SCREEN_HEIGHT,
+                new HomeScreenGUI(this, getWidth(), getHeight()));
         setContentPane(mapSelectionGUI);
         revalidate();
         repaint();
     }
 
+    /**
+     * Main method that initializes and starts the game.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         new RunGame();
     }

@@ -4,22 +4,28 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+/**
+ * Filename: TowerSelectionButtons.java
+ * Author: Jace Claassen
+ * Description: TowerSelectionButtons represents a panel displaying tower selection buttons
+ * in a grid format, allowing players to choose towers for placement in the game.
+ * It provides scroll functionality using up and down arrow buttons to navigate
+ * through multiple pages of available towers.
+ */
 public class TowerSelectionButtons extends JPanel {
     private static final int ROWS = 4;
     private static final int COLS = 2;
     private int currentPage = 0;
     private final List<String> towerNames;
-    private final JButton[][] buttons = new JButton[ROWS][COLS];
     private final JPanel buttonPanel;
     private final JButton prevButton, nextButton;
     private final JFrame runGame;
-    private BufferedImage currentMap;
+    private final BufferedImage currentMap;
     private final TowerPanel towerPanel;
     private final JLayeredPane layeredPane;
-    // Temporarily used for side panel images
+
+    // Default tower images used for display purposes
     private static final List<String> DEFAULT_TOWER_IMAGES = List.of(
-            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
             "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
             "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
             "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
@@ -27,7 +33,15 @@ public class TowerSelectionButtons extends JPanel {
             "DartMonkey.png", "SuperMonkey.png", "BombTower.png"
     );
 
-    public TowerSelectionButtons(RunGame rungGame, BufferedImage currentMap, TowerPanel towerPanel,JLayeredPane layeredPane) {
+    /**
+     * Constructs a TowerSelectionButtons panel with the necessary components.
+     *
+     * @param rungGame   Reference to the main game frame.
+     * @param currentMap The current map image.
+     * @param towerPanel The panel managing tower placement.
+     * @param layeredPane The layered pane for managing UI layers.
+     */
+    public TowerSelectionButtons(RunGame rungGame, BufferedImage currentMap, TowerPanel towerPanel, JLayeredPane layeredPane) {
         this.towerNames = DEFAULT_TOWER_IMAGES;
         this.runGame = rungGame;
         this.currentMap = currentMap;
@@ -35,12 +49,10 @@ public class TowerSelectionButtons extends JPanel {
         this.layeredPane = layeredPane;
 
         setLayout(new BorderLayout());
-
-        // Set transparent background for the panel
         setBackground(new Color(0, 0, 0, 0));
         setOpaque(true);
 
-        // Initialize the up and down buttons for scrolling
+        // Initialize scroll buttons
         prevButton = new JButton("↑");
         nextButton = new JButton("↓");
 
@@ -48,27 +60,28 @@ public class TowerSelectionButtons extends JPanel {
         setArrowButtonStyle(prevButton);
         setArrowButtonStyle(nextButton);
 
-        // Set button sizes
         prevButton.setPreferredSize(new Dimension(30, 40));
         nextButton.setPreferredSize(new Dimension(30, 40));
 
-        // Add scroll buttons to layout
         add(prevButton, BorderLayout.NORTH);
         add(nextButton, BorderLayout.SOUTH);
 
-        // Initialize the button panel with grid layout
+        // Initialize button panel
         buttonPanel = new JPanel(new GridLayout(ROWS, COLS));
         buttonPanel.setBackground(new Color(0, 0, 0, 0));
         add(buttonPanel, BorderLayout.CENTER);
 
-        // Update the grid of buttons
         updateButtonGrid();
 
-        // Set action listeners for the scroll buttons
         prevButton.addActionListener(e -> showPrevPage());
         nextButton.addActionListener(e -> showNextPage());
     }
 
+    /**
+     * Sets the styling for the arrow buttons, including background color and hover effects.
+     *
+     * @param arrowButton The button to style.
+     */
     private void setArrowButtonStyle(JButton arrowButton) {
         arrowButton.setBackground(new Color(211, 211, 211, 45));
         arrowButton.setOpaque(true);
@@ -76,7 +89,6 @@ public class TowerSelectionButtons extends JPanel {
         arrowButton.setBorderPainted(false);
         arrowButton.setFocusPainted(false);
 
-        // Hover effect for arrow buttons
         arrowButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -90,6 +102,9 @@ public class TowerSelectionButtons extends JPanel {
         });
     }
 
+    /**
+     * Updates the button grid to display the correct set of towers based on the current page.
+     */
     private void updateButtonGrid() {
         buttonPanel.removeAll();
         int startIndex = currentPage * 8;
@@ -111,6 +126,12 @@ public class TowerSelectionButtons extends JPanel {
         buttonPanel.repaint();
     }
 
+    /**
+     * Creates a button representing a tower, including an image icon and hover effects.
+     *
+     * @param imageName The name of the image file for the tower.
+     * @return A JButton representing the tower.
+     */
     private JButton createButton(String imageName) {
         JButton button = new JButton();
         ImageIcon icon = new ImageIcon(getClass().getResource("/TowerImages/" + imageName));
@@ -122,7 +143,6 @@ public class TowerSelectionButtons extends JPanel {
         button.setBorderPainted(false);
         button.setFocusPainted(false);
 
-        // Hover effect for button background
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -134,18 +154,50 @@ public class TowerSelectionButtons extends JPanel {
                 button.setBackground(new Color(211, 211, 211, 45));
             }
         });
-
-        button.addActionListener(e -> handleButtonClick((RunGame) runGame, currentMap,towerPanel,layeredPane));
+        button.addActionListener(e -> handleButtonClick(imageName));
         return button;
     }
 
-    private void handleButtonClick(RunGame runGame,BufferedImage currentMap, TowerPanel towerPanel,JLayeredPane layeredPane) {
-        Tower tower = new DartMonkey(runGame, 5, 100, 10, 20, "src/TowerImages/DartMonkey.png",currentMap);
+    /**
+     * Handles tower selection when a button is clicked.
+     *
+     * @param imageName The name of the selected tower's image.
+     */
+    private void handleButtonClick(String imageName) {
+        Tower tower;
+
+        switch (imageName) {
+            case "DartMonkey.png":
+                tower = new DartMonkey(runGame, currentMap);
+                break;
+            case "SuperMonkey.png":
+                tower = new SuperMonkey(runGame, currentMap);
+                break;
+            case "BombTower.png":
+                tower = new BombTower(runGame, currentMap);
+                break;
+            default:
+                return;
+        }
+
         tower.isSelected = true;
         towerPanel.setTower(tower);
         layeredPane.setLayer(towerPanel, JLayeredPane.DRAG_LAYER);
+
+        towerPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                towerPanel.setCursor(Cursor.getDefaultCursor());
+                towerPanel.removeMouseListener(this);
+            }
+        });
+
+        towerPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Moves to the previous page of tower selection, if possible.
+     */
     private void showPrevPage() {
         if (currentPage > 0) {
             currentPage--;
@@ -153,6 +205,9 @@ public class TowerSelectionButtons extends JPanel {
         }
     }
 
+    /**
+     * Moves to the next page of tower selection, if possible.
+     */
     private void showNextPage() {
         if ((currentPage + 1) * 8 < towerNames.size()) {
             currentPage++;

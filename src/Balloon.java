@@ -1,3 +1,8 @@
+/*
+Filename: Balloon.java
+Authors: Jace Claassen
+Description: This class defines what a balloon is.
+ */
 public class Balloon {
     public int getLevel(){
         int level = 0;

@@ -4,7 +4,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
 /*
+Filename: TowerTestGUI.java
+Author: Joseph Farrier
+Description: Testing groups for tower class. Used to help design how the button selection works with
+the tower class and potentially will be used to follow the mouse as a way to understand moving images dynamically
+ */
 public class TowerTestGUI extends JFrame {
     private BufferedImage currentMap;
     private TowerPanel towerPanel;
@@ -57,7 +63,7 @@ public class TowerTestGUI extends JFrame {
         dartMonkeyButton.setBounds(50, 50, 100, 100);
 
         dartMonkeyButton.addActionListener(e -> {
-            Tower tower = new DartMonkey(this, 5, 100, 10, 20, "src/TowerImages/DartMonkey.png");
+            Tower tower = new DartMonkey(this, currentMap);
             tower.currentMap = currentMap;
             tower.isSelected = true;
             towerPanel.setTower(tower);
@@ -100,4 +106,4 @@ public class TowerTestGUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(TowerTestGUI::new);
     }
-}*/
+}

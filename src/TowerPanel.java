@@ -16,8 +16,8 @@ import java.util.List;
 * */
 public class TowerPanel extends JPanel {
     private Tower tower;
-    private BufferedImage currentMap;
-    private JLayeredPane layeredPane;
+    private final BufferedImage currentMap;
+    private final JLayeredPane layeredPane;
 
     private List<Tower> placedTowers = new ArrayList<Tower>();
 
@@ -33,7 +33,7 @@ public class TowerPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                // check to see if tower has been assigned and is placeable
-                if ((tower != null) && tower.getValid()) {
+                if ((tower != null) && tower.isPlaceable()) {
                     // Set tower postion
                     tower.setPosition(x,y);
                     // Add it to list of placed towers
@@ -85,18 +85,17 @@ public class TowerPanel extends JPanel {
                     new Point(0, 0),
                     "InvisibleCursor"));
             // Check to see if tower is placeable
-            if (tower.getValid()) {
+            Color color;
+            if (tower.isPlaceable()) {
                 // If so, make the range color a transparent gray
-                Color color = new Color(128, 128, 128, 128);
-                g.setColor(color);
+                color = new Color(128, 128, 128, 128);
                 // ChatGPT formula for drawing circle
-                g.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
             } else {
                 // If not placeable make the range a transparent red
-                Color color = new Color(225, 0, 0, 128);
-                g.setColor(color);
-                g.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
+                color = new Color(225, 0, 0, 128);
             }
+            g.setColor(color);
+            g.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
             // Always draw the tower and center it in the range
             Image towerImage = tower.towerImage;
             g.drawImage(towerImage, x-24, y-18,50,50, this);
