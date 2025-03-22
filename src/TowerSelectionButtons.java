@@ -26,11 +26,10 @@ public class TowerSelectionButtons extends JPanel {
 
     // Default tower images used for display purposes
     private static final List<String> DEFAULT_TOWER_IMAGES = List.of(
-            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-            "DartMonkey.png", "SuperMonkey.png", "BombTower.png",
-            "DartMonkey.png", "SuperMonkey.png", "BombTower.png"
+            "DartMonkey.png", "BombTower.png", "BoomerangMonkey.png",
+            "GlueGunner.png","IceTower.png","Ninja.png","PirateShip.png",
+            "SniperMonkey.png", "SpikeFactory.png","SuperMonkey.png",
+            "TackShooter.png","Wizard.png"
     );
 
     /**
@@ -175,6 +174,33 @@ public class TowerSelectionButtons extends JPanel {
                 break;
             case "BombTower.png":
                 tower = new BombTower(runGame, currentMap);
+                break;
+            case "BoomerangMonkey.png":
+                tower = new BoomerangMonkey(runGame, currentMap);
+                break;
+            case "GlueGunner.png":
+                tower = new GlueGunner(runGame, currentMap);
+                break;
+            case "IceTower.png":
+                tower = new IceTower(runGame, currentMap);
+                break;
+            case "Ninja.png":
+                tower = new Ninja(runGame, currentMap);
+                break;
+            case "PirateShip.png":
+                tower = new PirateShip(runGame, currentMap);
+                break;
+            case "SniperMonkey.png":
+                tower = new SniperMonkey(runGame, currentMap);
+                break;
+            case "SpikeFactory.png":
+                tower = new SpikeFactory(runGame, currentMap);
+                break;
+            case "TackShooter.png":
+                tower = new TackShooter(runGame, currentMap);
+                break;
+            case "Wizard.png":
+                tower = new Wizard(runGame, currentMap);
                 break;
             default:
                 return;
