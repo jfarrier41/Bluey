@@ -1,3 +1,4 @@
+/*
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -5,12 +6,14 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+*/
 /*
 Filename: TowerTestGUI.java
 Author: Joseph Farrier
 Description: Testing groups for tower class. Used to help design how the button selection works with
 the tower class and potentially will be used to follow the mouse as a way to understand moving images dynamically
- */
+ *//*
+
 public class TowerTestGUI extends JFrame {
     private BufferedImage currentMap;
     private TowerPanel towerPanel;
@@ -43,6 +46,10 @@ public class TowerTestGUI extends JFrame {
         JPanel mapPanel = new MapPanel(currentMap);
         mapPanel.setBounds(0, 0, 700, 510);
         layeredPane.add(mapPanel, JLayeredPane.DEFAULT_LAYER);
+
+        AnimationPanel AnimationPanel = new AnimationPanel();
+        AnimationPanel.setBounds(0, 0, 600, 600);
+        layeredPane.add(AnimationPanel, JLayeredPane.MODAL_LAYER);
 
         // Create the Tower Panel (overlay for tower placement)
         towerPanel = new TowerPanel(layeredPane, currentMap);
@@ -107,3 +114,4 @@ public class TowerTestGUI extends JFrame {
         SwingUtilities.invokeLater(TowerTestGUI::new);
     }
 }
+*/

@@ -18,15 +18,17 @@ public class TowerPanel extends JPanel {
     private Tower tower;
     private final BufferedImage currentMap;
     private final JLayeredPane layeredPane;
+    private final AnimationPanel animationPanel;
 
     private List<Tower> placedTowers = new ArrayList<Tower>();
 
     int x;
     int y;
 
-    public TowerPanel(JLayeredPane pane, BufferedImage map) {
+    public TowerPanel(JLayeredPane pane, BufferedImage map, AnimationPanel animationPanel) {
         this.currentMap = map;
         this.layeredPane = pane;
+        this.animationPanel = animationPanel;
         setOpaque(false);
 
 
@@ -38,6 +40,7 @@ public class TowerPanel extends JPanel {
                     tower.setPosition(x,y);
                     // Add it to list of placed towers
                     placedTowers.add(tower);
+                    animationPanel.addTower(tower);
                     // remove current tower from Panel
                     tower = null;
                     // Set the layer back to the Pallete Layer
@@ -68,10 +71,6 @@ public class TowerPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Draw all Placed Towers first
-        for(Tower tower :placedTowers){
-            g.drawImage(tower.towerImage, tower.xPosition,tower.yPosition, 50, 50, this);
-        }
         //  Check to see if tower has been assigned
         if(tower == null){
             return;
