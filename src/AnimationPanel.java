@@ -45,7 +45,7 @@ public class AnimationPanel extends JPanel {
                 g2d.drawImage(tower.towerImage, tower.xPosition, tower.yPosition, 50, 50, this);
                 g2d.setTransform(orginalTransform);
 
-                tower.projectileActive = true;
+                tower.fire(x,y);
 
                 if(tower.isProjectileActive()){
                     double projectileAngle = tower.projectileAngle(x, y);
@@ -53,10 +53,14 @@ public class AnimationPanel extends JPanel {
                     tower.projX += (int) (Math.cos(projectileAngle) * tower.projectileSpeed);
                     tower.projY += (int) (Math.sin(projectileAngle) * tower.projectileSpeed);
 
-                    g2d.drawImage(tower.projectileImage, (int) tower.projX, (int) tower.projY, 10, 10, this);
+                    AffineTransform projectileTransform = g2d.getTransform();
+                    g2d.rotate(Math.toRadians(angle),tower.projX + 5,tower.projY +5);
+                    g2d.drawImage(tower.projectileImage, (int) tower.projX, (int) tower.projY, 15,30, this);
+                    g2d.setTransform(projectileTransform);
 
                     // Check if it reached the target
                     if (Math.abs(tower.projX - x) < 5 && Math.abs(tower.projY - y) < 5) {
+                        System.out.println("Second Tower Has Been Hit");
                         tower.projectileActive = false; // Reset for next shot
                     }
                 }
