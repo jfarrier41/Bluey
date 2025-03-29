@@ -15,13 +15,29 @@ public class TackShooter extends Tower {
 
         // Set default values for DartMonkey (can be overridden if needed)
         this.setFireSpeed(10);
-        this.setRange(50);
+        this.setRange(200);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
     }
 
+
     @Override
-    int attack() {
-        return 0;
+    public boolean attack() {
+        return false;
+    }
+
+    @Override
+    public boolean isProjectileActive() {
+        return false;
+    }
+
+    @Override
+    public void setProjectileActive(boolean projectileActive) {
+
+    }
+
+    @Override
+    public void fire(int targetX, int targetY) {
+
     }
 }

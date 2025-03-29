@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /*
@@ -15,13 +14,29 @@ public class Wizard extends Tower {
 
         // Set default values for DartMonkey (can be overridden if needed)
         this.setFireSpeed(10);
-        this.setRange(50);
+        this.setRange(200);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
     }
 
     @Override
-    int attack() {
-        return 0;
+    public boolean attack() {
+        projectileActive = true;
+        return true;
+    }
+
+    @Override
+    public boolean isProjectileActive() {
+        return false;
+    }
+
+    @Override
+    public void setProjectileActive(boolean projectileActive) {
+
+    }
+
+    @Override
+    public void fire(int targetX, int targetY) {
+
     }
 }
