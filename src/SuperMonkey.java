@@ -21,7 +21,26 @@ public class SuperMonkey extends Tower {
     }
 
     @Override
-    int attack() {
-        return 0;
+    public boolean attack() {
+        return false;
+    }
+
+    @Override
+    public boolean isProjectileActive() {
+        return false;
+    }
+
+    @Override
+    public void setProjectileActive(boolean projectileActive) {
+
+    }
+
+    @Override
+    public void fire(int targetX, int targetY) {
+        if (!projectileActive) { // Only fire if no active projectile
+            this.projX = this.xPosition + 25; // Start at center of tower
+            this.projY = this.yPosition + 25;
+            this.projectileActive = true;
+        }
     }
 }
