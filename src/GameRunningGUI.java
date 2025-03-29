@@ -15,7 +15,6 @@ import java.util.ArrayList;
  * It handles the rendering of the selected map, tower placement, and game statistics.
  * Additionally, it runs a game loop at 60 FPS to update and repaint the game state.
  */
-
 public class GameRunningGUI extends JPanel {
     private BufferedImage mapImage;
     private BufferedImage woodTexture;
@@ -84,7 +83,7 @@ public class GameRunningGUI extends JPanel {
         add(towerSelectionButtons);
         setLayout(null);  // Set layout to null for absolute positioning
 
-        addStartGameButton();
+        //addStartGameButton();
         addReturnHomeButton();
         loadWoodTexture();
 
@@ -158,7 +157,7 @@ public class GameRunningGUI extends JPanel {
         g.drawString("Health: " + currentHealth, xOffset, 160);
     }
 
-    private void addStartGameButton(){
+    /*private void addStartGameButton(){
         JButton startGameButton = new JButton("SG");
         startGameButton.setFont(new Font("Arial", Font.BOLD, 24));
         startGameButton.setForeground(Color.WHITE);
@@ -188,7 +187,7 @@ public class GameRunningGUI extends JPanel {
         add(startGameButton);
         revalidate();
         repaint();
-    }
+    }*/
 
     /**
      * Adds a return home button to the GUI.

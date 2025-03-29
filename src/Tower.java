@@ -1,6 +1,9 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.PriorityQueue;
 
 /**
@@ -122,8 +125,8 @@ abstract public class Tower {
     public boolean inRange(int x, int y) {
         //int xPos = balloon.getX();
         //int yPos = balloon.getY();
-        int xPos = x;
-        int yPos = y;
+        int xPos = x -24;
+        int yPos = y -18;
         double distanceSquared = Math.pow(xPos - this.xPosition, 2) +
                 Math.pow(yPos - this.yPosition,2);
 
@@ -221,12 +224,12 @@ abstract public class Tower {
         this.mapName = mapName;
     }
     // Allow each tower to have own projectile image
-    public void setProjectileImage(String projectileImage) {
-        this.projectileImage = loadImage(projectileImage);
-    }
-
-    public BufferedImage getProjectileImage() {
-        return (BufferedImage) projectileImage;
+    public void setProjectileImage(String imagePath) {
+        try {
+            projectileImage = new ImageIcon(getClass().getClassLoader().getResource(imagePath)).getImage();
+        } catch (Exception e) {
+            System.out.println("Error loading image: " + imagePath);
+        }
     }
 
     public abstract boolean isProjectileActive();
@@ -236,12 +239,6 @@ abstract public class Tower {
     public double projectileAngle(int balloonX, int balloonY){
         double projAngle = Math.atan2(balloonY - projY, balloonX - projX);
         return projAngle;
-    }
-    public double getProjX(){
-        return projX;
-    }
-    public double getProjY(){
-        return projY;
     }
 
     public abstract void fire(int targetX, int targetY);

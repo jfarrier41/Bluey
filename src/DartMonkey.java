@@ -18,9 +18,9 @@ public class DartMonkey extends Tower {
         // Set default values for DartMonkey (can be overridden if needed)
         this.setFireSpeed(10);
         this.setRange(150);
-        this.setProjectileSpeed(10);
+        this.setProjectileSpeed(5);
         this.setProjectileDamage(10);
-        this.setProjectileImage("src/towerImages/dart.png");
+        this.setProjectileImage("TowerImages/dart.png");
     }
 
     @Override
@@ -42,9 +42,22 @@ public class DartMonkey extends Tower {
     @Override
     public void fire(int targetX, int targetY) {
         if (!projectileActive) { // Only fire if no active projectile
-            this.projX = this.xPosition + 25; // Start at center of tower
-            this.projY = this.yPosition + 25;
+            double angleRadians = Math.toRadians(getAngle(targetX, targetY));
+
+            // Offset distance from monkey's center to right hand (tweak as needed)
+            double spawnDistance = 26;
+
+            // Calculate spawn position based on monkey rotation
+            double offsetX = Math.cos(angleRadians) * spawnDistance;
+            double offsetY = Math.sin(angleRadians) * spawnDistance;
+
+            // Set projectile's starting position relative to monkey
+            this.projX = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
+            this.projY = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
+
+            // Activate the projectile
             this.projectileActive = true;
+            System.out.println("Projectile activated");
         }
     }
 
