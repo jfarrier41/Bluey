@@ -42,7 +42,7 @@ public class AnimationPanel extends JPanel {
                 AffineTransform orginalTransform = g2d.getTransform();
 
                 g2d.rotate(Math.toRadians(angle), tower.xPosition + 25, tower.yPosition + 25);
-                g2d.drawImage(tower.towerImage, tower.xPosition, tower.yPosition, 50, 50, this);
+                g2d.drawImage(tower.towerImage, tower.xPosition, tower.yPosition, 45, 45, this);
                 g2d.setTransform(orginalTransform);
 
                 tower.fire(x,y);
@@ -66,7 +66,7 @@ public class AnimationPanel extends JPanel {
                 }
 
             }else{
-                g2d.drawImage(tower.towerImage, tower.xPosition, tower.yPosition, 50, 50, this);
+                g2d.drawImage(tower.towerImage, tower.xPosition, tower.yPosition, 45, 45, this);
             }
 
         }

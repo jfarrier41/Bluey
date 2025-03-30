@@ -13,7 +13,7 @@ import java.util.List;
  * through multiple pages of available towers.
  */
 public class TowerSelectionButtons extends JPanel {
-    private static final int ROWS = 4;
+    private static final int ROWS = 2;
     private static final int COLS = 2;
     private int currentPage = 0;
     private final List<String> towerNames;
@@ -26,10 +26,9 @@ public class TowerSelectionButtons extends JPanel {
 
     // Default tower images used for display purposes
     private static final List<String> DEFAULT_TOWER_IMAGES = List.of(
-            "DartMonkey.png", "BombTower.png", "BoomerangMonkey.png",
-            "GlueGunner.png","IceTower.png","Ninja.png","PirateShip.png",
-            "SniperMonkey.png", "SpikeFactory.png","SuperMonkey.png",
-            "TackShooter.png","Wizard.png"
+            "DartMonkey.png", "TackShooter.png","SniperMonkey.png",
+            "Ninja.png", "BombTower.png","IceTower.png","GlueGunner.png",
+            "Wizard.png","SuperMonkey.png"
     );
 
     /**
@@ -106,8 +105,8 @@ public class TowerSelectionButtons extends JPanel {
      */
     private void updateButtonGrid() {
         buttonPanel.removeAll();
-        int startIndex = currentPage * 8;
-        int endIndex = Math.min(startIndex + 8, towerNames.size());
+        int startIndex = currentPage * 4;
+        int endIndex = Math.min(startIndex + 7, towerNames.size());
 
         int index = startIndex;
         for (int row = 0; row < ROWS; row++) {
@@ -175,9 +174,6 @@ public class TowerSelectionButtons extends JPanel {
             case "BombTower.png":
                 tower = new BombTower(runGame, currentMap);
                 break;
-            case "BoomerangMonkey.png":
-                tower = new BoomerangMonkey(runGame, currentMap);
-                break;
             case "GlueGunner.png":
                 tower = new GlueGunner(runGame, currentMap);
                 break;
@@ -187,14 +183,8 @@ public class TowerSelectionButtons extends JPanel {
             case "Ninja.png":
                 tower = new Ninja(runGame, currentMap);
                 break;
-            case "PirateShip.png":
-                tower = new PirateShip(runGame, currentMap);
-                break;
             case "SniperMonkey.png":
                 tower = new SniperMonkey(runGame, currentMap);
-                break;
-            case "SpikeFactory.png":
-                tower = new SpikeFactory(runGame, currentMap);
                 break;
             case "TackShooter.png":
                 tower = new TackShooter(runGame, currentMap);
@@ -236,7 +226,7 @@ public class TowerSelectionButtons extends JPanel {
      * Moves to the next page of tower selection, if possible.
      */
     private void showNextPage() {
-        if ((currentPage + 1) * 8 < towerNames.size()) {
+        if ((currentPage + 1) * 4 < towerNames.size()) {
             currentPage++;
             updateButtonGrid();
         }

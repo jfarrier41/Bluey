@@ -46,7 +46,6 @@ public class TowerPanel extends JPanel {
                     // Set the layer back to the Pallete Layer
                     layeredPane.setLayer(TowerPanel.this, JLayeredPane.PALETTE_LAYER);
                     repaint();
-
                 }
             }
         });
@@ -97,7 +96,7 @@ public class TowerPanel extends JPanel {
             g.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
             // Always draw the tower and center it in the range
             Image towerImage = tower.towerImage;
-            g.drawImage(towerImage, x-24, y-18,50,50, this);
+            g.drawImage(towerImage, x-24, y-18,45,45, this);
             g.setColor(Color.BLACK);
             //System.out.print(x +","+y);
             g.drawRect(x - 3, y - 3, 7, 7);

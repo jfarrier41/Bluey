@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /*
 Filename: DartMonkey.java
@@ -9,16 +11,15 @@ Description: Implements tower and defines the Dart Monkey.
  */
 
 public class DartMonkey extends Tower {
-    // Constructor that only takes JFrame and BufferedImage
-    private boolean attacking = false;
+    private long lastFireTime; // Time of the last fire event
 
     public DartMonkey(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"DartMonkey.png");
 
-        // Set default values for DartMonkey (can be overridden if needed)
+        // Set default values for SuperMonkey (can be overridden if needed)
         this.setFireSpeed(10);
-        this.setRange(150);
-        this.setProjectileSpeed(5);
+        this.setRange(200);
+        this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
         this.setProjectileImage("TowerImages/dart.png");
     }
@@ -60,5 +61,4 @@ public class DartMonkey extends Tower {
             System.out.println("Projectile activated");
         }
     }
-
 }
