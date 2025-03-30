@@ -206,6 +206,7 @@ public class TowerSelectionButtons extends JPanel {
                 return;
         }
 
+
         tower.isSelected = true;
         towerPanel.setTower(tower);
         layeredPane.setLayer(towerPanel, JLayeredPane.DRAG_LAYER);

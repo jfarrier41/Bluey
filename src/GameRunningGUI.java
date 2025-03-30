@@ -1,9 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import javax.imageio.ImageIO;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Authors: Jace Claassen and Joseph Farrier
@@ -11,7 +15,6 @@ import java.io.IOException;
  * It handles the rendering of the selected map, tower placement, and game statistics.
  * Additionally, it runs a game loop at 60 FPS to update and repaint the game state.
  */
-
 public class GameRunningGUI extends JPanel {
     private BufferedImage mapImage;
     private BufferedImage woodTexture;
@@ -20,11 +23,20 @@ public class GameRunningGUI extends JPanel {
     private final RunGame runGame;
     private final JLayeredPane layeredPane;
     private final TowerPanel towerPanel;
+    //***
+    private final AnimationPanel animationPanel;
+    //***
     private final HomeScreenGUI homeScreenGUI;
     private final Timer gameLoopTimer;
     private int currentRound;
     private int currentCash;
     private int currentHealth;
+
+    // Values made for testing purpose
+    //***
+    private int x;
+    private int y;;
+    //***
 
     /**
      * Constructs a GameRunningGUI object, initializing the game environment.
@@ -52,16 +64,26 @@ public class GameRunningGUI extends JPanel {
         layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
         add(layeredPane);
 
-        towerPanel = new TowerPanel(layeredPane, mapImage);
+        //Added Panel here for animation
+        //*****
+        animationPanel = new AnimationPanel();
+        animationPanel.setBounds(0,0,700,510);
+        animationPanel.setOpaque(false);
+        layeredPane.add(animationPanel, JLayeredPane.MODAL_LAYER);
+        //*****
+        towerPanel = new TowerPanel(layeredPane, mapImage, animationPanel);
         towerPanel.setBounds(0, 0, 700, 510);
         towerPanel.setOpaque(false); // Ensure transparency
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
+
+
 
         TowerSelectionButtons towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage, towerPanel, layeredPane);
         towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, MAP_WIDTH / 5 + 15, MAP_WIDTH / 6, HEIGHT / 2 + HEIGHT / 6);
         add(towerSelectionButtons);
         setLayout(null);  // Set layout to null for absolute positioning
 
+        //addStartGameButton();
         addReturnHomeButton();
         loadWoodTexture();
 
@@ -135,6 +157,38 @@ public class GameRunningGUI extends JPanel {
         g.drawString("Health: " + currentHealth, xOffset, 160);
     }
 
+    /*private void addStartGameButton(){
+        JButton startGameButton = new JButton("SG");
+        startGameButton.setFont(new Font("Arial", Font.BOLD, 24));
+        startGameButton.setForeground(Color.WHITE);
+        startGameButton.setBackground(new Color(150,0,0));
+        startGameButton.setContentAreaFilled(false);
+        startGameButton.setOpaque(true);
+        startGameButton.setBorder(BorderFactory.createEmptyBorder());
+        startGameButton.setBounds(60,10,40,40);
+        startGameButton.addActionListener(e -> {
+            addMouseMotionListener(new MouseMotionAdapter() {
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    // If tower is assigned and selected
+                    x = e.getX();
+                    y = e.getY();
+                }
+            });
+            java.util.List<Tower> placedTowers = animationPanel.getTowerList();
+            for(Tower tower: placedTowers) {
+                if(tower.inRange(x,y)){
+                    tower.fire(x,y);
+                    //tower.addTarget();
+
+                }
+            }
+        });
+        add(startGameButton);
+        revalidate();
+        repaint();
+    }*/
+
     /**
      * Adds a return home button to the GUI.
      */
@@ -149,13 +203,13 @@ public class GameRunningGUI extends JPanel {
         returnHomeButton.setBounds(10, 10, 40, 40);
         returnHomeButton.addActionListener(e -> returnHome());
 
-        returnHomeButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        returnHomeButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
+            public void mouseEntered(MouseEvent e) {
                 returnHomeButton.setForeground(Color.YELLOW);
             }
             @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
+            public void mouseExited(MouseEvent e) {
                 returnHomeButton.setForeground(Color.WHITE);
             }
         });
