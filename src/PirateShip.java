@@ -21,7 +21,23 @@ public class PirateShip extends Tower {
     }
 
     @Override
-    int attack() {
-        return 0;
+    public boolean attack() {
+        projectileActive = true;
+        return true;
+    }
+
+    @Override
+    public boolean isProjectileActive() {
+        return false;
+    }
+
+    @Override
+    public void setProjectileActive(boolean projectileActive) {
+
+    }
+
+    @Override
+    public void fire(int targetX, int targetY) {
+
     }
 }
