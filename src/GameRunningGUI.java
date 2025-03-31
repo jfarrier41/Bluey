@@ -3,21 +3,14 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
-/**
- * Authors: Jace Claassen and Joseph Farrier
- * Description: The GameRunningGUI class represents the main game screen in the Tower Defense game.
- * It handles the rendering of the selected map, tower placement, and game statistics.
- * Additionally, it runs a game loop at 60 FPS to update and repaint the game state.
- */
 public class GameRunningGUI extends JPanel {
-    private BufferedImage mapImage;
-    private BufferedImage woodTexture;
+    private BufferedImage mapImage, woodTexture;
     private final int MAP_WIDTH, HEIGHT;
     private final String selectedMap;
     private final RunGame runGame;
@@ -26,17 +19,18 @@ public class GameRunningGUI extends JPanel {
     private final AnimationPanel animationPanel;
     private final HomeScreenGUI homeScreenGUI;
     private final Timer gameLoopTimer;
+    private final Timer balloonSpawnTimer;
     private final Waypoints waypoints;
     private BufferedImage[] balloonImages;
-    private Balloon balloon;
-    private int currentRound;
-    private int currentCash;
-    private int currentHealth;
+    private ArrayList<Balloon> balloons;
+    private int currentRound, currentCash, currentHealth;
+    private final Random random;
 
     public GameRunningGUI(RunGame runGame, int width, int height, String selectedMap, HomeScreenGUI homeScreenGUI) {
         currentRound = 1;
         currentCash = 1000;
         currentHealth = 200;
+        random = new Random();
 
         this.MAP_WIDTH = width;
         this.HEIGHT = height;
@@ -44,16 +38,14 @@ public class GameRunningGUI extends JPanel {
         this.homeScreenGUI = homeScreenGUI;
         this.runGame = runGame;
         this.waypoints = new Waypoints(selectedMap);
+        this.balloons = new ArrayList<>();
         loadMapImage();
         loadBalloonImages();
-
-        balloon = new Balloon(waypoints, balloonImages, 0);
 
         layeredPane = new JLayeredPane();
         layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
         add(layeredPane);
 
-        // Animation panel no longer handles the game loop
         animationPanel = new AnimationPanel();
         animationPanel.setBounds(0, 0, 700, 510);
         animationPanel.setOpaque(false);
@@ -61,25 +53,28 @@ public class GameRunningGUI extends JPanel {
 
         towerPanel = new TowerPanel(layeredPane, mapImage, animationPanel);
         towerPanel.setBounds(0, 0, 700, 510);
-        towerPanel.setOpaque(false); // Ensure transparency
+        towerPanel.setOpaque(false);
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
 
         TowerSelectionButtons towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage, towerPanel, layeredPane);
         towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, MAP_WIDTH / 5 + 15, MAP_WIDTH / 6, HEIGHT / 2);
         add(towerSelectionButtons);
-        setLayout(null);  // Set layout to null for absolute positioning
+        setLayout(null);
 
         addReturnHomeButton();
         loadWoodTexture();
 
-        // Game loop timer is now in GameRunningGUI
-        gameLoopTimer = new Timer(16, e -> gameLoop()); // 16 ms per frame = 60 FPS
+        // Game loop timer (60 FPS)
+        gameLoopTimer = new Timer(16, e -> gameLoop());
         gameLoopTimer.start();
+
+        // Balloon spawn timer (every .5 seconds)
+        balloonSpawnTimer = new Timer(500, e -> spawnBalloon());
+        balloonSpawnTimer.start();
     }
 
     private void loadMapImage() {
-        String mapFolderPath = "src/MapImg/";
-        String imagePath = mapFolderPath + selectedMap + ".png";
+        String imagePath = "src/MapImg/" + selectedMap + ".png";
         try {
             mapImage = ImageIO.read(new File(imagePath));
         } catch (IOException e) {
@@ -102,7 +97,13 @@ public class GameRunningGUI extends JPanel {
         String[] paths = {
                 "src/BalloonImages/redbloon.png",
                 "src/BalloonImages/bluebloon.png",
-                "src/BalloonImages/greenbloon.png"
+                "src/BalloonImages/greenbloon.png",
+                "src/BalloonImages/pinkbloon.png",
+                "src/BalloonImages/yellowbloon.png",
+                "src/BalloonImages/zebrabloon.png",
+                "src/BalloonImages/rainbowbloon.png",
+                "src/BalloonImages/metalbloon.png",
+                "src/BalloonImages/moab.png"
         };
 
         balloonImages = new BufferedImage[paths.length];
@@ -117,15 +118,25 @@ public class GameRunningGUI extends JPanel {
         }
     }
 
+    private void spawnBalloon() {
+        int randomLevel = random.nextInt(balloonImages.length);
+        balloons.add(new Balloon(waypoints, balloonImages, randomLevel));
+    }
 
     private void gameLoop() {
-        updateGameState(); // Now called in GameRunningGUI
+        updateGameState();
         repaint();
     }
 
     private void updateGameState() {
-        if (!balloon.hasReachedEnd()) {
-            balloon.updatePosition(); // Move the balloon along the path
+        for (int i = 0; i < balloons.size(); i++) {
+            Balloon balloon = balloons.get(i);
+            balloon.updatePosition();
+            if (balloon.hasReachedEnd()) {
+                balloons.remove(i);
+                i--; // Adjust index after removal
+                currentHealth -= 1; // Reduce health when a balloon exits
+            }
         }
         animationPanel.repaint();
     }
@@ -134,11 +145,14 @@ public class GameRunningGUI extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         final int WOOD_WIDTH = MAP_WIDTH / 3;
-        g.drawImage(woodTexture, 0, 0, WOOD_WIDTH, HEIGHT, this);  // Left side
-        g.drawImage(woodTexture, MAP_WIDTH + WOOD_WIDTH, 0, WOOD_WIDTH, HEIGHT, this);  // Right side
         g.drawImage(mapImage, WOOD_WIDTH, 0, MAP_WIDTH, HEIGHT, this);
         drawGameInfo(g);
-        balloon.draw(g);
+
+        for (Balloon balloon : balloons) {
+            balloon.draw(g);
+        }
+        g.drawImage(woodTexture, 0, 0, WOOD_WIDTH, HEIGHT, this);
+        g.drawImage(woodTexture, MAP_WIDTH + WOOD_WIDTH, 0, WOOD_WIDTH, HEIGHT, this);
     }
 
     private void drawGameInfo(Graphics g) {
@@ -166,6 +180,7 @@ public class GameRunningGUI extends JPanel {
             public void mouseEntered(MouseEvent e) {
                 returnHomeButton.setForeground(Color.YELLOW);
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 returnHomeButton.setForeground(Color.WHITE);
@@ -179,6 +194,7 @@ public class GameRunningGUI extends JPanel {
 
     private void returnHome() {
         gameLoopTimer.stop();
+        balloonSpawnTimer.stop();
         runGame.setSize(1024, 768);
         runGame.setContentPane(homeScreenGUI);
         runGame.revalidate();

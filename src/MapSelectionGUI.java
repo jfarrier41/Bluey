@@ -15,17 +15,15 @@ public class MapSelectionGUI extends JPanel {
     private int selectedMapIndex = 0;  // Index to track the currently selected map
 
     // Array of map names and their respective descriptions
-    private final String[] mapNames = {"Maze", "MonkeyLane", "ParkPath", "SpringTrack"};
+    private final String[] mapNames = {"Maze", "MonkeyLane", "SpringTrack"};
     private final String[] mapDescriptions = {
             "A complex maze filled with twists and turns.",
             "A winding lane with plenty of obstacles.",
-            "A serene park path with natural challenges.",
             "A spring-themed track with lots of curves."
     };
     private final int[][] mapDimensions = {
             {699,519},  // Maze
             {700,510},  // MonkeyLane
-            {700,510},  // ParkPath
             {699,519}   // SpringTrack
     };
 
