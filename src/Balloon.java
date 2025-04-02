@@ -153,6 +153,15 @@ public class Balloon {
         }
         return false;
     }
+    public int getX(){
+        return Math.round(currentPosition.x);
+    }
+    public int getY(){
+        return Math.round(currentPosition.y);
+    }
+    public void setLevel(int damage) {
+
+    }
 }
 
 

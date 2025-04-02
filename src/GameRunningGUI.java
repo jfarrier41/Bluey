@@ -45,7 +45,7 @@ public class GameRunningGUI extends JPanel {
         layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
         add(layeredPane);
 
-        animationPanel = new AnimationPanel();
+        animationPanel = new AnimationPanel(balloons);
         animationPanel.setBounds(0, 0, 700, 510);
         animationPanel.setOpaque(false);
         layeredPane.add(animationPanel, JLayeredPane.MODAL_LAYER);

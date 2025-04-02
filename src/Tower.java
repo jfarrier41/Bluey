@@ -24,11 +24,11 @@ abstract public class Tower {
     protected String mapName;
 
     // Queue that allows tower to decide what enemy to shoot
-    private PriorityQueue<Balloon> targets = new PriorityQueue<>(
+    protected PriorityQueue<Balloon> targets = new PriorityQueue<>(
             (b1, b2) -> Double.compare(b2.getLevel(), b1.getLevel())
     );
 
-    protected int fireSpeed;
+    protected int fireRate;
     protected int diameter;
     protected int projectileSpeed;
     protected int projectileDamage;
@@ -122,13 +122,11 @@ abstract public class Tower {
     public abstract boolean attack();
 
     // Will check to see if a balloon is in range
-    public boolean inRange(int x, int y) {
-        //int xPos = balloon.getX();
-        //int yPos = balloon.getY();
-        int xPos = x -24;
-        int yPos = y -18;
-        double distanceSquared = Math.pow(xPos - this.xPosition, 2) +
-                Math.pow(yPos - this.yPosition,2);
+    public boolean inRange(Balloon balloon) {
+        int targetX = balloon.getX()-202;
+        int targetY = balloon.getY();
+        double distanceSquared = Math.pow(targetX - this.xPosition, 2) +
+                Math.pow(targetY - this.yPosition,2);
 
         double rangeSquared = Math.pow(this.diameter / 2, 2);
         return distanceSquared <= rangeSquared;
@@ -137,17 +135,22 @@ abstract public class Tower {
     // Helper function to add balloons to the queue
     public void addTarget(Balloon balloon) {
         if (!targets.contains(balloon)) {
+            System.out.println("Adding target: " + balloon);
             targets.add(balloon);
         }
     }
 
     // Helper function to remove balloons from the queue
-    /*public void removeTarget(Balloon balloon) {
-        if (balloon.getLevel() < 1 || !inRange(balloon)) {
+    public void removeTarget(Balloon balloon) {
+        /*if (balloon.getLevel() > 0) {
+            balloon.setLevel(projectileDamage);
+        }*/
+        if(balloon.getLevel() == 1){
             targets.remove(balloon);
+            System.out.println("Removed " + balloon);
         }
     }
-*/
+
     // Get the first balloon in the queue
     public Balloon target() {
         return targets.peek();
@@ -174,8 +177,8 @@ abstract public class Tower {
 
 
     // Getters and setters for tower properties
-    public int getFireSpeed() {
-        return fireSpeed;
+    public int getFireRate() {
+        return fireRate;
     }
 
     public int getDiameter() {
@@ -193,10 +196,13 @@ abstract public class Tower {
     public Point getPosition() {
         return new Point(xPosition, yPosition);
     }
+    public int setFireRate(int fireRate) {
+        return this.fireRate = fireRate;
+    }
 
     // Setters for tower properties
     public void setFireSpeed(int fireSpeed) {
-        this.fireSpeed = fireSpeed;
+        this.fireRate = fireSpeed;
     }
 
     public void setRange(int diameter) {
