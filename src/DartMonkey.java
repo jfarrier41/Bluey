@@ -21,6 +21,7 @@ public class DartMonkey extends Tower {
         this.setRange(200);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
+        this.setPrice(200);
         this.setProjectileImage("TowerImages/dart.png");
     }
 

@@ -32,6 +32,7 @@ abstract public class Tower {
     protected int diameter;
     protected int projectileSpeed;
     protected int projectileDamage;
+    protected int price;
     // ALlow for each tower to have projectile Image
 
     protected Image projectileImage;
@@ -180,6 +181,13 @@ abstract public class Tower {
 
     public int getDiameter() {
         return diameter;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public int getProjectileSpeed() {

@@ -24,6 +24,7 @@ public class TowerSelectionButtons extends JPanel {
     private final TowerPanel towerPanel;
     private final JLayeredPane layeredPane;
 
+
     // Default tower images used for display purposes
     private static final List<String> DEFAULT_TOWER_IMAGES = List.of(
             "DartMonkey.png", "TackShooter.png","SniperMonkey.png",
@@ -141,6 +142,7 @@ public class TowerSelectionButtons extends JPanel {
         button.setBorderPainted(false);
         button.setFocusPainted(false);
 
+
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -162,6 +164,7 @@ public class TowerSelectionButtons extends JPanel {
      * @param imageName The name of the selected tower's image.
      */
     private void handleButtonClick(String imageName) {
+        new SoundEffect("Click.wav", false, 1f);
         Tower tower;
 
         switch (imageName) {
@@ -196,7 +199,6 @@ public class TowerSelectionButtons extends JPanel {
                 return;
         }
 
-
         tower.isSelected = true;
         towerPanel.setTower(tower);
         layeredPane.setLayer(towerPanel, JLayeredPane.DRAG_LAYER);
@@ -216,6 +218,7 @@ public class TowerSelectionButtons extends JPanel {
      * Moves to the previous page of tower selection, if possible.
      */
     private void showPrevPage() {
+        new SoundEffect("Click.wav", false, 1f);
         if (currentPage > 0) {
             currentPage--;
             updateButtonGrid();
@@ -226,6 +229,7 @@ public class TowerSelectionButtons extends JPanel {
      * Moves to the next page of tower selection, if possible.
      */
     private void showNextPage() {
+        new SoundEffect("Click.wav", false, 1f);
         if ((currentPage + 1) * 4 < towerNames.size()) {
             currentPage++;
             updateButtonGrid();

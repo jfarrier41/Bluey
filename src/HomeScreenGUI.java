@@ -37,6 +37,7 @@ public class HomeScreenGUI extends JPanel {
         mapSelectionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                new SoundEffect("Click.wav", false, 1f);
                 // When the button is clicked, transition to the map selection screen
                 runGame.showMapSelectionScreen();
             }

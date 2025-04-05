@@ -1,9 +1,12 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 /*
@@ -19,6 +22,7 @@ public class TowerPanel extends JPanel {
     private final BufferedImage currentMap;
     private final JLayeredPane layeredPane;
     private final AnimationPanel animationPanel;
+    private BufferedImage trashImage;
 
     private List<Tower> placedTowers = new ArrayList<Tower>();
 
@@ -31,11 +35,18 @@ public class TowerPanel extends JPanel {
         this.animationPanel = animationPanel;
         setOpaque(false);
 
+        try {
+            trashImage = ImageIO.read(new File("src/DesignImg/trash.png")); // Update with your correct path
+        } catch (IOException e) {
+            System.err.println("Failed to load trash image.");
+            trashImage = null;
+        }
 
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                // check to see if tower has been assigned and is placeable
                 if ((tower != null) && tower.isPlaceable()) {
+                    new SoundEffect("NewTowerIntro.wav", false, .8f);
                     // Set tower postion
                     tower.setPosition(x,y);
                     // Add it to list of placed towers
@@ -59,6 +70,11 @@ public class TowerPanel extends JPanel {
                     // Get where the mouse is currently at
                     x = e.getX() -24;
                     y = e.getY() -18;
+                    if(x > 655 && y > 470){
+                        tower.isSelected = false;
+                        setCursor(Cursor.getDefaultCursor());
+                    }
+
                     // Check to see if it is in a placeable area
                     tower.isPlaceable(x, y);
                     repaint();
@@ -77,6 +93,7 @@ public class TowerPanel extends JPanel {
         int diameter = tower.getDiameter();
 
         if (tower.isSelected) {
+            g.drawImage(trashImage, 658, 472, 40, 40, this);
             // Remove the cursor from screen, Credit to ChatGPT for this Code
             this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                     new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),

@@ -151,6 +151,7 @@ public class MapSelectionGUI extends JPanel {
      * @param direction The direction to change the map (-1 for left, 1 for right)
      */
     private void changeMap(int direction) {
+        new SoundEffect("Click.wav", false, 1f);
         selectedMapIndex = (selectedMapIndex + direction + mapNames.length) % mapNames.length;  // Cycle through maps
         loadMapImage();  // Load the image of the new map
         mapDescriptionLabel.setText(mapDescriptions[selectedMapIndex]);  // Update map description text
@@ -180,6 +181,7 @@ public class MapSelectionGUI extends JPanel {
      * Displays a dialog with the selected map name.
      */
     private void confirmSelection() {
+        new SoundEffect("Click.wav", false, 1f);
         int mapWidth = mapDimensions[selectedMapIndex][0];
         int mapHeight = mapDimensions[selectedMapIndex][1];
         runGame.startGame(mapNames[selectedMapIndex],mapWidth,mapHeight);  // Notify RunGame and transition to GameRunningGUI
@@ -189,6 +191,7 @@ public class MapSelectionGUI extends JPanel {
      * Returns to the HomeScreen.
      */
     private void returnHome() {
+        new SoundEffect("Click.wav", false, 1f);
         runGame.setContentPane(homeScreenGUI);  // Switch content pane to home screen
         runGame.revalidate();  // Revalidate the layout
         runGame.repaint();  // Repaint the content

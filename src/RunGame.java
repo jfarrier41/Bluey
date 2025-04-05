@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.event.*;
 
 /**
  * Filename: RunGame.java
@@ -12,6 +13,7 @@ public class RunGame extends JFrame {
     private static final int SCREEN_WIDTH = 1024;
     private static final int SCREEN_HEIGHT = 768;
 
+
     private final HomeScreenGUI homeScreenGUI;  // Keep reference to HomeScreen
 
     /**
@@ -24,10 +26,22 @@ public class RunGame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
+        // Initialize background music and start it looping
+        SoundEffect backgroundMusic = new SoundEffect("maintheme.wav", true, 1f);  // Set background music to loop with volume 0.5 (can be adjusted)
+
         // Initialize and show the home screen
         homeScreenGUI = new HomeScreenGUI(this, SCREEN_WIDTH, SCREEN_HEIGHT);
         homeScreenGUI.setBounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         add(homeScreenGUI);
+
+        // Add MouseListener to the entire JFrame for global click sound
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Play click sound on any mouse press
+                new SoundEffect("Click.wav", false, 1f);
+            }
+        });
 
         setVisible(true);
     }
@@ -40,11 +54,18 @@ public class RunGame extends JFrame {
      * @param height      The height of the game map.
      */
     public void startGame(String selectedMap, int width, int height) {
+        // Adjust the window size as needed
         setSize(width + 2 * (width / 3), height + height / 18);
+
+        // Switch to the game screen
         GameRunningGUI gameRunningGUI = new GameRunningGUI(this, width, height, selectedMap, homeScreenGUI);
         setContentPane(gameRunningGUI);  // Switch content pane to GameRunningGUI
+        // Add MouseListener to the entire JFrame for global click sound
+
         revalidate();  // Revalidate the layout
         repaint();  // Repaint the content
+
+        // Lower the volume of the background music when the game starts (Optional)
     }
 
     /**
@@ -67,3 +88,4 @@ public class RunGame extends JFrame {
         new RunGame();
     }
 }
+
