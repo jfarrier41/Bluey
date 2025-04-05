@@ -168,7 +168,7 @@ public class TowerSelectionButtons extends JPanel {
             case "DartMonkey.png":
                 tower = new DartMonkey(runGame, currentMap);
                 break;
-            case "SuperMonkey.png":
+           /* case "SuperMonkey.png":
                 tower = new SuperMonkey(runGame, currentMap);
                 break;
             case "BombTower.png":
@@ -191,7 +191,7 @@ public class TowerSelectionButtons extends JPanel {
                 break;
             case "Wizard.png":
                 tower = new Wizard(runGame, currentMap);
-                break;
+                break;*/
             default:
                 return;
         }

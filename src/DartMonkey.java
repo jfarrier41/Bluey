@@ -17,11 +17,10 @@ public class DartMonkey extends Tower {
         super(runGame, currentMap,"DartMonkey.png");
 
         // Set default values for SuperMonkey (can be overridden if needed)
-        this.setFireSpeed(10);
+        this.setFireRate(500);
         this.setRange(200);
-        this.setProjectileSpeed(10);
+        this.setProjectileSpeed(7);
         this.setProjectileDamage(10);
-        this.setProjectileImage("TowerImages/dart.png");
     }
 
     @Override
@@ -41,8 +40,12 @@ public class DartMonkey extends Tower {
     }
 
     @Override
-    public void fire(int targetX, int targetY) {
-        if (!projectileActive) { // Only fire if no active projectile
+    public void fire(Balloon currentTarget) {
+        if (isReadyToFire()) {
+            //System.out.println("What the actual fuck");
+            int targetX = currentTarget.getX();
+            int targetY = currentTarget.getY();
+
             double angleRadians = Math.toRadians(getAngle(targetX, targetY));
 
             // Offset distance from monkey's center to right hand (tweak as needed)
@@ -53,12 +56,13 @@ public class DartMonkey extends Tower {
             double offsetY = Math.sin(angleRadians) * spawnDistance;
 
             // Set projectile's starting position relative to monkey
-            this.projX = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
-            this.projY = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
+            double x = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
+            double y = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
 
-            // Activate the projectile
-            this.projectileActive = true;
-            System.out.println("Projectile activated");
+            Projectile p = new Projectile(x, y, projectileSpeed, currentTarget, 0);
+            projectiles.add(p);
+            System.out.println(" what the fuck Added a Projectile");
+            setFireTimer();
         }
     }
 }

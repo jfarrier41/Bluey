@@ -4,7 +4,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Filename: Tower.java
@@ -24,9 +27,9 @@ abstract public class Tower {
     protected String mapName;
 
     // Queue that allows tower to decide what enemy to shoot
-    protected PriorityQueue<Balloon> targets = new PriorityQueue<>(
-            (b1, b2) -> Double.compare(b2.getLevel(), b1.getLevel())
-    );
+    protected ArrayList<Balloon> targets = new ArrayList<>();
+    protected ArrayList<Projectile> projectiles = new ArrayList<>();
+
 
     protected int fireRate;
     protected int diameter;
@@ -38,6 +41,9 @@ abstract public class Tower {
     protected boolean projectileActive;
     protected double projX;
     protected double projY;
+
+    protected Timer fireTimer;
+    protected boolean readyToFire = true;
 
     // flags to help determine placing functionality
     protected boolean placeable;
@@ -123,7 +129,7 @@ abstract public class Tower {
 
     // Will check to see if a balloon is in range
     public boolean inRange(Balloon balloon) {
-        int targetX = balloon.getX()-202;
+        int targetX = balloon.getX();
         int targetY = balloon.getY();
         double distanceSquared = Math.pow(targetX - this.xPosition, 2) +
                 Math.pow(targetY - this.yPosition,2);
@@ -153,7 +159,7 @@ abstract public class Tower {
 
     // Get the first balloon in the queue
     public Balloon target() {
-        return targets.peek();
+        return targets.getFirst();
     }
 
     public double getAngle(int x, int y){
@@ -230,13 +236,7 @@ abstract public class Tower {
         this.mapName = mapName;
     }
     // Allow each tower to have own projectile image
-    public void setProjectileImage(String imagePath) {
-        try {
-            projectileImage = new ImageIcon(getClass().getClassLoader().getResource(imagePath)).getImage();
-        } catch (Exception e) {
-            System.out.println("Error loading image: " + imagePath);
-        }
-    }
+
 
     public abstract boolean isProjectileActive();
 
@@ -247,7 +247,32 @@ abstract public class Tower {
         return projAngle;
     }
 
-    public abstract void fire(int targetX, int targetY);
+    public abstract void fire(Balloon currentTarget);
 
+    public boolean isReadyToFire() {
+        return readyToFire;
+    }
 
+    public void setFireTimer() {
+        // If there is already a fireTimer running, do nothing
+        if (!readyToFire) return;
+
+        // Disable the tower from firing again immediately
+        readyToFire = false;
+
+        // Cancel any previous fire timer to ensure only one is running at a time
+        if (fireTimer != null) {
+            fireTimer.cancel();
+            fireTimer.purge();
+        }
+
+        // Create a new timer to allow firing after a delay
+        fireTimer = new Timer();
+        fireTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                readyToFire = true; // Re-enable firing after the fireRate delay
+            }
+        }, fireRate); // Delay in milliseconds before the tower can fire again
+    }
 }

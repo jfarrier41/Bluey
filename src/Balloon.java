@@ -154,7 +154,7 @@ public class Balloon {
         return false;
     }
     public int getX(){
-        return Math.round(currentPosition.x);
+        return Math.round(currentPosition.x) -220;
     }
     public int getY(){
         return Math.round(currentPosition.y);
