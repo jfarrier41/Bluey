@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class GameRunningGUI extends JPanel {
-    private BufferedImage mapImage, woodTexture, heartsImage, moneySignImage;
+    private BufferedImage mapImage, woodTexture;
     private final int MAP_WIDTH, HEIGHT;
     private final String selectedMap;
     private final RunGame runGame;
@@ -20,8 +20,9 @@ public class GameRunningGUI extends JPanel {
     private final Timer gameLoopTimer;
     private final Waypoints waypoints;
     private BufferedImage[] balloonImages;
-    private final ArrayList<Balloon> balloons;
-    private int currentCash, currentHealth;
+    private static BufferedImage[] PROJECTILE_IMAGES;
+    private ArrayList<Balloon> balloons;
+    private int currentRound, currentCash, currentHealth;
     private final WaveManager waveManager;
     private boolean waveInProgress;
     private int bloonsRemainingInWave;
@@ -38,32 +39,23 @@ public class GameRunningGUI extends JPanel {
         this.runGame = runGame;
         this.waypoints = new Waypoints(selectedMap);
         this.balloons = new ArrayList<>();
-        loadImages();
+        loadMapImage();
+        loadProjectileImages();
         loadBalloonImages();
 
         layeredPane = new JLayeredPane();
         layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
         add(layeredPane);
 
-        // Add mouse listener to the JLayeredPane to catch all clicks
-
-
-        animationPanel = new AnimationPanel();
-        animationPanel.setBounds(0, 0, 700, 520);
+        animationPanel = new AnimationPanel(balloons);
+        animationPanel.setBounds(0, 0, 700, 510);
         animationPanel.setOpaque(false);
         layeredPane.add(animationPanel, JLayeredPane.MODAL_LAYER);
 
         towerPanel = new TowerPanel(layeredPane, mapImage, animationPanel);
-        towerPanel.setBounds(0, 0, 700, 520);
+        towerPanel.setBounds(0, 0, 700, 510);
         towerPanel.setOpaque(false);
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
-
-        animationPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                new SoundEffect("Click.wav", false, 1f);  // Play click sound for any mouse press
-            }
-        });
 
         waveManager = new WaveManager();
         waveInProgress = false;
@@ -76,25 +68,32 @@ public class GameRunningGUI extends JPanel {
 
         addPlayButton();
         addReturnHomeButton();
+        loadWoodTexture();
 
         // Game loop timer (60 FPS)
         gameLoopTimer = new Timer(16, e -> gameLoop());
         gameLoopTimer.start();
     }
 
-    private void loadImages() {
+    private void loadMapImage() {
         String imagePath = "src/MapImg/" + selectedMap + ".png";
         try {
             mapImage = ImageIO.read(new File(imagePath));
-            woodTexture = ImageIO.read(new File("src/DesignImg/WoodTextureOne.jpg"));
-            heartsImage = ImageIO.read(new File("src/DesignImg/hearts.png"));
-            moneySignImage = ImageIO.read(new File("src/DesignImg/moneySign.png"));
         } catch (IOException e) {
             System.err.println("Failed to load image: " + imagePath);
             mapImage = null;
         }
     }
 
+    private void loadWoodTexture() {
+        String woodTexturePath = "src/DesignImg/WoodTextureOne.jpg";
+        try {
+            woodTexture = ImageIO.read(new File(woodTexturePath));
+        } catch (IOException e) {
+            System.err.println("Failed to load wood texture image: " + woodTexturePath);
+            woodTexture = null;
+        }
+    }
 
     private void loadBalloonImages() {
         String[] paths = {
@@ -120,6 +119,28 @@ public class GameRunningGUI extends JPanel {
                 balloonImages[i] = null;
             }
         }
+    }
+
+    private void loadProjectileImages() {
+        String[] paths = {
+                "src/ProjectileImages/dart.png",
+                "src/ProjectileImages/dart_sm.png",
+                "src/ProjectileImages/bomb.png",
+        };
+
+        PROJECTILE_IMAGES = new BufferedImage[paths.length];
+
+        for (int i = 0; i < paths.length; i++) {
+            try {
+                PROJECTILE_IMAGES[i] = ImageIO.read(new File(paths[i]));
+            } catch (IOException e) {
+                System.err.println("Failed to load balloon image: " + paths[i]);
+                PROJECTILE_IMAGES[i] = null;
+            }
+        }
+    }
+    public static BufferedImage getProjectileImage(int num) {
+        return PROJECTILE_IMAGES[0];
     }
 
     private void startNextWave() {
@@ -165,7 +186,6 @@ public class GameRunningGUI extends JPanel {
     }
 
     private void gameLoop() {
-        // Add global mouse listener for click sounds
         updateGameState();
         repaint();
 
@@ -182,6 +202,8 @@ public class GameRunningGUI extends JPanel {
             balloon.updatePosition();
             if (balloon.hasReachedEnd()) {
                 balloons.remove(i);
+                System.out.println("Balloon " + i + " reached the end");
+                System.out.println(balloons.size());
                 i--;
                 currentHealth -= balloon.getLevel();
             }
@@ -201,38 +223,26 @@ public class GameRunningGUI extends JPanel {
         }
         g.drawImage(woodTexture, 0, 0, WOOD_WIDTH, HEIGHT, this);
         g.drawImage(woodTexture, MAP_WIDTH + WOOD_WIDTH, 0, WOOD_WIDTH, HEIGHT, this);
-
         drawGameInfo(g);
     }
-
-
 
     private void drawGameInfo(Graphics g) {
         g.setFont(new Font("Arial", Font.BOLD, 18));
         g.setColor(Color.WHITE);
         int xOffset = 10;
-
-        // Format the cash value with commas
-        String formattedCash = String.format("%,d", currentCash);
-
-        // Draw hearts image and health text
-        g.drawImage(heartsImage, xOffset, 160, 30, 30, this); // Image width and height can be adjusted
-        g.drawString("Health: " + currentHealth, xOffset + 35, 180);
-
-        // Draw money sign image and cash text
-        g.drawImage(moneySignImage, xOffset, 120, 30, 30, this); // Image width and height can be adjusted
-        g.drawString("Cash: $" + formattedCash, xOffset + 35, 140);
+        g.drawString("Wave: " + (waveManager.getCurrentWaveIndex() + 1), xOffset, 100);
+        g.drawString("Cash: $" + currentCash, xOffset, 130);
+        g.drawString("Health: " + currentHealth, xOffset, 160);
     }
 
     private void addPlayButton() {
-        playButton = new JButton("Start Wave "+ (waveManager.getCurrentWaveIndex() + 1));
+        playButton = new JButton("Start Wave");
         playButton.setFont(new Font("Arial", Font.BOLD, 14));
         playButton.setBounds(80, 10, 140, 40);
         playButton.setFocusPainted(false);
 
         playButton.addActionListener(e -> {
             if (!waveInProgress) {
-                new SoundEffect("Click.wav", false, 1f);
                 startNextWave();
             }
         });
@@ -264,6 +274,8 @@ public class GameRunningGUI extends JPanel {
         });
 
         add(returnHomeButton);
+        revalidate();
+        repaint();
     }
 
     private void returnHome() {
