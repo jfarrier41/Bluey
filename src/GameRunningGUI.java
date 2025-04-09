@@ -20,6 +20,7 @@ public class GameRunningGUI extends JPanel {
     private final Timer gameLoopTimer;
     private final Waypoints waypoints;
     private BufferedImage[] balloonImages;
+    private static BufferedImage[] PROJECTILE_IMAGES;
     private final ArrayList<Balloon> balloons;
     private int currentCash, currentHealth;
     private final WaveManager waveManager;
@@ -39,6 +40,7 @@ public class GameRunningGUI extends JPanel {
         this.waypoints = new Waypoints(selectedMap);
         this.balloons = new ArrayList<>();
         loadImages();
+        loadProjectileImages();
         loadBalloonImages();
 
         layeredPane = new JLayeredPane();
@@ -48,7 +50,7 @@ public class GameRunningGUI extends JPanel {
         // Add mouse listener to the JLayeredPane to catch all clicks
 
 
-        animationPanel = new AnimationPanel();
+        animationPanel = new AnimationPanel(balloons);
         animationPanel.setBounds(0, 0, 700, 520);
         animationPanel.setOpaque(false);
         layeredPane.add(animationPanel, JLayeredPane.MODAL_LAYER);
@@ -120,6 +122,28 @@ public class GameRunningGUI extends JPanel {
                 balloonImages[i] = null;
             }
         }
+    }
+
+    private void loadProjectileImages() {
+        String[] paths = {
+                "src/ProjectileImages/dart.png",
+                "src/ProjectileImages/dart_sm.png",
+                "src/ProjectileImages/bomb.png",
+        };
+
+        PROJECTILE_IMAGES = new BufferedImage[paths.length];
+
+        for (int i = 0; i < paths.length; i++) {
+            try {
+                PROJECTILE_IMAGES[i] = ImageIO.read(new File(paths[i]));
+            } catch (IOException e) {
+                System.err.println("Failed to load balloon image: " + paths[i]);
+                PROJECTILE_IMAGES[i] = null;
+            }
+        }
+    }
+    public static BufferedImage getProjectileImage(int num) {
+        return PROJECTILE_IMAGES[0];
     }
 
     private void startNextWave() {

@@ -114,9 +114,7 @@ public class TowerPanel extends JPanel {
             // Always draw the tower and center it in the range
             Image towerImage = tower.towerImage;
             g.drawImage(towerImage, x-24, y-18,45,45, this);
-            g.setColor(Color.BLACK);
-            //System.out.print(x +","+y);
-            g.drawRect(x - 3, y - 3, 7, 7);
+
         }
     }
     // Assign tower to JPanel

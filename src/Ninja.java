@@ -10,13 +10,15 @@ Description: Implements tower and defines the Dart Monkey.
 
 public class Ninja extends Tower {
     // Constructor that only takes JFrame and BufferedImage
+    private static final double COLLISION_AREA = 20*20;
     public Ninja(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"Ninja.png");
 
         // Set default values for DartMonkey (can be overridden if needed)
-        this.setFireSpeed(10);
-        this.setRange(50);
-        this.setProjectileSpeed(10);
+        this.isRotatable = true;
+        this.setFireSpeed(450);
+        this.setRange(200);
+        this.setProjectileSpeed(3);
         this.setProjectileDamage(10);
     }
 
@@ -37,7 +39,29 @@ public class Ninja extends Tower {
     }
 
     @Override
-    public void fire(int targetX, int targetY) {
+    public void fire(Balloon currentTarget) {
+        if (isReadyToFire()) {
+            //System.out.println("What the actual fuck");
+            int targetX = currentTarget.getX();
+            int targetY = currentTarget.getY();
 
+            double angleRadians = Math.toRadians(getAngle(targetX, targetY));
+            double angle = angleRadians -89.8;
+
+            // Offset distance from monkey's center to right hand (tweak as needed)
+            double spawnDistance = 27;
+
+            // Calculate spawn position based on monkey rotation
+            double offsetX = Math.cos(angleRadians) * spawnDistance;
+            double offsetY = Math.sin(angleRadians) * spawnDistance;
+
+            // Set projectile's starting position relative to monkey
+            double x = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
+            double y = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
+
+            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angle, diameter,  currentTarget,false,true, 0);
+            projectiles.add(p);
+            setFireTimer();
+        }
     }
 }

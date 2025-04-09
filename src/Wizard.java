@@ -37,7 +37,7 @@ public class Wizard extends Tower {
     }
 
     @Override
-    public void fire(int targetX, int targetY) {
+    public void fire(Balloon balloon) {
 
     }
 }

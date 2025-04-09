@@ -34,7 +34,7 @@ public class BombTower extends Tower {
     }
 
     @Override
-    public void fire(int targetX, int targetY) {
+    public void fire(Balloon balloon) {
         if (!projectileActive) { // Only fire if no active projectile
             this.projX = this.xPosition + 25; // Start at center of tower
             this.projY = this.yPosition + 25;

@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /*
@@ -10,15 +9,20 @@ Description: Implements tower and defines the Super Monkey.
 
 public class SuperMonkey extends Tower {
     // Constructor that only takes JFrame and BufferedImage
+    private long lastFireTime;
+    private static final double COLLISION_AREA = 20*20;
+
     public SuperMonkey(JFrame runGame, BufferedImage currentMap) {
-        super(runGame, currentMap,"SuperMonkey.png");
+        super(runGame, currentMap, "SuperMonkey.png");
+
+        // Time of the last fire event
 
         // Set default values for SuperMonkey (can be overridden if needed)
-        this.setFireSpeed(17);
-        this.setRange(600);
-        this.setProjectileSpeed(10);
+        this.setRotatable(true);
+        this.setFireRate(450);
+        this.setRange(500);
+        this.setProjectileSpeed(15);
         this.setProjectileDamage(10);
-        this.setProjectileImage("TowerImages/dart.png");
     }
 
     @Override
@@ -38,24 +42,29 @@ public class SuperMonkey extends Tower {
     }
 
     @Override
-    public void fire(int targetX, int targetY) {
-        if (!projectileActive) { // Only fire if no active projectile
+    public void fire(Balloon currentTarget) {
+        if (isReadyToFire()) {
+            //System.out.println("What the actual fuck");
+            int targetX = currentTarget.getX();
+            int targetY = currentTarget.getY();
+
             double angleRadians = Math.toRadians(getAngle(targetX, targetY));
+            double angle = angleRadians -89.63;
 
             // Offset distance from monkey's center to right hand (tweak as needed)
-            double spawnDistance = 26;
+            double spawnDistance = 27;
 
             // Calculate spawn position based on monkey rotation
             double offsetX = Math.cos(angleRadians) * spawnDistance;
             double offsetY = Math.sin(angleRadians) * spawnDistance;
 
             // Set projectile's starting position relative to monkey
-            this.projX = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
-            this.projY = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
+            double x = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
+            double y = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
 
-            // Activate the projectile
-            this.projectileActive = true;
-            System.out.println("Projectile activated");
+            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angle, diameter,  currentTarget,false,false, 0);
+            projectiles.add(p);
+            setFireTimer();
         }
     }
 }

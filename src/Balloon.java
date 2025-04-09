@@ -62,7 +62,7 @@ public class Balloon {
             // Otherwise, move along the segment by the speed amount
             x += (dx / distance) * speed;
             y += (dy / distance) * speed;
-            currentPosition = new Point((int)x, (int)y);
+            currentPosition = new Point((int) x, (int) y);
         }
     }
 
@@ -135,10 +135,9 @@ public class Balloon {
     public void draw(Graphics g) {
         if (balloonImages != null && level >= 0 && level < balloonImages.length - 1) {
             g.drawImage(balloonImages[level], (int) x - 10, (int) y - 10, 27, 33, null);
-        } else if(balloonImages.length - 1 == level){
+        } else if (balloonImages.length - 1 == level) {
             g.drawImage(balloonImages[level], (int) x - 50, (int) y - 25, 100, 50, null);
-            }
-         else {
+        } else {
             g.setColor(Color.RED);
             g.fillOval((int) x - 10, (int) y - 10, 30, 30);
         }
@@ -147,12 +146,37 @@ public class Balloon {
     public int getLevel() {
         return level;
     }
-    public boolean hasReachedEnd(){
-        if(currentSegmentIndex >= waypoints.getSegmentCount()){
+
+    public boolean hasReachedEnd() {
+        if (currentSegmentIndex >= waypoints.getSegmentCount()) {
             return true;
         }
         return false;
     }
+
+    public int getX() {
+        return Math.round(currentPosition.x) - 220;
+    }
+
+    public int getY() {
+
+        return Math.round(currentPosition.y) -3;
+    }
+
+    public void setLevel(int damage) {
+
+    }
+
+    public void freeze() {
+        this.speed = 0;
+    }
+    public void unfreeze() {
+        this.speed = 2 + level * .5;
+    }
+    public double getSpeed() {
+        return speed;
+    }
+
 }
 
 

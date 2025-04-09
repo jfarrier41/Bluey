@@ -10,12 +10,13 @@ Description: Implements tower and defines the Dart Monkey.
 
 public class IceTower extends Tower {
     // Constructor that only takes JFrame and BufferedImage
+
     public IceTower(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"IceTower.png");
 
         // Set default values for DartMonkey (can be overridden if needed)
-        this.setFireSpeed(10);
-        this.setRange(50);
+        this.setFireSpeed(3000);
+        this.setRange(150);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
     }
@@ -37,7 +38,17 @@ public class IceTower extends Tower {
     }
 
     @Override
-    public void fire(int targetX, int targetY) {
-
+    public void fire(Balloon currentTarget) {
+        if (isReadyToFire()) {
+            for(Balloon target : targets) {
+                if(target.getSpeed() == 0){
+                    target.unfreeze();
+                }
+                else{
+                    target.freeze();
+                }
+            }
+            setFireTimer();
+        }
     }
 }

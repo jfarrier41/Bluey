@@ -37,7 +37,7 @@ public class SniperMonkey extends Tower {
     }
 
     @Override
-    public void fire(int targetX, int targetY) {
+    public void fire(Balloon balloon) {
 
     }
 }
