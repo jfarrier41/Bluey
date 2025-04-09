@@ -16,7 +16,7 @@ Description: Implements tower and defines the Dart Monkey.
 
 public class DartMonkey extends Tower {
     private long lastFireTime; // Time of the last fire event
-    private static final double COLLISION_AREA = 3*3;
+    private static final double COLLISION_AREA = 44;
     private static String[] projectilePaths;
 
     public DartMonkey(JFrame runGame, BufferedImage currentMap) {
@@ -26,11 +26,11 @@ public class DartMonkey extends Tower {
         this.setRotatable(true);
         this.setFireRate(500);
         this.setRange(200);
-        this.setProjectileSpeed(8);
+        this.setProjectileSpeed(14);
         this.setProjectileDamage(10);
         projectilePaths = new String[] {
                 "src/ProjectileImages/dart.png",
-                "src/ProjectileImages/bomb.png"
+                "src/ProjectileImages/explosion.png",
         };
         loadProjectileImages(projectilePaths);
     }

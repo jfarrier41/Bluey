@@ -134,6 +134,7 @@ public class Balloon {
 
     public void draw(Graphics g) {
         if (balloonImages != null && level >= 0 && level < balloonImages.length - 1) {
+            System.out.println(currentSegmentIndex);
             g.drawImage(balloonImages[level], (int) x - 10, (int) y - 10, 27, 33, null);
         } else if (balloonImages.length - 1 == level) {
             g.drawImage(balloonImages[level], (int) x - 50, (int) y - 25, 100, 50, null);

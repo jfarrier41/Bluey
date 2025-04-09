@@ -10,7 +10,7 @@ Description: Implements tower and defines the Super Monkey.
 public class SuperMonkey extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private long lastFireTime;
-    private static final double COLLISION_AREA = 16;
+    private static final double COLLISION_AREA = 44;
 
     public SuperMonkey(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "SuperMonkey.png");
@@ -21,8 +21,13 @@ public class SuperMonkey extends Tower {
         this.setRotatable(true);
         this.setFireRate(450);
         this.setRange(500);
-        this.setProjectileSpeed(15);
+        this.setProjectileSpeed(60);
         this.setProjectileDamage(10);
+        projectilePaths = new String[] {
+                "src/ProjectileImages/dart.png",
+                "src/ProjectileImages/explosion.png",
+        };
+        loadProjectileImages(projectilePaths);
     }
 
     @Override
@@ -62,7 +67,9 @@ public class SuperMonkey extends Tower {
             double x = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
             double y = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
 
-            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angle, diameter,  currentTarget,false,false, getProjectileImage(0), ProjectileType.DART);
+            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angle,
+                    diameter,  currentTarget,false,false
+                    , getProjectileImage(0), ProjectileType.DART);
             projectiles.add(p);
             setFireTimer();
         }

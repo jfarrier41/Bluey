@@ -63,8 +63,8 @@ public class AnimationPanel extends JPanel {
                     p.update();
 
                     AffineTransform projectileTransform = g2d.getTransform();
-                    g2d.rotate(p.getAngle(), p.projX + 5, p.projY + 5);
-                    g2d.drawImage(p.getImage(), (int) p.projX, (int) p.projY, p.getWidth(), p.getHeight(), this);
+                    g2d.rotate(p.getAngle(), p.currentX+ 5, p.currentY + 5);
+                    g2d.drawImage(p.getImage(), (int) p.currentX, (int) p.currentY, p.getWidth(), p.getHeight(), this);
                     g2d.setTransform(projectileTransform);
 
                     if(p.missed()){
@@ -77,6 +77,10 @@ public class AnimationPanel extends JPanel {
                     while (iterator2.hasNext()) {
                         Balloon target = iterator2.next();
                         if (p.didHit(target)) {
+                            /*if(p.type.equals(ProjectileType.DART)){
+                                p.setType(ProjectileType.EXPLOSION);
+                                g2d.drawImage(tower.getProjectileImage(1), (int) p.currentX, (int) p.currentY, p.getWidth(), p.getHeight(), this);
+                            }*/
                             iterator1.remove();
                             balloons.remove(target);
                             iterator2.remove();

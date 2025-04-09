@@ -7,7 +7,7 @@ public enum ProjectileType {
     PURPLELAZER(80, 80),
     ORANGELAZER(90, 90),
     GOO(30, 30),
-    EXPLOSION(30, 30),
+    EXPLOSION(100, 100),
     SPIKEYBALL(30, 30),
     BLADE(30, 30);
 

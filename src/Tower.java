@@ -28,6 +28,7 @@ abstract public class Tower {
     protected BufferedImage currentMap;
     protected String mapName;
     protected int ImageIndex;
+    protected static String[] projectilePaths;
     protected static BufferedImage[] PROJECTILE_IMAGES;
 
     // Queue that allows tower to decide what enemy to shoot

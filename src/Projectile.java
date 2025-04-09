@@ -3,14 +3,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Projectile {
-    public double projX, projY;  // Position of the projectile
+    public double currentX, currentY;  // Position of the projectile
     public final double startX, startY;
+    public double lastX, lastY;
     public final double damageArea;
     public double angle;  // Angle the projectile is traveling in
     public int range;
     public boolean piercing;
     public boolean tracking;
-    private final ProjectileType type;
+    protected ProjectileType type;
 
 
 
@@ -21,10 +22,12 @@ public class Projectile {
     public Projectile(double x, double y, double damageArea, double speed, double angle,
                       int range, Balloon currentTarget, boolean peircing,
                       boolean tracking, BufferedImage projectileImage, ProjectileType type) {
-        this.projX = x;
-        this.projY = y;
+        this.currentX = x;
+        this.currentY = y;
         this.startX = x;
         this.startY = y;
+        this.lastX = x - 10;
+        this.lastY = y - 10;
         this.damageArea = damageArea;
         this.speed = speed;
         this.angle = angle;
@@ -37,13 +40,15 @@ public class Projectile {
     }
 
     public void update() {
+        this.lastX = currentX;
+        this.lastY = currentY;
         if (tracking == false) {
-            this.projX += Math.cos(angle) * speed;
-            this.projY += Math.sin(angle) * speed;
+            this.currentX += Math.cos(angle) * speed;
+            this.currentY += Math.sin(angle) * speed;
         } else {
             double angle = projectileAngle(currentTarget);
-            this.projX += Math.cos(angle) * speed;
-            this.projY += Math.sin(angle) * speed;
+            this.currentX += Math.cos(angle) * speed;
+            this.currentY += Math.sin(angle) * speed;
         }
 
     }
@@ -51,7 +56,7 @@ public class Projectile {
     public double projectileAngle(Balloon balloon) {
         int balloonX = balloon.getX();
         int balloonY = balloon.getY();
-        double projAngle = Math.atan2(balloonY - projY, balloonX - projX);
+        double projAngle = Math.atan2(balloonY - currentY, balloonX - currentX);
         return projAngle;
     }
 
@@ -61,32 +66,31 @@ public class Projectile {
     }
 
     public boolean missed() {
-        double dx = Math.abs(projX - startX);
-        double dy = Math.abs(projY - startY);
+        double dx = Math.abs(currentX - startX);
+        double dy = Math.abs(currentY - startY);
         double dist = (dx * dx + dy * dy);
-        System.out.println(range);
         double maxRange = (range * .5) * (range * .5);
         return dist > maxRange;
     }
 
     public boolean didHit(Balloon balloon) {
-        double dx = balloon.getX() - projX;
-        double dy = balloon.getY() - projY;
+
         int balloonX = balloon.getX();
         int balloonY = balloon.getY();
-        double dist = Math.sqrt(dx * dx + dy * dy);
-        System.out.println("dist" + dist + ",  " + damageArea);
-        if (dist <= damageArea) {
-            System.out.println("Hitting" + "Balloon x: " + balloonX + " y: " + balloonY + " x: " + projX + " y: " + projY);
-        } else {
-            System.out.println("Missing" + "Balloon x: " + balloonX + " y: " + balloonY + " x: " + projX + " y: " + projY);
-        }
-        return dist <= damageArea;
+
+        double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
+
+        return distance <= (damageArea + 10); // Use balloon's radius if it's a circle
+
 
     }
 
     public Image getImage() {
         return image;
+    }
+
+    public void setType(ProjectileType type) {
+        this.type = type;
     }
 
     private void setWidthHeight() {
@@ -99,6 +103,8 @@ public class Projectile {
     public int getHeight() {
         return type.getHeight();
     }
+
+
 
 
 
