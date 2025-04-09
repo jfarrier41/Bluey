@@ -3,6 +3,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ abstract public class Tower {
     protected final JLabel towerJLabel;
     protected BufferedImage currentMap;
     protected String mapName;
+    protected int ImageIndex;
+    protected static BufferedImage[] PROJECTILE_IMAGES;
 
     // Queue that allows tower to decide what enemy to shoot
     protected ArrayList<Balloon> targets = new ArrayList<>();
@@ -288,5 +291,23 @@ abstract public class Tower {
                 readyToFire = true; // Re-enable firing after the fireRate delay
             }
         }, fireRate); // Delay in milliseconds before the tower can fire again
+    }
+
+    protected void loadProjectileImages(String[] paths) {
+
+        PROJECTILE_IMAGES = new BufferedImage[paths.length];
+
+        for (int i = 0; i < paths.length; i++) {
+            try {
+                PROJECTILE_IMAGES[i] = ImageIO.read(new File(paths[i]));
+            } catch (IOException e) {
+                System.err.println("Failed to load balloon image: " + paths[i]);
+                PROJECTILE_IMAGES[i] = null;
+            }
+        }
+    }
+
+    public static BufferedImage getProjectileImage(int num) {
+        return PROJECTILE_IMAGES[num];
     }
 }

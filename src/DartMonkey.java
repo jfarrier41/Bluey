@@ -1,7 +1,10 @@
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,7 +16,8 @@ Description: Implements tower and defines the Dart Monkey.
 
 public class DartMonkey extends Tower {
     private long lastFireTime; // Time of the last fire event
-    private static final double COLLISION_AREA = 20*20;
+    private static final double COLLISION_AREA = 3*3;
+    private static String[] projectilePaths;
 
     public DartMonkey(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"DartMonkey.png");
@@ -22,8 +26,13 @@ public class DartMonkey extends Tower {
         this.setRotatable(true);
         this.setFireRate(500);
         this.setRange(200);
-        this.setProjectileSpeed(7);
+        this.setProjectileSpeed(8);
         this.setProjectileDamage(10);
+        projectilePaths = new String[] {
+                "src/ProjectileImages/dart.png",
+                "src/ProjectileImages/bomb.png"
+        };
+        loadProjectileImages(projectilePaths);
     }
 
     @Override
@@ -63,9 +72,11 @@ public class DartMonkey extends Tower {
             double x = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
             double y = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
 
-            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angle, diameter,  currentTarget,false,false, 0);
+            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angle, diameter,  currentTarget,false,false, getProjectileImage(0), ProjectileType.DART);
             projectiles.add(p);
             setFireTimer();
         }
     }
+
 }
+

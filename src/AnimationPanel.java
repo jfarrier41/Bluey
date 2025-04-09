@@ -64,7 +64,7 @@ public class AnimationPanel extends JPanel {
 
                     AffineTransform projectileTransform = g2d.getTransform();
                     g2d.rotate(p.getAngle(), p.projX + 5, p.projY + 5);
-                    g2d.drawImage(p.getImage(), (int) p.projX, (int) p.projY, 30, 15, this);
+                    g2d.drawImage(p.getImage(), (int) p.projX, (int) p.projY, p.getWidth(), p.getHeight(), this);
                     g2d.setTransform(projectileTransform);
 
                     if(p.missed()){
