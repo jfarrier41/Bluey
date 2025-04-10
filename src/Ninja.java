@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /*
 Filename: DartMonkey.java
@@ -11,7 +12,7 @@ Description: Implements tower and defines the Dart Monkey.
 public class Ninja extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private static String[] projectilePaths;
-    private static final double COLLISION_AREA = 16;
+    private static final double COLLISION_AREA = 25;
     public Ninja(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"Ninja.png");
 
@@ -19,8 +20,9 @@ public class Ninja extends Tower {
         this.isRotatable = true;
         this.setFireSpeed(450);
         this.setRange(200);
-        this.setProjectileSpeed(7);
+        this.setProjectileSpeed(17);
         this.setProjectileDamage(10);
+        this.setTowerImageSize(TowerImageSize.NINJA);
         projectilePaths = new String[] {
                 "src/ProjectileImages/ninjaStar.png"
         };
@@ -45,29 +47,20 @@ public class Ninja extends Tower {
     }
 
     @Override
-    public void fire(Balloon currentTarget) {
-        if (isReadyToFire()) {
-            //System.out.println("What the actual fuck");
-            int targetX = currentTarget.getX();
-            int targetY = currentTarget.getY();
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+        // Get center of the target
+        double targetX = currentTarget.getX() + 27 / 2.0;  // adjust for balloon center if needed
+        double targetY = currentTarget.getY() + 33 / 2.0;
 
-            double angleRadians = Math.toRadians(getAngle(targetX, targetY));
-            double angle = angleRadians -89.8;
+        // Get center of the tower
+        double x = this.xPosition + (getImgWidth() / 2.0);
+        double y = this.yPosition + (getImgHeight() / 2.0);
 
-            // Offset distance from monkey's center to right hand (tweak as needed)
-            double spawnDistance = 27;
+        // Correct angle from tower to target
+        double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-            // Calculate spawn position based on monkey rotation
-            double offsetX = Math.cos(angleRadians) * spawnDistance;
-            double offsetY = Math.sin(angleRadians) * spawnDistance;
-
-            // Set projectile's starting position relative to monkey
-            double x = this.xPosition + (this.towerImage.getWidth(null) / 2) + offsetX;
-            double y = this.yPosition + (this.towerImage.getHeight(null) / 2) + offsetY;
-
-            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angle, diameter,  currentTarget,false,true, getProjectileImage(0),ProjectileType.NINJASTAR);
-            projectiles.add(p);
-            setFireTimer();
-        }
+        Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,2,false, getProjectileImage(0),ProjectileImageSize.NINJASTAR);
+        projectiles.add(p);
+        setFireTimer();
     }
 }

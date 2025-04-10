@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.Random;
 
 public class Balloon {
     private Point currentPosition;
@@ -10,7 +11,9 @@ public class Balloon {
     private double x, y;
     private double speed;
     private int level;
+    private int health;
     private boolean isMoving;
+    private boolean animatePop;
 
     public Balloon(Waypoints waypoints, BufferedImage[] balloonImages, int level) {
         this.waypoints = waypoints;
@@ -22,6 +25,7 @@ public class Balloon {
         this.isMoving = true;
         this.x = currentPosition.x;
         this.y = currentPosition.y;
+        this.health = 1;
     }
 
     public void updatePosition() {
@@ -133,20 +137,39 @@ public class Balloon {
     }
 
     public void draw(Graphics g) {
-        if (balloonImages != null && level >= 0 && level < balloonImages.length - 1) {
-            System.out.println(currentSegmentIndex);
-            g.drawImage(balloonImages[level], (int) x - 10, (int) y - 10, 27, 33, null);
-        } else if (balloonImages.length - 1 == level) {
-            g.drawImage(balloonImages[level], (int) x - 50, (int) y - 25, 100, 50, null);
+        if(animatePop) {
+            Random rand = new Random();
+            int randomNum = rand.nextInt(4) + 1;
+            String soundFile = "Pop" + randomNum + ".wav";
+            new SoundEffect(soundFile, false, .8f);
+            g.drawImage(balloonImages[balloonImages.length - 1], (int) x-20, (int) y-25, 50, 50, null);
+            animatePop = false;
+        } else if (balloonImages != null && level >= 0 && level < balloonImages.length - 2) {
+            g.drawImage(balloonImages[getLevel()], (int) x - 10, (int) y - 10, 27, 33, null);
+        } else if (balloonImages.length-2 == level) {
+            g.drawImage(balloonImages[getLevel()], (int) x - 50, (int) y - 25, 100, 50, null);
         } else {
             g.setColor(Color.RED);
             g.fillOval((int) x - 10, (int) y - 10, 30, 30);
         }
     }
+    // Method to reduce health when hit by a projectile
+    public void takeDamage(int damage) {
+        this.health -= damage;
+        while (this.health <= 0 && level > 0) {
+            animatePop = true;
+            level--;
+            health++;
+        }
+    }
+    public boolean isPopped() {
+        return level <= 0 && health <= 0;
+    }
 
     public int getLevel() {
         return level;
     }
+    public int getHealth() {return health;}
 
     public boolean hasReachedEnd() {
         if (currentSegmentIndex >= waypoints.getSegmentCount()) {
@@ -156,13 +179,10 @@ public class Balloon {
     }
 
     public int getX() {
-        return Math.round(currentPosition.x) - 220;
+        return Math.round(currentPosition.x) - 236;
     }
 
-    public int getY() {
-
-        return Math.round(currentPosition.y) -3;
-    }
+    public int getY() {return Math.round(currentPosition.y) - 6;}
 
     public void setLevel(int damage) {
 
@@ -177,7 +197,7 @@ public class Balloon {
     public double getSpeed() {
         return speed;
     }
-
+    public int getCurrentSegmentIndex() {return currentSegmentIndex;}
 }
 
 

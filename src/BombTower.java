@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
 /*
 Filename: BombTower.java
 Authors: Jace Claassen and Joseph Farrier
@@ -16,6 +18,7 @@ public class BombTower extends Tower {
         this.setRange(150);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
+        this.setTowerImageSize(TowerImageSize.BOMBTOWER);
     }
 
     @Override
@@ -34,7 +37,7 @@ public class BombTower extends Tower {
     }
 
     @Override
-    public void fire(Balloon balloon) {
+    public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
         if (!projectileActive) { // Only fire if no active projectile
             this.projX = this.xPosition + 25; // Start at center of tower
             this.projY = this.yPosition + 25;

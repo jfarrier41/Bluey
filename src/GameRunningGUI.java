@@ -3,10 +3,13 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 
 public class GameRunningGUI extends JPanel {
     private BufferedImage mapImage, woodTexture, heartsImage, moneySignImage;
@@ -15,17 +18,20 @@ public class GameRunningGUI extends JPanel {
     private final RunGame runGame;
     private final JLayeredPane layeredPane;
     private final TowerPanel towerPanel;
-    private final AnimationPanel animationPanel;
     private final HomeScreenGUI homeScreenGUI;
     private final Timer gameLoopTimer;
     private final Waypoints waypoints;
     private BufferedImage[] balloonImages;
     private final ArrayList<Balloon> balloons;
+    private final ArrayList<Tower> placedTowers;
+    private final ArrayList<Projectile> curProjectiles;
+
     private int currentCash, currentHealth;
     private final WaveManager waveManager;
     private boolean waveInProgress;
     private int bloonsRemainingInWave;
     private JButton playButton;
+    private boolean addEndRoundCash;
 
     public GameRunningGUI(RunGame runGame, int width, int height, String selectedMap, HomeScreenGUI homeScreenGUI) {
         currentCash = 1000;
@@ -38,6 +44,9 @@ public class GameRunningGUI extends JPanel {
         this.runGame = runGame;
         this.waypoints = new Waypoints(selectedMap);
         this.balloons = new ArrayList<>();
+        this.placedTowers = new ArrayList<>();
+        this.curProjectiles = new ArrayList<>();
+
         loadImages();
         loadBalloonImages();
 
@@ -45,23 +54,14 @@ public class GameRunningGUI extends JPanel {
         layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
         add(layeredPane);
 
-        // Add mouse listener to the JLayeredPane to catch all clicks
-
-
-        animationPanel = new AnimationPanel(balloons);
-        animationPanel.setBounds(0, 0, 700, 520);
-        animationPanel.setOpaque(false);
-        layeredPane.add(animationPanel, JLayeredPane.MODAL_LAYER);
-
-        towerPanel = new TowerPanel(layeredPane, mapImage, animationPanel);
+        towerPanel = new TowerPanel(layeredPane,placedTowers);
         towerPanel.setBounds(0, 0, 700, 520);
         towerPanel.setOpaque(false);
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
-
-        animationPanel.addMouseListener(new MouseAdapter() {
+        towerPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
-                new SoundEffect("Click.wav", false, 1f);  // Play click sound for any mouse press
+            public void mouseClicked(MouseEvent e) {
+                new SoundEffect("Click.wav", false, 1f);
             }
         });
 
@@ -98,7 +98,6 @@ public class GameRunningGUI extends JPanel {
 
     private void loadBalloonImages() {
         String[] paths = {
-                "src/BalloonImages/pop.png",
                 "src/BalloonImages/redbloon.png",
                 "src/BalloonImages/bluebloon.png",
                 "src/BalloonImages/greenbloon.png",
@@ -107,7 +106,8 @@ public class GameRunningGUI extends JPanel {
                 "src/BalloonImages/zebrabloon.png",
                 "src/BalloonImages/rainbowbloon.png",
                 "src/BalloonImages/metalbloon.png",
-                "src/BalloonImages/moab.png"
+                "src/BalloonImages/moab.png",
+                "src/BalloonImages/pop.png",
         };
 
         balloonImages = new BufferedImage[paths.length];
@@ -129,8 +129,8 @@ public class GameRunningGUI extends JPanel {
 
         // Only start the wave if the balloons list is empty
         if (balloons.isEmpty()) {
+            addEndRoundCash = true;
             waveInProgress = true;
-            playButton.setEnabled(false); // Disable button while wave is in progress
 
             Wave currentWave = waveManager.getCurrentWave();
             bloonsRemainingInWave = 0;
@@ -170,12 +170,6 @@ public class GameRunningGUI extends JPanel {
         // Add global mouse listener for click sounds
         updateGameState();
         repaint();
-
-        // Check if balloons are empty, if so, enable the play button to allow the next wave
-        if (balloons.isEmpty() && waveInProgress) {
-            waveInProgress = false;
-            playButton.setEnabled(true); // Enable button to start the next wave
-        }
     }
 
     private void updateGameState() {
@@ -189,25 +183,127 @@ public class GameRunningGUI extends JPanel {
             }
         }
 
-        animationPanel.repaint();
+
+        /*
+        All towers will check which balloons are in range. It will keep track out
+        of the balloons in range which of them are the furthest by line segments
+        on the map. If there are balloons in the same line segment the stronger
+        balloon will be targeted. Each tower will have 1 target per update.
+         */
+        for (Tower tower : placedTowers) {
+            // Step 1: Invalidate current target if it’s no longer in range
+            Balloon currentTarget = tower.getTarget();
+            if (currentTarget != null && !tower.inRange(currentTarget)) {
+                tower.setTarget(null);
+            }
+
+            // Step 2: Try to find a better target
+            Balloon bestTarget = null;
+            for (Balloon balloon : balloons) {
+                if (tower.inRange(balloon)) {
+                    if (bestTarget == null || compareBalloons(balloon, bestTarget) > 0) {
+                        bestTarget = balloon;
+                    }
+                }
+            }
+
+            tower.setTarget(bestTarget);
+
+            // Step 3: Fire if there is a valid target
+            if (tower.getTarget() != null && tower.isReadyToFire()) {
+                tower.fire(tower.getTarget(), curProjectiles);
+            }
+        }
+
+        Iterator<Projectile> projectiles = curProjectiles.iterator();
+        while (projectiles.hasNext()) {
+            Projectile p = projectiles.next();
+            p.update();
+            if (p.missed()) {
+                projectiles.remove();
+                continue;
+            }
+
+            // This will track all balloons that have already been hit by the current projectile
+
+            Iterator<Balloon> balloonIterator = balloons.iterator();
+            while (balloonIterator.hasNext()) {
+                Balloon b = balloonIterator.next();
+
+                // Ensure that we don't hit the same balloon twice by checking if it's already in the 'hitBalloons' set
+                if (p.didHit(b)) {
+                    p.removeOneFromHitCount();
+                    b.takeDamage(1);  // Apply damage to the balloon
+                    currentCash++;
+                    // If the balloon is popped, remove it from the list
+                    if (b.isPopped()) {
+                        new SoundEffect("Pop1.wav", false, .8f);
+                        balloonIterator.remove();
+                    }
+
+                    // If the projectile has no remaining hits, remove it from the list
+                    if (p.getRemainingHits() <= 0) {
+                        projectiles.remove();
+                        break;  // Exit loop after projectile hits its target(s)
+                    }
+                }
+            }
+        }
+    }
+
+    public int compareBalloons(Balloon b1, Balloon b2) {
+        if (b1.getCurrentSegmentIndex() > b2.getCurrentSegmentIndex()){
+            return 1;
+        }
+        else if(b1.getCurrentSegmentIndex() == b2.getCurrentSegmentIndex() && b1.getLevel() > b2.getLevel()){
+            return 1;
+        } else{
+            return 0;
+        }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g.create();
         final int WOOD_WIDTH = MAP_WIDTH / 3;
         g.drawImage(mapImage, WOOD_WIDTH, 0, MAP_WIDTH, HEIGHT, this);
-
+        for (Tower tower : placedTowers) {
+            int drawX = tower.xPosition + WOOD_WIDTH;
+            int drawY = tower.yPosition;
+            int imgWidth = tower.getImgWidth();
+            int imgHeight = tower.getImgHeight();
+            //Temp draw the hit range around tower
+            Color color;
+            color = new Color(128, 128, 128, 128);
+            g2d.setColor(color);
+            int xOffset = (tower.getDiameter() / 2) - (tower.getImgWidth() / 2) - 233;
+            int yOffset = (tower.getDiameter() / 2) - (tower.getImgHeight() / 2);
+            g2d.drawOval(tower.xPosition - xOffset, tower.yPosition - yOffset, tower.getDiameter(), tower.getDiameter());
+            if (tower.getTarget() != null) {
+                double angle = tower.getAngle(tower.getTarget().getX(), tower.getTarget().getY());
+                AffineTransform originalTransform = g2d.getTransform();
+                g2d.rotate(Math.toRadians(angle), drawX + imgWidth / 2.0, drawY + imgHeight / 2.0);
+                g2d.drawImage(tower.towerImage, drawX, drawY, imgWidth, imgHeight, this);
+                g2d.setTransform(originalTransform);
+            } else {
+                g2d.drawImage(tower.towerImage, drawX, drawY, imgWidth, imgHeight, this);
+            }
+        }
         for (Balloon balloon : balloons) {
             balloon.draw(g);
         }
+        for(Projectile p: curProjectiles) {
+            double drawX = p.currentX + WOOD_WIDTH;
+            AffineTransform projectileTransform = g2d.getTransform();
+            g2d.rotate(p.getAngle(), (int) drawX, p.currentY);
+            g2d.drawImage(p.getImage(), (int) drawX, (int) p.currentY, p.getWidth(), p.getHeight(), this);
+            g2d.setTransform(projectileTransform);
+        }
         g.drawImage(woodTexture, 0, 0, WOOD_WIDTH, HEIGHT, this);
         g.drawImage(woodTexture, MAP_WIDTH + WOOD_WIDTH, 0, WOOD_WIDTH, HEIGHT, this);
-
         drawGameInfo(g);
     }
-
-
 
     private void drawGameInfo(Graphics g) {
         g.setFont(new Font("Arial", Font.BOLD, 18));
@@ -224,6 +320,20 @@ public class GameRunningGUI extends JPanel {
         // Draw money sign image and cash text
         g.drawImage(moneySignImage, xOffset, 120, 30, 30, this); // Image width and height can be adjusted
         g.drawString("Cash: $" + formattedCash, xOffset + 35, 140);
+
+        // Check wave status
+        if (balloons.isEmpty() &&!waveInProgress) {
+            if(addEndRoundCash){
+                currentCash += 200;
+                addEndRoundCash = false;
+            }
+            playButton.setText("Start Wave " + (waveManager.getCurrentWaveIndex() + 1));
+            playButton.setEnabled(true);
+            playButton.setVisible(true);
+        } else {
+            playButton.setEnabled(false);
+            playButton.setVisible(false);
+        }
     }
 
     private void addPlayButton() {

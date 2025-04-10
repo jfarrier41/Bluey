@@ -1,4 +1,4 @@
-public enum ProjectileType {
+public enum ProjectileImageSize {
     DART(30, 10),
     NINJASTAR(17, 17),
     BOMB(40, 40),
@@ -14,7 +14,7 @@ public enum ProjectileType {
     private final int width;
     private final int height;
 
-    ProjectileType(int width, int height) {
+    ProjectileImageSize(int width, int height) {
         this.width = width;
         this.height = height;
     }

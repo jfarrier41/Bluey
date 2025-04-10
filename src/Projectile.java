@@ -1,6 +1,9 @@
-import javax.swing.*;
+import com.sun.source.tree.ReturnTree;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Projectile {
     public double currentX, currentY;  // Position of the projectile
@@ -9,9 +12,10 @@ public class Projectile {
     public final double damageArea;
     public double angle;  // Angle the projectile is traveling in
     public int range;
-    public boolean piercing;
+    public int allowedHits;
     public boolean tracking;
-    protected ProjectileType type;
+    protected ProjectileImageSize type;
+    private Set<Balloon> hitBalloons = new HashSet<>();
 
 
 
@@ -20,8 +24,8 @@ public class Projectile {
     private Balloon currentTarget;
 
     public Projectile(double x, double y, double damageArea, double speed, double angle,
-                      int range, Balloon currentTarget, boolean peircing,
-                      boolean tracking, BufferedImage projectileImage, ProjectileType type) {
+                      int range, Balloon currentTarget, int allowedHits,
+                      boolean tracking, BufferedImage projectileImage, ProjectileImageSize type) {
         this.currentX = x;
         this.currentY = y;
         this.startX = x;
@@ -33,7 +37,7 @@ public class Projectile {
         this.angle = angle;
         this.range = range;
         this.currentTarget = currentTarget;
-        this.piercing = peircing;
+        this.allowedHits = allowedHits;
         this.tracking = tracking;
         this.image = projectileImage;
         this.type = type;
@@ -74,22 +78,31 @@ public class Projectile {
     }
 
     public boolean didHit(Balloon balloon) {
-
+        if (hitBalloons.contains(balloon)) {
+            return false;
+        }
         int balloonX = balloon.getX();
         int balloonY = balloon.getY();
 
         double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
 
-        return distance <= (damageArea + 10); // Use balloon's radius if it's a circle
-
-
+        if (distance <= (damageArea + 10)) {
+            hitBalloons.add(balloon);
+            return true;// Use balloon's radius if it's a circle
+        }
+        return false;
     }
-
+    public int getRemainingHits(){
+        return allowedHits;
+    }
+    public void removeOneFromHitCount(){
+        allowedHits--;
+    }
     public Image getImage() {
         return image;
     }
 
-    public void setType(ProjectileType type) {
+    public void setType(ProjectileImageSize type) {
         this.type = type;
     }
 

@@ -13,7 +13,6 @@ public class RunGame extends JFrame {
     private static final int SCREEN_WIDTH = 1024;
     private static final int SCREEN_HEIGHT = 768;
 
-
     private final HomeScreenGUI homeScreenGUI;  // Keep reference to HomeScreen
 
     /**
@@ -34,15 +33,6 @@ public class RunGame extends JFrame {
         homeScreenGUI.setBounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         add(homeScreenGUI);
 
-        // Add MouseListener to the entire JFrame for global click sound
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // Play click sound on any mouse press
-                new SoundEffect("Click.wav", false, 1f);
-            }
-        });
-
         setVisible(true);
     }
 
@@ -57,10 +47,11 @@ public class RunGame extends JFrame {
         // Adjust the window size as needed
         setSize(width + 2 * (width / 3), height + height / 18);
 
+        getContentPane().removeAll();
+        repaint();
         // Switch to the game screen
         GameRunningGUI gameRunningGUI = new GameRunningGUI(this, width, height, selectedMap, homeScreenGUI);
         setContentPane(gameRunningGUI);  // Switch content pane to GameRunningGUI
-        // Add MouseListener to the entire JFrame for global click sound
 
         revalidate();  // Revalidate the layout
         repaint();  // Repaint the content

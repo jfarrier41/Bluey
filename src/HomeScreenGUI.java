@@ -1,7 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /*
 Filename: RunGame.java
@@ -10,7 +14,7 @@ Description: The HomeScreen class represents the main menu screen of the Tower D
 It contains the title label and a button to navigate to the map selection screen.
  */
 public class HomeScreenGUI extends JPanel {
-
+    private BufferedImage backgroundImage;
     /**
      * Constructor for HomeScreen, initializing the screen with the given width and height.
      * It sets up the title and the "Play" button that allows the user to navigate to the map selection screen.
@@ -24,16 +28,9 @@ public class HomeScreenGUI extends JPanel {
         // Dimensions for the screen layout
         setLayout(null);  // Set layout to null to use absolute positioning for components
 
-        // Create a title label at the top of the screen
-        JLabel titleLabel = new JLabel("Bloons Tower Defense", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBounds(0, 50, width, 50);  // Set position and size
-        add(titleLabel);
-
         // Create the map selection button
         JButton mapSelectionButton = createStyledButton("Play");
-        mapSelectionButton.setBounds((width - 220) / 2, (height - 90) / 2, 220, 70);  // Center the button
+        mapSelectionButton.setBounds((width - 220) / 2, 620, 220, 70);  // Center the button
         mapSelectionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -42,10 +39,20 @@ public class HomeScreenGUI extends JPanel {
                 runGame.showMapSelectionScreen();
             }
         });
+        try {
+            backgroundImage = ImageIO.read(new File("src/DesignImg/homeScreen.png")); // Replace with your image path
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         add(mapSelectionButton);
+    }
 
-        // Set the background color with semi-transparency
-        setBackground(new Color(0, 0, 0, 150));
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
     }
 
     /**
@@ -57,9 +64,9 @@ public class HomeScreenGUI extends JPanel {
     private JButton createStyledButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 28));
-        button.setForeground(Color.WHITE);
+        button.setForeground(Color.BLACK);
         button.setContentAreaFilled(false);  // Transparent background
-        button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));  // White border
+        button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));  // White border
         button.setFocusPainted(false);  // Remove focus paint to avoid focus outline
 
         // Add mouse listeners for hover effects

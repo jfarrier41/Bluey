@@ -5,9 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,7 +30,6 @@ abstract public class Tower {
     protected static BufferedImage[] PROJECTILE_IMAGES;
 
     // Queue that allows tower to decide what enemy to shoot
-    protected ArrayList<Balloon> targets = new ArrayList<>();
     protected ArrayList<Projectile> projectiles = new ArrayList<>();
 
 
@@ -47,6 +44,7 @@ abstract public class Tower {
     protected boolean projectileActive;
     protected double projX;
     protected double projY;
+    Balloon target;
 
     protected Timer fireTimer;
     protected boolean readyToFire = true;
@@ -61,6 +59,11 @@ abstract public class Tower {
     protected int yPosition;
 
     protected Image towerImage;
+
+    protected TowerImageSize type;
+    private int imgWidth;
+    private int imgHeight;
+
 
     /*
      * Constructor for towers that takes only JFrame and BufferedImage currentMap.
@@ -136,38 +139,21 @@ abstract public class Tower {
 
     // Will check to see if a balloon is in range
     public boolean inRange(Balloon balloon) {
-        int targetX = balloon.getX();
-        int targetY = balloon.getY();
-        double distanceSquared = Math.pow(targetX - this.xPosition, 2) +
-                Math.pow(targetY - this.yPosition,2);
+        int targetX = balloon.getX() + 13;
+        int targetY = balloon.getY() + 16;
+        double distanceSquared = Math.pow(targetX - this.xPosition - (getImgWidth() / 2), 2) +
+                Math.pow(targetY - this.yPosition - (getImgHeight() / 2),2);
 
         double rangeSquared = Math.pow(this.diameter / 2, 2);
         return distanceSquared <= rangeSquared;
     }
 
-    // Helper function to add balloons to the queue
-    public void addTarget(Balloon balloon) {
-        if (!targets.contains(balloon)) {
-            System.out.println("Adding target: " + balloon);
-            targets.add(balloon);
-        }
-    }
-
-    // Helper function to remove balloons from the queue
-    public void removeTarget(Balloon balloon) {
-        /*if (balloon.getLevel() > 0) {
-            balloon.setLevel(projectileDamage);
-        }*/
-        if(balloon.getLevel() == 1){
-            targets.remove(balloon);
-            System.out.println("Removed " + balloon);
-        }
-    }
 
     // Get the first balloon in the queue
-    public Balloon target() {
-        return targets.getFirst();
+    public Balloon getTarget() {
+        return target;
     }
+    public void setTarget(Balloon target) {this.target = target;}
 
     public double getAngle(int x, int y){
         int centerX = this.xPosition+ towerImage.getWidth(null)/2;
@@ -242,8 +228,8 @@ abstract public class Tower {
     }
 
     public void setPosition(int x, int y) {
-        this.xPosition = x - 24;
-        this.yPosition = y - 18;
+        this.xPosition = x;
+        this.yPosition = y;
         this.placed = true;
         this.isSelected = false;
     }
@@ -265,7 +251,7 @@ abstract public class Tower {
         return projAngle;
     }
 
-    public abstract void fire(Balloon currentTarget);
+    public abstract void fire(Balloon currentTarget, ArrayList<Projectile> projectile);
 
     public boolean isReadyToFire() {
         return readyToFire;
@@ -310,5 +296,16 @@ abstract public class Tower {
 
     public static BufferedImage getProjectileImage(int num) {
         return PROJECTILE_IMAGES[num];
+    }
+
+    public void setTowerImageSize(TowerImageSize type){
+        this.imgWidth =type.getWidth();
+        this.imgHeight = type.getHeight();
+    }
+    public int getImgWidth() {
+        return imgWidth;
+    }
+    public int getImgHeight() {
+        return imgHeight;
     }
 }

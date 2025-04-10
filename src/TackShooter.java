@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 /*
 Filename: DartMonkey.java
@@ -18,6 +19,7 @@ public class TackShooter extends Tower {
         this.setRange(50);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
+        this.setTowerImageSize(TowerImageSize.TACSHOOTER);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class TackShooter extends Tower {
     }
 
     @Override
-    public void fire(Balloon balloon) {
+    public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
 
     }
 }

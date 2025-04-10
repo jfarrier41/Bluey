@@ -19,20 +19,15 @@ import java.util.List;
 * */
 public class TowerPanel extends JPanel {
     private Tower tower;
-    private final BufferedImage currentMap;
-    private final JLayeredPane layeredPane;
-    private final AnimationPanel animationPanel;
-    private BufferedImage trashImage;
 
-    private List<Tower> placedTowers = new ArrayList<Tower>();
+    private final JLayeredPane layeredPane;
+    private BufferedImage trashImage;
 
     int x;
     int y;
 
-    public TowerPanel(JLayeredPane pane, BufferedImage map, AnimationPanel animationPanel) {
-        this.currentMap = map;
+    public TowerPanel(JLayeredPane pane, List<Tower> placedTowers) {
         this.layeredPane = pane;
-        this.animationPanel = animationPanel;
         setOpaque(false);
 
         try {
@@ -51,7 +46,6 @@ public class TowerPanel extends JPanel {
                     tower.setPosition(x,y);
                     // Add it to list of placed towers
                     placedTowers.add(tower);
-                    animationPanel.addTower(tower);
                     // remove current tower from Panel
                     tower = null;
                     // Set the layer back to the Pallete Layer
@@ -68,15 +62,17 @@ public class TowerPanel extends JPanel {
                 // If tower is assigned and selected
                 if (tower != null && tower.isSelected) {
                     // Get where the mouse is currently at
-                    x = e.getX() -24;
-                    y = e.getY() -18;
+                    x = e.getX() - (tower.getImgWidth() / 2);
+                    y = e.getY() - (tower.getImgHeight() / 2);
                     if(x > 655 && y > 470){
                         tower.isSelected = false;
+                        tower = null;
                         setCursor(Cursor.getDefaultCursor());
+                        return;
                     }
 
                     // Check to see if it is in a placeable area
-                    tower.isPlaceable(x, y);
+                    tower.isPlaceable(x + (tower.getImgWidth()/2), y + (tower.getImgHeight()/2));
                     repaint();
                 }
             }
@@ -93,8 +89,9 @@ public class TowerPanel extends JPanel {
         int diameter = tower.getDiameter();
 
         if (tower.isSelected) {
-            g.drawImage(trashImage, 658, 472, 40, 40, this);
+            g.drawImage(trashImage, 658, 472, 45, 45, this);
             // Remove the cursor from screen, Credit to ChatGPT for this Code
+
             this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                     new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
                     new Point(0, 0),
@@ -110,16 +107,17 @@ public class TowerPanel extends JPanel {
                 color = new Color(225, 0, 0, 128);
             }
             g.setColor(color);
-            g.fillOval(x - diameter / 2, y - diameter / 2, diameter, diameter);
+            int xOffset = (diameter / 2) - (tower.getImgWidth() / 2);
+            int yOffset = (diameter / 2) - (tower.getImgHeight() / 2);
+            g.fillOval(x - xOffset, y - yOffset, diameter, diameter);
             // Always draw the tower and center it in the range
             Image towerImage = tower.towerImage;
-            g.drawImage(towerImage, x-24, y-18,45,45, this);
+            g.drawImage(towerImage, x, y,tower.getImgWidth(),tower.getImgHeight(), this);
 
         }
     }
-    // Assign tower to JPanel
-    public void setTower(Tower newTower) {
-        this.tower = newTower;
-    }
 
+    public void setTower(Tower tower) {
+        this.tower = tower;
+    }
 }
