@@ -52,7 +52,7 @@ public class SuperMonkey extends Tower {
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
         // Get center of the target
         double targetX = currentTarget.getX() + 13;  // adjust for balloon center if needed
-        double targetY = currentTarget.getY() + 13;
+        double targetY = currentTarget.getY();
 
         // Get center of the tower
         double x = this.xPosition + (getImgWidth() / 2.0);
