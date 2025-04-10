@@ -3,6 +3,12 @@ import java.awt.image.BufferedImage;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * The Balloon class represents a balloon object in the Bloons Tower Defense game.
+ * Balloons follow a path defined by waypoints and can move along straight or curved segments.
+ * Balloons have a level and health, and they can take damage, pop, and animate a popping effect.
+ * The class handles the balloon's movement, rendering, and state changes.
+ */
 public class Balloon {
     private Point currentPosition;
     private int currentSegmentIndex;
@@ -15,6 +21,14 @@ public class Balloon {
     private boolean isMoving;
     private boolean animatePop;
 
+    /**
+     * Constructor for the Balloon class.
+     * Initializes the balloon with the given waypoints, images, and level.
+     *
+     * @param waypoints      The set of waypoints that the balloon will follow.
+     * @param balloonImages  An array of images representing the different stages of the balloon.
+     * @param level          The initial level of the balloon, which determines its speed and health.
+     */
     public Balloon(Waypoints waypoints, BufferedImage[] balloonImages, int level) {
         this.waypoints = waypoints;
         this.speed = 2 + level * .5; // Adjust speed as needed
@@ -28,6 +42,11 @@ public class Balloon {
         this.health = 1;
     }
 
+    /**
+     * Updates the position of the balloon as it moves along its path.
+     * The balloon will move along the waypoints, either in a straight line or along a curve.
+     * If the balloon reaches the end of the path, it stops moving.
+     */
     public void updatePosition() {
         if (!isMoving) return;
 
@@ -49,6 +68,11 @@ public class Balloon {
         this.y = currentPosition.y;
     }
 
+    /**
+     * Moves the balloon along a straight line segment.
+     *
+     * @param segment The current line segment of the path.
+     */
     private void moveAlongLine(WaypointSegment segment) {
         Point start = segment.getStartPoint();
         Point end = segment.getEndPoint();
@@ -72,6 +96,11 @@ public class Balloon {
 
     private double t = 0.0; // Progress along the curve
 
+    /**
+     * Moves the balloon along a curved segment using a quadratic Bezier curve.
+     *
+     * @param segment The current curved segment of the path.
+     */
     private void moveAlongCurve(WaypointSegment segment) {
         Point start = segment.getStartPoint();
         Point end = segment.getEndPoint();
@@ -136,6 +165,12 @@ public class Balloon {
         t += speed * (0.005 - .001 * val);
     }
 
+    /**
+     * Renders the balloon at its current position.
+     * Animates the popping effect when the balloon is popped.
+     *
+     * @param g The graphics context used to draw the balloon.
+     */
     public void draw(Graphics g) {
         if(animatePop) {
             Random rand = new Random();
@@ -153,7 +188,13 @@ public class Balloon {
             g.fillOval((int) x - 10, (int) y - 10, 30, 30);
         }
     }
-    // Method to reduce health when hit by a projectile
+
+    /**
+     * Reduces the health of the balloon when it is hit by a projectile.
+     * If the balloon's health reaches zero, it decreases in level and animates a popping effect.
+     *
+     * @param damage The amount of damage to deal to the balloon.
+     */
     public void takeDamage(int damage) {
         this.health -= damage;
         while (this.health <= 0 && level > 0) {
@@ -162,6 +203,12 @@ public class Balloon {
             health++;
         }
     }
+
+    /**
+     * Checks if the balloon has been popped.
+     *
+     * @return true if the balloon has no remaining health and level, false otherwise.
+     */
     public boolean isPopped() {
         return level <= 0 && health <= 0;
     }
@@ -169,36 +216,47 @@ public class Balloon {
     public int getLevel() {
         return level;
     }
-    public int getHealth() {return health;}
 
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * Checks if the balloon has reached the end of the path.
+     *
+     * @return true if the balloon has reached the end of its path, false otherwise.
+     */
     public boolean hasReachedEnd() {
-        if (currentSegmentIndex >= waypoints.getSegmentCount()) {
-            return true;
-        }
-        return false;
+        return currentSegmentIndex >= waypoints.getSegmentCount();
     }
 
     public int getX() {
         return Math.round(currentPosition.x) - 236;
     }
 
-    public int getY() {return Math.round(currentPosition.y) - 6;}
-
-    public void setLevel(int damage) {
-
+    public int getY() {
+        return Math.round(currentPosition.y) - 6;
     }
 
+    /**
+     * Freezes the balloon, stopping its movement.
+     */
     public void freeze() {
         this.speed = 0;
     }
+
+    /**
+     * Unfreezes the balloon, restoring its movement speed.
+     */
     public void unfreeze() {
         this.speed = 2 + level * .5;
     }
+
     public double getSpeed() {
         return speed;
     }
-    public int getCurrentSegmentIndex() {return currentSegmentIndex;}
+
+    public int getCurrentSegmentIndex() {
+        return currentSegmentIndex;
+    }
 }
-
-
-

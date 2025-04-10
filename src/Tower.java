@@ -1,4 +1,3 @@
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -12,13 +11,11 @@ import java.util.TimerTask;
 /**
  * Filename: Tower.java
  * Authors: Joseph Farrier and Jace Claassen
- * Description: This is an abstract class that defines what each tower will need to
- * know and have access to. Mostly contaning getters and setters, but also providing
- * implementations to check placeability, and to handle if enemies are in range, while also
- * allowing each implented tower the ability to attack in their own implemented way
+ * Description: This is an abstract class that defines the structure and behavior of a tower
+ * in a tower defense game. It provides functionality for handling tower properties, checking
+ * if a tower can be placed, managing projectiles, and firing attacks. Subclasses should implement
+ * specific tower behaviors such as attack methods and projectile handling.
  */
-
-
 abstract public class Tower {
     // Information the Monkey Needs to know
     protected final Container parentWindow;
@@ -32,14 +29,13 @@ abstract public class Tower {
     // Queue that allows tower to decide what enemy to shoot
     protected ArrayList<Projectile> projectiles = new ArrayList<>();
 
-
     protected int fireRate;
     protected int diameter;
     protected int projectileSpeed;
     protected int projectileDamage;
     protected int price;
-    // ALlow for each tower to have projectile Image
 
+    // Allow for each tower to have a projectile image
     protected Image projectileImage;
     protected boolean projectileActive;
     protected double projX;
@@ -49,7 +45,7 @@ abstract public class Tower {
     protected Timer fireTimer;
     protected boolean readyToFire = true;
 
-    // flags to help determine placing functionality
+    // Flags to help determine placing functionality
     protected boolean placeable;
     protected boolean isSelected = false;
     protected boolean placed = false;
@@ -64,10 +60,13 @@ abstract public class Tower {
     private int imgWidth;
     private int imgHeight;
 
-
-    /*
-     * Constructor for towers that takes only JFrame and BufferedImage currentMap.
+    /**
+     * Constructor for towers that takes JFrame and BufferedImage for the current map.
      * Other parameters will be initialized later using setters or default values.
+     *
+     * @param runGame     The JFrame representing the game window.
+     * @param currentMap  The map image representing the current game level.
+     * @param imagePath   The path to the image representing the tower.
      */
     public Tower(JFrame runGame, BufferedImage currentMap, String imagePath) {
         parentWindow = runGame.getContentPane();
@@ -87,6 +86,12 @@ abstract public class Tower {
         parentWindow.add(towerJLabel);
     }
 
+    /**
+     * Helper method to load an image from the provided path.
+     *
+     * @param imagePath The path to the image file.
+     * @return The image loaded from the path, or null if the image could not be loaded.
+     */
     private Image loadImage(String imagePath) {
         try {
             return new ImageIcon(getClass().getClassLoader().getResource("TowerImages/" + imagePath)).getImage();
@@ -96,17 +101,25 @@ abstract public class Tower {
         }
     }
 
-    // Helper method to determine valid pixel color
+    /**
+     * Determines if a given pixel color is "green" for valid placement.
+     *
+     * @param red   The red component of the pixel color.
+     * @param green The green component of the pixel color.
+     * @param blue  The blue component of the pixel color.
+     * @return True if the pixel is green (valid for placement), false otherwise.
+     */
     public boolean isGreen(int red, int green, int blue) {
-        //System.out.println(currentMap);
-//        if(currentMap.equals("src/MapImg/MonkeyLane.png")){
         return (green > 180 && (red < 150) && (blue < 160));
-//        }
-//        return false;
-
     }
 
-    // Method to determine if the tower can be placed at the specified coordinates
+    /**
+     * Determines if the tower can be placed at the specified coordinates on the map.
+     *
+     * @param x The x-coordinate to check.
+     * @param y The y-coordinate to check.
+     * @return True if the tower can be placed at the specified coordinates, false otherwise.
+     */
     public boolean isPlaceable(int x, int y) {
         int missed = 0;
         for (int i = -3; i <= 3; i++) {
@@ -134,38 +147,66 @@ abstract public class Tower {
         return true;
     }
 
-    // Abstract method to be implemented by subclasses to determine attack strategy
+    /**
+     * Abstract method that determines how the tower attacks. This method must be implemented
+     * by subclasses.
+     *
+     * @return True if the attack was successful, false otherwise.
+     */
     public abstract boolean attack();
 
-    // Will check to see if a balloon is in range
+    /**
+     * Determines if the given balloon is within range of this tower.
+     *
+     * @param balloon The balloon to check.
+     * @return True if the balloon is within range, false otherwise.
+     */
     public boolean inRange(Balloon balloon) {
         int targetX = balloon.getX() + 13;
         int targetY = balloon.getY() + 16;
         double distanceSquared = Math.pow(targetX - this.xPosition - (getImgWidth() / 2), 2) +
-                Math.pow(targetY - this.yPosition - (getImgHeight() / 2),2);
+                Math.pow(targetY - this.yPosition - (getImgHeight() / 2), 2);
 
         double rangeSquared = Math.pow(this.diameter / 2, 2);
         return distanceSquared <= rangeSquared;
     }
 
-
-    // Get the first balloon in the queue
+    /**
+     * Returns the target balloon for the tower.
+     *
+     * @return The current target balloon.
+     */
     public Balloon getTarget() {
         return target;
     }
-    public void setTarget(Balloon target) {this.target = target;}
 
-    public double getAngle(int x, int y){
-        int centerX = this.xPosition+ towerImage.getWidth(null)/2;
-        int centerY = this.yPosition+ towerImage.getHeight(null)/2;
+    /**
+     * Sets the target balloon for the tower.
+     *
+     * @param target The balloon to be set as the target.
+     */
+    public void setTarget(Balloon target) {
+        this.target = target;
+    }
 
-        double angle = Math.atan2(y-centerY, x-centerX);
+    /**
+     * Calculates the angle between the tower and a target position.
+     *
+     * @param x The x-coordinate of the target.
+     * @param y The y-coordinate of the target.
+     * @return The angle in degrees between the tower and the target.
+     */
+    public double getAngle(int x, int y) {
+        int centerX = this.xPosition + towerImage.getWidth(null) / 2;
+        int centerY = this.yPosition + towerImage.getHeight(null) / 2;
+
+        double angle = Math.atan2(y - centerY, x - centerX);
         double angleDegrees = Math.toDegrees(angle);
 
-        while(angleDegrees < 0){
+        while (angleDegrees < 0) {
             angleDegrees += 360;
         }
-        while (angleDegrees > 360){
+        while (angleDegrees > 360) {
             angleDegrees -= 360;
         }
         // Angle is off by 90 degrees by default
@@ -174,8 +215,8 @@ abstract public class Tower {
         return angleDegrees;
     }
 
-
     // Getters and setters for tower properties
+
     public int getFireRate() {
         return fireRate;
     }
@@ -187,6 +228,7 @@ abstract public class Tower {
     public int getPrice() {
         return price;
     }
+
     public void setPrice(int price) {
         this.price = price;
     }
@@ -202,17 +244,19 @@ abstract public class Tower {
     public Point getPosition() {
         return new Point(xPosition, yPosition);
     }
+
     public int setFireRate(int fireRate) {
         return this.fireRate = fireRate;
     }
 
     // Setters for tower properties
+
     public void setFireSpeed(int fireSpeed) {
         this.fireRate = fireSpeed;
     }
 
     public void setRotatable(boolean rotatable) {
-        this.isRotatable  = rotatable;
+        this.isRotatable = rotatable;
     }
 
     public void setRange(int diameter) {
@@ -233,30 +277,61 @@ abstract public class Tower {
         this.placed = true;
         this.isSelected = false;
     }
+
     public boolean isPlaceable() {
         return placeable;
     }
+
     public void setMapName(String mapName) {
         this.mapName = mapName;
     }
-    // Allow each tower to have own projectile image
 
-
+    /**
+     * Determines if the tower's projectile is currently active.
+     *
+     * @return True if the projectile is active, false otherwise.
+     */
     public abstract boolean isProjectileActive();
 
+    /**
+     * Sets whether the tower's projectile is active or not.
+     *
+     * @param projectileActive True to activate the projectile, false to deactivate it.
+     */
     public abstract void setProjectileActive(boolean projectileActive);
 
-    public double projectileAngle(int balloonX, int balloonY){
+    /**
+     * Calculates the angle of the projectile towards the target balloon.
+     *
+     * @param balloonX The x-coordinate of the balloon.
+     * @param balloonY The y-coordinate of the balloon.
+     * @return The angle between the projectile and the balloon.
+     */
+    public double projectileAngle(int balloonX, int balloonY) {
         double projAngle = Math.atan2(balloonY - projY, balloonX - projX);
         return projAngle;
     }
 
+    /**
+     * Fires the projectile towards the target balloon.
+     *
+     * @param currentTarget The balloon to target with the projectile.
+     * @param projectile    The list of projectiles to be fired.
+     */
     public abstract void fire(Balloon currentTarget, ArrayList<Projectile> projectile);
 
+    /**
+     * Checks if the tower is ready to fire.
+     *
+     * @return True if the tower is ready to fire, false otherwise.
+     */
     public boolean isReadyToFire() {
         return readyToFire;
     }
 
+    /**
+     * Sets up a fire timer that ensures the tower cannot fire again until after a delay.
+     */
     public void setFireTimer() {
         // If there is already a fireTimer running, do nothing
         if (!readyToFire) return;
@@ -280,8 +355,12 @@ abstract public class Tower {
         }, fireRate); // Delay in milliseconds before the tower can fire again
     }
 
+    /**
+     * Loads the projectile images from the provided paths.
+     *
+     * @param paths The paths to the images for the projectiles.
+     */
     protected void loadProjectileImages(String[] paths) {
-
         PROJECTILE_IMAGES = new BufferedImage[paths.length];
 
         for (int i = 0; i < paths.length; i++) {
@@ -294,17 +373,40 @@ abstract public class Tower {
         }
     }
 
+    /**
+     * Retrieves a projectile image based on the index number.
+     *
+     * @param num The index number of the projectile image.
+     * @return The projectile image at the given index.
+     */
     public static BufferedImage getProjectileImage(int num) {
         return PROJECTILE_IMAGES[num];
     }
 
-    public void setTowerImageSize(TowerImageSize type){
-        this.imgWidth =type.getWidth();
+    /**
+     * Sets the size of the tower image.
+     *
+     * @param type The size of the tower image (defined by TowerImageSize enum).
+     */
+    public void setTowerImageSize(TowerImageSize type) {
+        this.imgWidth = type.getWidth();
         this.imgHeight = type.getHeight();
     }
+
+    /**
+     * Retrieves the width of the tower image.
+     *
+     * @return The width of the tower image.
+     */
     public int getImgWidth() {
         return imgWidth;
     }
+
+    /**
+     * Retrieves the height of the tower image.
+     *
+     * @return The height of the tower image.
+     */
     public int getImgHeight() {
         return imgHeight;
     }
