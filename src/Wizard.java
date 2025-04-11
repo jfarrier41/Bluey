@@ -16,7 +16,8 @@ public class Wizard extends Tower {
         super(runGame, currentMap,"Wizard.png");
 
         // Set default values for DartMonkey (can be overridden if needed)
-        this.setFireSpeed(800);
+        this.isRotatable = true;
+        this.setFireSpeed(700);
         this.setRange(400);
         this.setProjectileSpeed(8);
         this.setProjectileDamage(10);

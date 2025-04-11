@@ -228,7 +228,7 @@ public class GameRunningGUI extends JPanel {
             Balloon bestTarget = null;
             for (Balloon balloon : balloons) {
                 if (tower.inRange(balloon)) {
-                    if(tower.towerType.equals("Ice") || tower.towerType.equals("Bomb")){
+                    if(tower.towerType.equals("Ice")){
                         tower.targets.add(balloon);
                     }
                     if (bestTarget == null || compareBalloons(balloon, bestTarget) > 0) {
