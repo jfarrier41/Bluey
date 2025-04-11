@@ -20,6 +20,8 @@ public class Balloon {
     private int health;
     private boolean isMoving;
     private boolean animatePop;
+    protected boolean gooed;
+    protected boolean frozen;
 
     /**
      * Constructor for the Balloon class.
@@ -254,6 +256,20 @@ public class Balloon {
 
     public double getSpeed() {
         return speed;
+    }
+
+    public void goo (){
+        if(!gooed){
+            gooed = true;
+            this.speed = speed / 2;
+        }
+    }
+    public void unGoo(){
+        if(gooed){
+            gooed = false;
+            this.speed = speed * 2;
+        }
+
     }
 
     public int getCurrentSegmentIndex() {

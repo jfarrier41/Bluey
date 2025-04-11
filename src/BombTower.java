@@ -10,15 +10,22 @@ Description: Implements tower and defines the Bomb Tower.
  */
 public class BombTower extends Tower {
     // Constructor that only takes JFrame and BufferedImage
+    private static final double COLLISION_AREA = 30;
     public BombTower(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"BombTower.png");
 
         // Set default values for BombTower (can be overridden if needed)
-        this.setFireSpeed(10);
-        this.setRange(150);
-        this.setProjectileSpeed(10);
+        this.isRotatable = true;
+        this.setFireSpeed(600);
+        this.setRange(400);
+        this.setProjectileSpeed(8);
         this.setProjectileDamage(10);
         this.setTowerImageSize(TowerImageSize.BOMBTOWER);
+        String[] projectilePaths = new String[]{
+                "src/ProjectileImages/bomb.png",
+                "src/ProjectileImages/explosion.png",
+        };
+        loadProjectileImages(projectilePaths);
     }
 
     @Override
@@ -37,11 +44,30 @@ public class BombTower extends Tower {
     }
 
     @Override
-    public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
-        if (!projectileActive) { // Only fire if no active projectile
-            this.projX = this.xPosition + 25; // Start at center of tower
-            this.projY = this.yPosition + 25;
-            this.projectileActive = true;
-        }
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+
+        // Get center of the target balloon
+        double targetX = currentTarget.getX() + 27 / 2.0; // Approximate center X
+        double targetY = currentTarget.getY() + 33 / 2.0; // Approximate center Y
+
+        // Get center of the DartMonkey tower image
+        double x = this.xPosition + (getImgWidth() / 2.0);
+        double y = this.yPosition + (getImgHeight() / 2.0);
+
+        // Calculate angle (in radians) from tower to balloon
+        double angleRadians = Math.atan2(targetY - y, targetX - x);
+
+        // Create a new projectile with computed parameters
+        Projectile p = new Projectile(
+                x, y, COLLISION_AREA, projectileSpeed, angleRadians,
+                diameter, currentTarget, 1, true,
+                getProjectileImage(0), ProjectileImageSize.BOMB
+        );
+
+        // Add projectile to active projectile list
+        projectiles.add(p);
+
+        // Begin fire cooldown
+        setFireTimer();
     }
 }

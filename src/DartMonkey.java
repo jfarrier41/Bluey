@@ -17,8 +17,6 @@ import java.util.TimerTask;
  * including projectile behavior, image settings, and attack logic.
  */
 public class DartMonkey extends Tower {
-    /** Time of the last fire event, used to manage fire rate cooldowns. */
-    private long lastFireTime;
 
     /** Collision area of the dart projectile (radius in pixels). */
     private static final double COLLISION_AREA = 25;

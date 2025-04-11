@@ -42,6 +42,7 @@ public class IceTower extends Tower {
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
         if (isReadyToFire()) {
+
         }
     }
 }

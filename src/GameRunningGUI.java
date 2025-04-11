@@ -220,6 +220,7 @@ public class GameRunningGUI extends JPanel {
             // Step 1: Invalidate current target if it’s no longer in range
             Balloon currentTarget = tower.getTarget();
             if (currentTarget != null && !tower.inRange(currentTarget)) {
+                currentTarget.unGoo();
                 tower.setTarget(null);
             }
 
@@ -325,7 +326,7 @@ public class GameRunningGUI extends JPanel {
             g2d.drawOval(tower.xPosition - xOffset, tower.yPosition - yOffset, tower.getDiameter(), tower.getDiameter());
 
             // Draw the tower's image, with rotation if it has a target.
-            if (tower.getTarget() != null) {
+            if (tower.getTarget() != null && tower.isRotatable) {
                 double angle = tower.getAngle(tower.getTarget().getX(), tower.getTarget().getY());
                 AffineTransform originalTransform = g2d.getTransform();
                 g2d.rotate(Math.toRadians(angle), drawX + imgWidth / 2.0, drawY + imgHeight / 2.0);
