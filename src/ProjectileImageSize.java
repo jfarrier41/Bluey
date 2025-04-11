@@ -8,7 +8,7 @@ public enum ProjectileImageSize {
     ORANGELAZER(90, 90),
     GOO(30, 10),
     EXPLOSION(100, 100),
-    SPIKEYBALL(30, 30),
+    ORB(30, 30),
     SNIPERBULLET(13,13),
     BLADE(30, 30);
 

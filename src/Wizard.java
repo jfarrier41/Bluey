@@ -11,16 +11,22 @@ Description: Implements tower and defines the Dart Monkey.
 
 public class Wizard extends Tower {
     // Constructor that only takes JFrame and BufferedImage
+    private static final double COLLISION_AREA = 25;
     public Wizard(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"Wizard.png");
 
         // Set default values for DartMonkey (can be overridden if needed)
-        this.setFireSpeed(10);
-        this.setRange(50);
-        this.setProjectileSpeed(10);
+        this.setFireSpeed(800);
+        this.setRange(400);
+        this.setProjectileSpeed(8);
         this.setProjectileDamage(10);
         this.setTowerImageSize(TowerImageSize.WIZARD);
         towerType = "Wizard";
+        String[] projectilePaths = new String[]{
+                "src/ProjectileImages/energyBall.png",
+                "src/ProjectileImages/explosion.png",
+        };
+        loadProjectileImages(projectilePaths);
     }
 
     @Override
@@ -40,8 +46,30 @@ public class Wizard extends Tower {
     }
 
     @Override
-    public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+        // Get center of the target balloon
+        double targetX = currentTarget.getX() + 27 / 2.0; // Approximate center X
+        double targetY = currentTarget.getY() + 33 / 2.0; // Approximate center Y
 
+        // Get center of the DartMonkey tower image
+        double x = this.xPosition + (getImgWidth() / 2.0);
+        double y = this.yPosition + (getImgHeight() / 2.0);
+
+        // Calculate angle (in radians) from tower to balloon
+        double angleRadians = Math.atan2(targetY - y, targetX - x);
+
+        // Create a new projectile with computed parameters
+        Projectile p = new Projectile(
+                x, y, COLLISION_AREA, projectileSpeed, angleRadians,
+                diameter, currentTarget, 4, false,
+                getProjectileImage(0), ProjectileImageSize.ORB
+        );
+
+        // Add projectile to active projectile list
+        projectiles.add(p);
+
+        // Begin fire cooldown
+        setFireTimer();
     }
 
     @Override
