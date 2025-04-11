@@ -21,6 +21,7 @@ public class BombTower extends Tower {
         this.setProjectileSpeed(8);
         this.setProjectileDamage(10);
         this.setTowerImageSize(TowerImageSize.BOMBTOWER);
+        towerType = "Bomb";
         String[] projectilePaths = new String[]{
                 "src/ProjectileImages/bomb.png",
                 "src/ProjectileImages/explosion.png",
@@ -69,5 +70,10 @@ public class BombTower extends Tower {
 
         // Begin fire cooldown
         setFireTimer();
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
+
     }
 }

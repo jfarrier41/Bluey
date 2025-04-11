@@ -228,6 +228,9 @@ public class GameRunningGUI extends JPanel {
             Balloon bestTarget = null;
             for (Balloon balloon : balloons) {
                 if (tower.inRange(balloon)) {
+                    if(tower.towerType.equals("Ice") || tower.towerType.equals("Bomb")){
+                        tower.targets.add(balloon);
+                    }
                     if (bestTarget == null || compareBalloons(balloon, bestTarget) > 0) {
                         bestTarget = balloon;
                     }
@@ -238,7 +241,12 @@ public class GameRunningGUI extends JPanel {
 
             // Step 3: Fire if there is a valid target
             if (tower.getTarget() != null && tower.isReadyToFire()) {
-                tower.fire(tower.getTarget(), curProjectiles);
+                if(!tower.targets.isEmpty()){
+                    tower.fire(tower.getTarget(), curProjectiles, tower.targets);
+                }else {
+                    System.out.println("Target is null");
+                    tower.fire(tower.getTarget(), curProjectiles);
+                }
             }
         }
 

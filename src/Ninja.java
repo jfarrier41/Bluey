@@ -23,6 +23,7 @@ public class Ninja extends Tower {
         this.setProjectileSpeed(17);
         this.setProjectileDamage(10);
         this.setTowerImageSize(TowerImageSize.NINJA);
+        towerType = "Ninja";
         projectilePaths = new String[] {
                 "src/ProjectileImages/ninjaStar.png"
         };
@@ -62,5 +63,10 @@ public class Ninja extends Tower {
         Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,2,false, getProjectileImage(0),ProjectileImageSize.NINJASTAR);
         projectiles.add(p);
         setFireTimer();
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
+
     }
 }

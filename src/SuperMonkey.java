@@ -43,6 +43,7 @@ public class SuperMonkey extends Tower {
 
         /** Set the visual size used for the SuperMonkey tower image. */
         this.setTowerImageSize(TowerImageSize.SUPERMONKEY);
+        towerType = "SuperMonkey";
 
         /** Paths for dart and explosion images used in projectile animation. */
         projectilePaths = new String[] {
@@ -112,5 +113,10 @@ public class SuperMonkey extends Tower {
 
         /** Start cooldown before next fire. */
         setFireTimer();
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
+
     }
 }

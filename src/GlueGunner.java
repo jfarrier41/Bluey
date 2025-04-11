@@ -29,6 +29,7 @@ public class GlueGunner extends Tower {
         this.setProjectileSpeed(23);            // Speed of the projectile
         this.setProjectileDamage(10);           // Damage dealt per hit
         this.setTowerImageSize(TowerImageSize.GLUEGUNNER); // Specific size for the GlueGunner tower image
+        towerType = "GlueGunner";
 
         // Load dart and explosion projectile images
         String[] projectilePaths = new String[] {
@@ -99,5 +100,10 @@ public class GlueGunner extends Tower {
 
         // Start the fire cooldown timer
         setFireTimer();
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
+
     }
 }

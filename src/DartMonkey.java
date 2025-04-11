@@ -37,6 +37,7 @@ public class DartMonkey extends Tower {
         this.setProjectileSpeed(23);            // Speed of the projectile
         this.setProjectileDamage(10);           // Damage dealt per hit
         this.setTowerImageSize(TowerImageSize.DARTMONKEY); // Size enum specific to DartMonkey
+        towerType = "DartMonkey";
 
         // Load dart and explosion projectile images
         String[] projectilePaths = new String[]{
@@ -111,5 +112,10 @@ public class DartMonkey extends Tower {
 
         // Begin fire cooldown
         setFireTimer();
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
+
     }
 }

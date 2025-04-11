@@ -26,8 +26,11 @@ abstract public class Tower {
     protected static String[] projectilePaths;
     protected static BufferedImage[] PROJECTILE_IMAGES;
 
+    protected String towerType;
+
     // Queue that allows tower to decide what enemy to shoot
     protected ArrayList<Projectile> projectiles = new ArrayList<>();
+    protected ArrayList<Balloon> targets = new ArrayList<>();
 
     protected int fireRate;
     protected int diameter;
@@ -319,6 +322,7 @@ abstract public class Tower {
      * @param projectile    The list of projectiles to be fired.
      */
     public abstract void fire(Balloon currentTarget, ArrayList<Projectile> projectile);
+    public abstract void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets);
 
     /**
      * Checks if the tower is ready to fire.

@@ -20,6 +20,7 @@ public class Wizard extends Tower {
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
         this.setTowerImageSize(TowerImageSize.WIZARD);
+        towerType = "Wizard";
     }
 
     @Override
@@ -40,6 +41,11 @@ public class Wizard extends Tower {
 
     @Override
     public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
+
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
 
     }
 }

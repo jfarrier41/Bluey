@@ -17,10 +17,11 @@ public class IceTower extends Tower {
 
         // Set default values for DartMonkey (can be overridden if needed)
         this.setFireSpeed(3000);
-        this.setRange(50);
+        this.setRange(250);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);
         this.setTowerImageSize(TowerImageSize.ICETOWER);
+        towerType = "Ice";
     }
 
     @Override
@@ -41,8 +42,18 @@ public class IceTower extends Tower {
 
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
-        if (isReadyToFire()) {
+    }
 
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
+        for(Balloon target : targets) {
+            if(target.getSpeed() == 0){
+                target.unfreeze();
+            }
+            else{
+                target.freeze();
+            }
         }
+        setFireTimer();
     }
 }

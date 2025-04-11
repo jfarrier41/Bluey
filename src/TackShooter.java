@@ -24,6 +24,7 @@ public class TackShooter extends Tower {
         this.setProjectileSpeed(10);
         this.setProjectileDamage(5);
         this.setTowerImageSize(TowerImageSize.TACSHOOTER);
+        towerType = "TackShooter";
 
         /** Paths for dart and explosion images used in projectile animation. */
         projectilePaths = new String[]{
@@ -74,6 +75,11 @@ public class TackShooter extends Tower {
 
         /** Start cooldown before next fire. */
         setFireTimer();
+
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
 
     }
 }

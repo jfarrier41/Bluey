@@ -20,6 +20,7 @@ public class SniperMonkey extends Tower {
         this.setRange(600);                     // Radius within which the tower can target balloons
         this.setProjectileSpeed(70);            // Speed of the projectile
         this.setProjectileDamage(10);           // Damage dealt per hit
+        towerType = "Sniper";
         this.setTowerImageSize(TowerImageSize.SNIPERMONKEY); // Size enum specific to DartMonkey
 
         // Load dart and explosion projectile images
@@ -72,5 +73,10 @@ public class SniperMonkey extends Tower {
 
         // Begin fire cooldown
         setFireTimer();
+    }
+
+    @Override
+    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
+
     }
 }
