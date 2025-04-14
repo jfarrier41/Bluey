@@ -44,38 +44,6 @@ public class DartMonkey extends Tower {
     }
 
     /**
-     * Triggers an attack by the DartMonkey.
-     *
-     * @return Always returns true when attack is initiated.
-     */
-    @Override
-    public boolean attack() {
-        projectileActive = true;
-        return true;
-    }
-
-    /**
-     * Returns whether the DartMonkey currently has an active projectile in play.
-     *
-     * @return true if the projectile is currently active; otherwise, false.
-     */
-    @Override
-    public boolean isProjectileActive() {
-        return projectileActive;
-    }
-
-    /**
-     * Sets the projectile active state.
-     *
-     * @param projectileActive Boolean value indicating whether a projectile is active.
-     *                         (Note: Method intentionally left empty; may be implemented later.)
-     */
-    @Override
-    public void setProjectileActive(boolean projectileActive) {
-        // No internal logic provided — may be managed elsewhere
-    }
-
-    /**
      * Fires a dart projectile toward the specified target.
      * Calculates trajectory and creates a new projectile, adding it to the projectile list.
      *

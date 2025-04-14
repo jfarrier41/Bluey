@@ -22,7 +22,6 @@ abstract public class Tower {
     protected final JLabel towerJLabel;
     protected BufferedImage currentMap;
     protected String mapName;
-    protected static String[] projectilePaths;
     protected static BufferedImage[] PROJECTILE_IMAGES;
 
     protected String towerType;
@@ -37,11 +36,6 @@ abstract public class Tower {
     protected int projectileDamage;
     protected int price;
 
-    // Allow for each tower to have a projectile image
-    protected Image projectileImage;
-    protected boolean projectileActive;
-    protected double projX;
-    protected double projY;
     Balloon target;
 
     protected Timer fireTimer;
@@ -58,7 +52,6 @@ abstract public class Tower {
 
     protected Image towerImage;
 
-    protected TowerImageSize type;
     private int imgWidth;
     private int imgHeight;
 
@@ -70,9 +63,9 @@ abstract public class Tower {
      *
      * @param runGame     The JFrame representing the game window.
      * @param currentMap  The map image representing the current game level.
-     * @param imagePath   The path to the image representing the tower.
+     * @param towerImagePath   The path to the image representing the tower.
      */
-    public Tower(JFrame runGame, BufferedImage currentMap, String imagePath) {
+    public Tower(JFrame runGame, BufferedImage currentMap, String towerImagePath) {
         parentWindow = runGame.getContentPane();
         towerJLabel = new JLabel();
         towerJLabel.setBounds(15, 15, 15, 15);
@@ -80,11 +73,11 @@ abstract public class Tower {
         placeable = false;
 
         // Load the image using getResource
-        towerImage = loadImage(imagePath);
+        towerImage = loadImage(towerImagePath);
         if (towerImage != null) {
             towerJLabel.setIcon(new ImageIcon(towerImage));
         } else {
-            System.out.println("Failed to load image: " + imagePath);
+            System.out.println("Failed to load image: " + towerImagePath);
         }
 
         parentWindow.add(towerJLabel);
@@ -113,9 +106,7 @@ abstract public class Tower {
      * @param blue  The blue component of the pixel color.
      * @return True if the pixel is green (valid for placement), false otherwise.
      */
-    public boolean isGreen(int red, int green, int blue) {
-        return (green > 180 && (red < 150) && (blue < 160));
-    }
+    public boolean isGreen(int red, int green, int blue) {return (green > 80 && (red < 130) && (blue < 81));}
 
     /**
      * Determines if the tower can be placed at the specified coordinates on the map.
@@ -126,8 +117,8 @@ abstract public class Tower {
      */
     public boolean isPlaceable(int x, int y) {
         int missed = 0;
-        for (int i = -3; i <= 3; i++) {
-            for (int j = -3; j <= 3; j++) {
+        for (int i = -4; i <= 4; i++) {
+            for (int j = -4; j <= 4; j++) {
                 // Use try-catch to stop user from trying to place the tower out of bounds
                 if (x + i < 0 || x + i >= currentMap.getWidth() || y + j < 0 || y + j >= currentMap.getHeight()) {
                     placeable = false;
@@ -150,15 +141,6 @@ abstract public class Tower {
         placeable = true;
         return true;
     }
-
-    /**
-     * Abstract method that determines how the tower attacks. This method must be implemented
-     * by subclasses.
-     *
-     * @return True if the attack was successful, false otherwise.
-     */
-    public abstract boolean attack();
-
     /**
      * Determines if the given balloon is within range of this tower.
      *
@@ -289,33 +271,6 @@ abstract public class Tower {
     public void setMapName(String mapName) {
         this.mapName = mapName;
     }
-
-    /**
-     * Determines if the tower's projectile is currently active.
-     *
-     * @return True if the projectile is active, false otherwise.
-     */
-    public abstract boolean isProjectileActive();
-
-    /**
-     * Sets whether the tower's projectile is active or not.
-     *
-     * @param projectileActive True to activate the projectile, false to deactivate it.
-     */
-    public abstract void setProjectileActive(boolean projectileActive);
-
-    /**
-     * Calculates the angle of the projectile towards the target balloon.
-     *
-     * @param balloonX The x-coordinate of the balloon.
-     * @param balloonY The y-coordinate of the balloon.
-     * @return The angle between the projectile and the balloon.
-     */
-    public double projectileAngle(int balloonX, int balloonY) {
-        double projAngle = Math.atan2(balloonY - projY, balloonX - projX);
-        return projAngle;
-    }
-
     /**
      * Fires the projectile towards the target balloon.
      *

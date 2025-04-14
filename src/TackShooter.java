@@ -37,22 +37,6 @@ public class TackShooter extends Tower {
     }
 
     @Override
-    public boolean attack() {
-        projectileActive = true;
-        return true;
-    }
-
-    @Override
-    public boolean isProjectileActive() {
-        return false;
-    }
-
-    @Override
-    public void setProjectileActive(boolean projectileActive) {
-
-    }
-
-    @Override
     public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);

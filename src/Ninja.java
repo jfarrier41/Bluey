@@ -28,23 +28,6 @@ public class Ninja extends Tower {
         loadProjectileImages();
     }
 
-
-    @Override
-    public boolean attack() {
-        projectileActive = true;
-        return true;
-    }
-
-    @Override
-    public boolean isProjectileActive() {
-        return false;
-    }
-
-    @Override
-    public void setProjectileActive(boolean projectileActive) {
-
-    }
-
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
         // Get center of the target

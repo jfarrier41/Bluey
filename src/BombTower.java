@@ -27,21 +27,6 @@ public class BombTower extends Tower {
     }
 
     @Override
-    public boolean attack() {
-        return false;
-    }
-
-    @Override
-    public boolean isProjectileActive() {
-        return false;
-    }
-
-    @Override
-    public void setProjectileActive(boolean projectileActive) {
-
-    }
-
-    @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
 
         // Get center of the target balloon

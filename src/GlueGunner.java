@@ -36,37 +36,6 @@ public class GlueGunner extends Tower {
     }
 
     /**
-     * Initiates the tower's attack sequence.
-     *
-     * @return true if the attack is successfully initiated, otherwise false.
-     */
-    @Override
-    public boolean attack() {
-        projectileActive = true; // Mark the projectile as active
-        return true;
-    }
-
-    /**
-     * Checks if the projectile is active.
-     *
-     * @return false, as the GlueGunner does not currently manage projectile activity in this implementation.
-     */
-    @Override
-    public boolean isProjectileActive() {
-        return false; // Currently, no projectile activity is tracked in this method
-    }
-
-    /**
-     * Sets the projectile's active state.
-     *
-     * @param projectileActive The active state of the projectile (not used in this class).
-     */
-    @Override
-    public void setProjectileActive(boolean projectileActive) {
-        // Method body left empty intentionally as projectile activity is not managed in this class
-    }
-
-    /**
      * Fires a projectile toward the specified balloon target.
      *
      * @param currentTarget The balloon that the GlueGunner will target.

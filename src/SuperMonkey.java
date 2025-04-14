@@ -49,37 +49,6 @@ public class SuperMonkey extends Tower {
         loadProjectileImages();
     }
 
-    /**
-     * Initiates the attack behavior for the SuperMonkey.
-     *
-     * @return Always returns true once attack is activated.
-     */
-    @Override
-    public boolean attack() {
-        projectileActive = true;
-        return true;
-    }
-
-    /**
-     * Checks if a projectile is currently active.
-     *
-     * @return true if active, false otherwise.
-     */
-    @Override
-    public boolean isProjectileActive() {
-        return projectileActive;
-    }
-
-    /**
-     * Sets the projectile active state.
-     *
-     * @param projectileActive Whether the projectile is active or not.
-     *                         (Note: no logic currently defined)
-     */
-    @Override
-    public void setProjectileActive(boolean projectileActive) {
-        // Intentionally left empty
-    }
 
     /**
      * Fires a dart projectile toward a given balloon.

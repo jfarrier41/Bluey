@@ -575,4 +575,8 @@ public class GameRunningGUI extends JPanel {
             spawnTimer.stop();
         }
     }
+
+    public String getSelectedMapString() {
+        return selectedMap;
+    }
 }

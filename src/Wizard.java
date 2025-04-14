@@ -28,22 +28,6 @@ public class Wizard extends Tower {
     }
 
     @Override
-    public boolean attack() {
-        projectileActive = true;
-        return true;
-    }
-
-    @Override
-    public boolean isProjectileActive() {
-        return false;
-    }
-
-    @Override
-    public void setProjectileActive(boolean projectileActive) {
-
-    }
-
-    @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
         // Get center of the target balloon
         double targetX = currentTarget.getX() + 27 / 2.0; // Approximate center X
