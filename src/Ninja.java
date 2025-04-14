@@ -41,7 +41,9 @@ public class Ninja extends Tower {
         // Correct angle from tower to target
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-        Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,2,false, getProjectileImage(2),ProjectileImageSize.NINJASTAR,getProjectileDamage());
+        Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,
+                2,false, getProjectileImage(2),
+                ProjectileImageSize.NINJASTAR,getProjectileDamage(), targets);
         projectiles.add(p);
         setFireTimer();
     }

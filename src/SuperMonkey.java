@@ -73,7 +73,7 @@ public class SuperMonkey extends Tower {
         /** Create new projectile instance and add to list. */
         Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
                 angleRadians, diameter, currentTarget, 1, false,
-                getProjectileImage(0), ProjectileImageSize.DART,getProjectileDamage());
+                getProjectileImage(0), ProjectileImageSize.DART,getProjectileDamage(), targets);
         projectiles.add(p);
 
         /** Start cooldown before next fire. */

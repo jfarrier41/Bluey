@@ -1,12 +1,8 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+
+
 
 /**
  * Filename: DartMonkey.java
@@ -69,7 +65,8 @@ public class DartMonkey extends Tower {
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
                 getProjectileImage(0), ProjectileImageSize.DART,
-                getProjectileDamage()
+                getProjectileDamage(),
+                targets
         );
 
         // Add projectile to active projectile list

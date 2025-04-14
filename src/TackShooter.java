@@ -49,7 +49,7 @@ public class TackShooter extends Tower {
             /** Create new projectile instance and add to list. */
             Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
                     angle, diameter, balloon, 1, false,
-                    getProjectileImage(0), ProjectileImageSize.TAC,getProjectileDamage());
+                    getProjectileImage(0), ProjectileImageSize.TAC,getProjectileDamage(), targets);
             projectiles.add(p);
         }
 

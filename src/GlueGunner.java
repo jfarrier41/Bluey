@@ -57,7 +57,7 @@ public class GlueGunner extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
-                getProjectileImage(1), ProjectileImageSize.GOO,getProjectileDamage()
+                getProjectileImage(1), ProjectileImageSize.GOO,getProjectileDamage(),targets
         );
 
         // Add the created projectile to the active projectiles list

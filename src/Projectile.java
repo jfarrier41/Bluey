@@ -1,6 +1,6 @@
-import com.sun.source.tree.ReturnTree;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,30 +27,32 @@ public class Projectile {
     // Speed of the projectile
     public double speed;
     // Image representation of the projectile
-    private BufferedImage image;
+    protected BufferedImage image;
     // The balloon that the projectile is currently targeting
     private Balloon currentTarget;
+    private ArrayList<Balloon> targets;
 
     private int damage;
 
     /**
      * Constructs a new Projectile object.
      *
-     * @param x              The starting X position of the projectile.
-     * @param y              The starting Y position of the projectile.
-     * @param damageArea     The damage area radius of the projectile.
-     * @param speed          The speed at which the projectile moves.
-     * @param angle          The angle at which the projectile travels.
-     * @param range          The maximum range the projectile can travel.
-     * @param currentTarget  The target balloon for the projectile.
-     * @param allowedHits    The number of allowed hits before the projectile stops.
-     * @param tracking       Whether the projectile tracks a target.
+     * @param x               The starting X position of the projectile.
+     * @param y               The starting Y position of the projectile.
+     * @param damageArea      The damage area radius of the projectile.
+     * @param speed           The speed at which the projectile moves.
+     * @param angle           The angle at which the projectile travels.
+     * @param range           The maximum range the projectile can travel.
+     * @param currentTarget   The target balloon for the projectile.
+     * @param allowedHits     The number of allowed hits before the projectile stops.
+     * @param tracking        Whether the projectile tracks a target.
      * @param projectileImage The image representing the projectile.
-     * @param type           The type of projectile (e.g., Goo, Dart).
+     * @param type            The type of projectile (e.g., Goo, Dart).
      */
     public Projectile(double x, double y, double damageArea, double speed, double angle,
                       int range, Balloon currentTarget, int allowedHits,
-                      boolean tracking, BufferedImage projectileImage, ProjectileImageSize type,int damage) {
+                      boolean tracking, BufferedImage projectileImage, ProjectileImageSize type, int damage,
+                      ArrayList<Balloon> targets) {
         this.currentX = x;
         this.currentY = y;
         this.startX = x;
@@ -65,6 +67,8 @@ public class Projectile {
         this.image = projectileImage;
         this.type = type;
         this.damage = damage;
+        this.targets = targets;
+
     }
 
     /**
@@ -113,7 +117,7 @@ public class Projectile {
         double dx = Math.abs(currentX - startX);
         double dy = Math.abs(currentY - startY);
         double dist = (dx * dx + dy * dy);
-        double maxRange = (range * .5) * (range * .5);
+        double maxRange = (range * .6) * (range * .6);
         return dist > maxRange;
     }
 
@@ -125,23 +129,59 @@ public class Projectile {
      * @return true if the projectile hits the balloon, otherwise false.
      */
     public boolean didHit(Balloon balloon) {
+        // If the balloon has already been hit, do not check again.
         if (hitBalloons.contains(balloon)) {
             return false;
         }
-        int balloonX = balloon.getX();
-        int balloonY = balloon.getY();
 
-        double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
+        // Handle the Bomb projectile type.
+        if (type.equals(ProjectileImageSize.BOMB)) {
+            // Only check the target balloons in range (not other balloons that are not in range).
+            for (Balloon b : targets) {
+                int balloonX = b.getX();
+                int balloonY = b.getY();
+                double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
+                if (distance <= (damageArea + 10)) {
+                    b.gotHit(true);
+                    hitBalloons.add(b);
+                    // Iterate over all the targets and hit those that are within the area.
+                    for (Balloon bystander : targets) {
+                        int bX = bystander.getX();
+                        int bY = bystander.getY();
+                        int xDif = Math.abs(balloonX - bX);
+                        int yDif = Math.abs(balloonY - bY);
+                        System.out.println(xDif + " " + yDif);
+                        if (xDif < 45 && yDif < 45) {
+                            hitBalloons.add(bystander);
+                            bystander.gotHit(true);
+                        }
+                    }
 
-        if (distance <= (damageArea + 10)) {
-            if (type == ProjectileImageSize.valueOf("GOO")) {
-                balloon.goo(); // Apply goo effect if projectile is of type "GOO"
+                    return true; // The projectile hit the balloon
+                }
             }
-            hitBalloons.add(balloon); // Mark the balloon as hit
-            return true; // The projectile hit the balloon
+        } else {
+            // For non-Bomb projectiles, only check the original target.
+            // Get the position of the balloon to check if the projectile is within range.
+            int balloonX = balloon.getX();
+            int balloonY = balloon.getY();
+
+            // Calculate the distance between the current position of the projectile and the target balloon.
+            double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
+
+            // If the distance is within the damage area, hit the balloon.
+            if (distance <= (damageArea + 10)) {
+                if (type == ProjectileImageSize.valueOf("GOO")) {
+                    balloon.goo(); // Apply the goo effect if this is a "GOO" projectile.
+                }
+                balloon.gotHit(true);
+                hitBalloons.add(balloon); // Mark the balloon as hit.
+                return true; // The projectile hit the balloon
+            }
         }
         return false; // No collision with the balloon
     }
+
 
     /**
      * Gets the number of remaining hits that the projectile can make.
@@ -201,7 +241,11 @@ public class Projectile {
     public int getHeight() {
         return type.getHeight();
     }
-    public int getDamage(){
+
+    public int getDamage() {
         return damage;
+    }
+    public ProjectileImageSize getType(){
+        return type;
     }
 }

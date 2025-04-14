@@ -18,7 +18,7 @@ public class BombTower extends Tower {
         this.isRotatable = true;
         this.setFireSpeed(600);
         this.setRange(250);
-        this.setProjectileSpeed(8);
+        this.setProjectileSpeed(10);
         this.setProjectileDamage(1);
         this.setTowerImageSize(TowerImageSize.BOMBTOWER);
         this.setCost(555);
@@ -43,8 +43,9 @@ public class BombTower extends Tower {
         // Create a new projectile with computed parameters
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
-                diameter, currentTarget, 1, true,
-                getProjectileImage(4), ProjectileImageSize.BOMB,getProjectileDamage()
+                diameter, currentTarget, 1, false,
+                getProjectileImage(4), ProjectileImageSize.BOMB,getProjectileDamage(),
+                targets
         );
 
         // Add projectile to active projectile list
@@ -52,6 +53,10 @@ public class BombTower extends Tower {
 
         // Begin fire cooldown
         setFireTimer();
+    }
+
+    public ArrayList<Balloon> getTargets(){
+        return targets;
     }
 
     @Override

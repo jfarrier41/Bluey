@@ -175,6 +175,12 @@ abstract public class Tower {
         this.target = target;
     }
 
+    public void addTarget(Balloon target) {
+        if(!targets.contains(target)) {
+            this.targets.add(target);
+        }
+    }
+
     /**
      * Calculates the angle between the tower and a target position.
      *
@@ -325,8 +331,7 @@ abstract public class Tower {
                 "src/ProjectileImages/glueDart.png",
                 "src/ProjectileImages/ninjaStar.png",
                 "src/ProjectileImages/energyBall.png",
-                "src/ProjectileImages/bomb.png",
-                "src/ProjectileImages/explosion.png"
+                "src/ProjectileImages/bomb.png"
         };
         PROJECTILE_IMAGES = new BufferedImage[paths.length];
 

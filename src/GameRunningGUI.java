@@ -42,6 +42,17 @@ public class GameRunningGUI extends JPanel {
     private Timer spawnTimer;
     private boolean finalWaveSpawned;
 
+    private static final BufferedImage EXPLOSION;
+    static {
+        BufferedImage temp = null;
+        try {
+            temp = ImageIO.read(new File("src/ProjectileImages/explosion.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        EXPLOSION = temp;
+    }
+
     /**
      * Constructs a new GameRunningGUI object.
      * Initializes the game state, loads images, and sets up the layout.
@@ -268,6 +279,9 @@ public class GameRunningGUI extends JPanel {
 
         // All towers will check which balloons are in range and target the best one.
         for (Tower tower : placedTowers) {
+            if(!tower.targets.isEmpty()){
+                tower.targets.removeIf(b -> !tower.inRange(b));
+            }
             // Step 1: Invalidate current target if it’s no longer in range
             Balloon currentTarget = tower.getTarget();
             if (currentTarget != null && !tower.inRange(currentTarget)) {
@@ -279,8 +293,8 @@ public class GameRunningGUI extends JPanel {
             Balloon bestTarget = null;
             for (Balloon balloon : balloons) {
                 if (tower.inRange(balloon) && !balloon.isHidden()) {
-                    if(tower.towerType.equals("Ice")){
-                        tower.targets.add(balloon);
+                    if(tower.towerType.equals("Ice") || tower.towerType.equals("Bomb")) {
+                        tower.addTarget(balloon);
                     }
                     if (bestTarget == null || compareBalloons(balloon, bestTarget) > 0) {
                         bestTarget = balloon;
@@ -292,11 +306,11 @@ public class GameRunningGUI extends JPanel {
 
             // Step 3: Fire if there is a valid target
             if (tower.getTarget() != null && tower.isReadyToFire()) {
-                if(!tower.targets.isEmpty()){
+                /*if(!tower.targets.isEmpty()){
                     tower.fire(tower.getTarget(), curProjectiles, tower.targets);
-                }else {
+                }else {*/
                     tower.fire(tower.getTarget(), curProjectiles);
-                }
+                //}
             }
         }
 
@@ -314,7 +328,11 @@ public class GameRunningGUI extends JPanel {
             Iterator<Balloon> balloonIterator = balloons.iterator();
             while (balloonIterator.hasNext()) {
                 Balloon b = balloonIterator.next();
-                if (p.didHit(b)) {
+                p.didHit(b);
+                if(p.didHit(b) && p.type.equals(ProjectileImageSize.BOMB)){
+                    p.image = EXPLOSION;
+                }
+                if (b.isHit()) {
                     p.removeOneFromHitCount();
                     b.takeDamage(p.getDamage());  // Apply damage to the balloon
                     currentCash++;
@@ -322,6 +340,8 @@ public class GameRunningGUI extends JPanel {
                     if (b.isPopped()) {
                         new SoundEffect("Pop1.wav", false, .8f);
                         balloonIterator.remove();
+                    }else{
+                        b.gotHit(false);
                     }
 
                     // If the projectile has no remaining hits, remove it

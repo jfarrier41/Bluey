@@ -10,24 +10,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 /*
-* Joseph Farrier
-* 3/16/2025
-* Description: This class is used to handle the drawing and animations for the Tower Class
-* This class works in connection with both the GUI and the Tower Class. Using mouse listerns
-* to determine if the user is ready to place a tower, and track where the user is tracing.
-* It also uses a list to keep track of all towers place and draw them to the screen
-* */
+ * Joseph Farrier
+ * 3/16/2025
+ * Description: This class is used to handle the drawing and animations for the Tower Class
+ * This class works in connection with both the GUI and the Tower Class. Using mouse listerns
+ * to determine if the user is ready to place a tower, and track where the user is tracing.
+ * It also uses a list to keep track of all towers place and draw them to the screen
+ * */
 public class TowerPanel extends JPanel {
     private Tower tower;
 
     private final JLayeredPane layeredPane;
     private BufferedImage trashImage;
+    private List<Tower> placedTowers;
 
     int x;
     int y;
 
     public TowerPanel(JLayeredPane pane, List<Tower> placedTowers, GameRunningGUI gameRunningGUI) {
         this.layeredPane = pane;
+        this.placedTowers = placedTowers;
+
         setOpaque(false);
 
         try {
@@ -39,7 +42,7 @@ public class TowerPanel extends JPanel {
 
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-               // check to see if tower has been assigned and is placeable
+                // check to see if tower has been assigned and is placeable
                 if ((tower != null) && tower.isPlaceable()) {
                     gameRunningGUI.setCurrentCash(tower.getCost());
                     new SoundEffect("NewTowerIntro.wav", false, .8f);
@@ -53,8 +56,8 @@ public class TowerPanel extends JPanel {
                     layeredPane.setLayer(TowerPanel.this, JLayeredPane.PALETTE_LAYER);
                     repaint();
                 }
-                }
-            });
+            }
+        });
 
 
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -86,6 +89,8 @@ public class TowerPanel extends JPanel {
         if(tower == null){
             return;
         }
+
+        isTowerThere();
         int diameter = tower.getDiameter();
 
         if (tower.isSelected) {
@@ -114,6 +119,21 @@ public class TowerPanel extends JPanel {
             Image towerImage = tower.towerImage;
             g.drawImage(towerImage, x, y,tower.getImgWidth(),tower.getImgHeight(), this);
 
+        }
+    }
+
+    private void isTowerThere() {
+        for (Tower placedTower : placedTowers) {
+            Point point = placedTower.getPosition();
+            System.out.println(point);
+            int xDif = Math.abs(x - point.x);
+            int yDif = Math.abs(y - point.y);
+            System.out.println(xDif);
+            System.out.println(yDif);
+            if(xDif < 20 && yDif < 20){
+                tower.placeable = false;
+                break;
+            }
         }
     }
 

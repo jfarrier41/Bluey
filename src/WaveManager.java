@@ -15,7 +15,7 @@ public class WaveManager {
     private void initializeWaves() {
 
         waves.add(new Wave(List.of(
-                new BloonSpawnInfo(1, 4, 1)
+                new BloonSpawnInfo(5, 4, .1)
         )));
         waves.add(new Wave(List.of(
                 new BloonSpawnInfo(1, 7, 1)

@@ -27,6 +27,15 @@ public class IceTower extends Tower {
 
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+        for(Balloon target : targets) {
+            if(target.getSpeed() == 0){
+                target.unfreeze();
+            }
+            else{
+                target.freeze();
+            }
+        }
+        setFireTimer();
     }
 
     @Override

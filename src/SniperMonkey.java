@@ -45,7 +45,7 @@ public class SniperMonkey extends Tower {
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, true,
                 getProjectileImage(0), ProjectileImageSize.SNIPERBULLET,
-                getProjectileDamage()
+                getProjectileDamage(), targets
         );
 
         // Add projectile to active projectile list

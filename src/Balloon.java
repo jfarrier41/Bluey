@@ -24,6 +24,7 @@ public class Balloon {
     protected boolean gooed;
     protected boolean frozen;
     private boolean hidden;
+    private boolean hit;
 
     /**
      * Constructor for the Balloon class.
@@ -305,4 +306,12 @@ public class Balloon {
     public boolean isHidden(){
         return hidden;
     }
+
+    public void gotHit(boolean hit) {
+        this.hit = hit;
+    }
+    public boolean isHit() {
+        return hit;
+    }
+
 }

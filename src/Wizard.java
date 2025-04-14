@@ -44,7 +44,8 @@ public class Wizard extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 4, false,
-                getProjectileImage(3), ProjectileImageSize.ORB,getProjectileDamage()
+                getProjectileImage(3), ProjectileImageSize.ORB,getProjectileDamage(),
+                targets
         );
 
         // Add projectile to active projectile list
