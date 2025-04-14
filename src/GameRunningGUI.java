@@ -30,11 +30,17 @@ public class GameRunningGUI extends JPanel {
     private final ArrayList<Tower> placedTowers;
     private final ArrayList<Projectile> curProjectiles;
     private int currentCash, currentHealth;
-    private final WaveManager waveManager;
+    private WaveManager waveManager;
     private boolean waveInProgress;
     private int bloonsRemainingInWave;
     private JButton playButton;
     private boolean addEndRoundCash;
+    private final TowerSelectionButtons towerSelectionButtons;
+    private boolean gameInProgress;
+    private boolean promptedForRestart = false;
+    private boolean paused;
+    private Timer spawnTimer;
+    private boolean finalWaveSpawned;
 
     /**
      * Constructs a new GameRunningGUI object.
@@ -48,7 +54,7 @@ public class GameRunningGUI extends JPanel {
      */
     public GameRunningGUI(RunGame runGame, int width, int height, String selectedMap, HomeScreenGUI homeScreenGUI) {
         currentCash = 1000;
-        currentHealth = 200;
+        currentHealth = 100;
 
         this.MAP_WIDTH = width;
         this.HEIGHT = height;
@@ -59,6 +65,7 @@ public class GameRunningGUI extends JPanel {
         this.balloons = new ArrayList<>();
         this.placedTowers = new ArrayList<>();
         this.curProjectiles = new ArrayList<>();
+        this.gameInProgress = true;
 
         loadImages();
         loadBalloonImages();
@@ -67,27 +74,24 @@ public class GameRunningGUI extends JPanel {
         layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
         add(layeredPane);
 
-        towerPanel = new TowerPanel(layeredPane, placedTowers);
+        towerPanel = new TowerPanel(layeredPane, placedTowers,this);
+
         towerPanel.setBounds(0, 0, 700, 520);
         towerPanel.setOpaque(false);
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
-        towerPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                new SoundEffect("Click.wav", false, 1f);
-            }
-        });
 
         waveManager = new WaveManager();
         waveInProgress = false;
         bloonsRemainingInWave = 0;
 
-        TowerSelectionButtons towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage, towerPanel, layeredPane);
+        towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage, towerPanel, layeredPane,this);
         towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, MAP_WIDTH / 5 + 15, MAP_WIDTH / 6, HEIGHT / 2);
         add(towerSelectionButtons);
         setLayout(null);
 
         addPlayButton();
+        addResetButton();
+        addPauseButton();
         addReturnHomeButton();
 
         // Game loop timer (60 FPS)
@@ -146,8 +150,6 @@ public class GameRunningGUI extends JPanel {
      * Starts the next wave of balloons if the current wave is finished and there are no balloons remaining.
      */
     private void startNextWave() {
-        if (!waveManager.hasNextWave() && waveInProgress) return;
-
         // Only start the wave if the balloons list is empty
         if (balloons.isEmpty()) {
             addEndRoundCash = true;
@@ -169,7 +171,7 @@ public class GameRunningGUI extends JPanel {
      * @param bloonInfo The information about the balloons to spawn.
      */
     private void spawnBloonsForWave(BloonSpawnInfo bloonInfo) {
-        Timer spawnTimer = new Timer((int) (bloonInfo.getSpawnRate() * 1000), e -> {
+        spawnTimer = new Timer((int) (bloonInfo.getSpawnRate() * 1000), e -> {
             // Check if there are still balloons left to spawn in this group
             if (bloonInfo.getAmount() > 0) {
                 // Spawn a balloon and decrement the amount
@@ -183,9 +185,10 @@ public class GameRunningGUI extends JPanel {
                 ((Timer) e.getSource()).stop(); // Stop the timer once all balloons are spawned
                 waveManager.nextWave(); // Move to the next wave
                 if (waveManager.hasNextWave()) {
+                    waveInProgress = false;
                     startNextWave(); // Start the next wave
                 } else {
-                    waveInProgress = false; // All waves completed
+                    finalWaveSpawned = true;
                 }
             }
         });
@@ -196,10 +199,55 @@ public class GameRunningGUI extends JPanel {
      * The main game loop. It updates the game state and repaints the screen at 60 frames per second (FPS).
      */
     private void gameLoop() {
-        // Add global mouse listener for click sounds
+        if(paused){
+            JOptionPane.showConfirmDialog(
+                    this,
+                    "Game is paused. Click OK to continue.",
+                    "Paused",
+                    JOptionPane.DEFAULT_OPTION
+            );
+
+            paused = false; // Resume the game after dialog is closed
+            return; // Skip rest of this loop, continue next frame
+        }
+
+        if (finalWaveSpawned && balloons.isEmpty() && !promptedForRestart) {
+            promptedForRestart = true;
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    "Congratulations! You defeated all of the waves! Play Again?",
+                    "Play Again?",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (result == JOptionPane.YES_OPTION) {
+                restartGame();
+            } else {
+                returnHome(); // Or go back to a menu if you have one
+            }
+        }
+
+        if (!gameInProgress && !promptedForRestart) {
+            promptedForRestart = true;
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    "Game over! Would you like to play again?",
+                    "Play Again?",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (result == JOptionPane.YES_OPTION) {
+                restartGame();
+            } else {
+                returnHome(); // Or go back to a menu if you have one
+            }
+        }
+
         updateGameState();
         repaint();
     }
+
+
 
     /**
      * Updates the game state by processing the positions of balloons and the targeting and firing of towers.
@@ -214,6 +262,9 @@ public class GameRunningGUI extends JPanel {
                 currentHealth -= balloon.getLevel();
             }
         }
+        if(currentHealth <= 0) {
+            gameInProgress = false;
+        }
 
         // All towers will check which balloons are in range and target the best one.
         for (Tower tower : placedTowers) {
@@ -227,7 +278,7 @@ public class GameRunningGUI extends JPanel {
             // Step 2: Try to find a better target
             Balloon bestTarget = null;
             for (Balloon balloon : balloons) {
-                if (tower.inRange(balloon)) {
+                if (tower.inRange(balloon) && !balloon.isHidden()) {
                     if(tower.towerType.equals("Ice")){
                         tower.targets.add(balloon);
                     }
@@ -244,7 +295,6 @@ public class GameRunningGUI extends JPanel {
                 if(!tower.targets.isEmpty()){
                     tower.fire(tower.getTarget(), curProjectiles, tower.targets);
                 }else {
-                    System.out.println("Target is null");
                     tower.fire(tower.getTarget(), curProjectiles);
                 }
             }
@@ -266,7 +316,7 @@ public class GameRunningGUI extends JPanel {
                 Balloon b = balloonIterator.next();
                 if (p.didHit(b)) {
                     p.removeOneFromHitCount();
-                    b.takeDamage(1);  // Apply damage to the balloon
+                    b.takeDamage(p.getDamage());  // Apply damage to the balloon
                     currentCash++;
                     // If the balloon is popped, remove it from the list
                     if (b.isPopped()) {
@@ -347,7 +397,9 @@ public class GameRunningGUI extends JPanel {
 
         // Draw balloons.
         for (Balloon balloon : balloons) {
-            balloon.draw(g);
+            if(!balloon.isHidden()) {
+                balloon.draw(g);
+            }
         }
 
         // Draw projectiles.
@@ -373,7 +425,7 @@ public class GameRunningGUI extends JPanel {
      * @param g The graphics context in which to draw the game info.
      */
     private void drawGameInfo(Graphics g) {
-        g.setFont(new Font("Arial", Font.BOLD, 18));
+        g.setFont(new Font("Arial", Font.BOLD, 25));
         g.setColor(Color.WHITE);
         int xOffset = 10;
 
@@ -381,12 +433,21 @@ public class GameRunningGUI extends JPanel {
         String formattedCash = String.format("%,d", currentCash);
 
         // Draw hearts image and health text.
-        g.drawImage(heartsImage, xOffset, 160, 30, 30, this); // Image width and height can be adjusted.
-        g.drawString("Health: " + currentHealth, xOffset + 35, 180);
+        g.drawImage(heartsImage, xOffset, 180, 30, 30, this); // Image width and height can be adjusted.
+        g.drawString("Health: " + currentHealth, xOffset + 35, 205);
 
         // Draw money sign image and cash text.
         g.drawImage(moneySignImage, xOffset, 120, 30, 30, this); // Image width and height can be adjusted.
-        g.drawString("Cash: $" + formattedCash, xOffset + 35, 140);
+        g.drawString("Cash: $" + formattedCash, xOffset + 35, 145);
+
+        if(towerSelectionButtons.getDisplayTowerName().equals("Towers")){
+            g.drawString(towerSelectionButtons.getDisplayTowerName(), 1000, 80);
+        } else {
+            g.drawString(towerSelectionButtons.getDisplayTowerName(), 975, 80);
+        }
+
+        g.drawImage(moneySignImage, 1000, 90, 30, 30, this);
+        g.drawString(String.valueOf(towerSelectionButtons.getDisplayTowerCost()), 1035, 115);
 
         // Check if the wave has ended and update the play button text accordingly.
         if (balloons.isEmpty() && !waveInProgress) {
@@ -421,6 +482,34 @@ public class GameRunningGUI extends JPanel {
         });
 
         add(playButton);
+    }
+
+    private void addResetButton() {
+        JButton resetButton = new JButton("Reset Game");
+        resetButton.setFont(new Font("Arial", Font.BOLD, 14));
+        resetButton.setBounds(47, 430, 140, 40);
+        resetButton.setFocusPainted(false);
+
+        // Add an action listener to start the next wave when clicked.
+        resetButton.addActionListener(e -> {
+            restartGame();
+        });
+
+        add(resetButton);
+    }
+
+    private void addPauseButton() {
+        JButton pauseButton = new JButton("Pause Game");
+        pauseButton.setFont(new Font("Arial", Font.BOLD, 14));
+        pauseButton.setBounds(47, 370, 140, 40);
+        pauseButton.setFocusPainted(false);
+
+        // Add an action listener to start the next wave when clicked.
+        pauseButton.addActionListener(e -> {
+            paused = true;
+        });
+
+        add(pauseButton);
     }
 
     /**
@@ -463,5 +552,27 @@ public class GameRunningGUI extends JPanel {
         runGame.setContentPane(homeScreenGUI);
         runGame.revalidate();
         runGame.repaint();
+    }
+
+    public int getCurrentCash() {
+        return currentCash;
+    }
+    public void setCurrentCash(int cash) {
+        currentCash -= cash;
+    }
+    private void restartGame() {
+        this.balloons.clear();
+        this.placedTowers.clear();
+        this.curProjectiles.clear();
+        this.currentCash = 800;
+        this.currentHealth = 100;
+        waveManager = new WaveManager();
+        waveInProgress = false;
+        gameInProgress = true;
+        promptedForRestart = false;
+        finalWaveSpawned = false;
+        if(spawnTimer!=null){
+            spawnTimer.stop();
+        }
     }
 }

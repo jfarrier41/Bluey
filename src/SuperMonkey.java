@@ -33,24 +33,20 @@ public class SuperMonkey extends Tower {
         this.setFireRate(50);
 
         /** Set the detection range for targeting balloons. */
-        this.setRange(500);
+        this.setRange(350);
 
         /** Set the speed of fired projectiles. */
         this.setProjectileSpeed(20);
 
         /** Set the damage dealt by projectiles. */
-        this.setProjectileDamage(10);
+        this.setProjectileDamage(1);
 
         /** Set the visual size used for the SuperMonkey tower image. */
         this.setTowerImageSize(TowerImageSize.SUPERMONKEY);
+        this.setCost(2650);
         towerType = "SuperMonkey";
 
-        /** Paths for dart and explosion images used in projectile animation. */
-        projectilePaths = new String[] {
-                "src/ProjectileImages/dart.png",
-                "src/ProjectileImages/explosion.png",
-        };
-        loadProjectileImages(projectilePaths);
+        loadProjectileImages();
     }
 
     /**
@@ -108,7 +104,7 @@ public class SuperMonkey extends Tower {
         /** Create new projectile instance and add to list. */
         Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
                 angleRadians, diameter, currentTarget, 1, false,
-                getProjectileImage(0), ProjectileImageSize.DART);
+                getProjectileImage(0), ProjectileImageSize.DART,getProjectileDamage());
         projectiles.add(p);
 
         /** Start cooldown before next fire. */

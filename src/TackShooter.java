@@ -22,16 +22,12 @@ public class TackShooter extends Tower {
         this.setFireRate(500);
         this.setRange(150);
         this.setProjectileSpeed(10);
-        this.setProjectileDamage(5);
+        this.setProjectileDamage(1);
         this.setTowerImageSize(TowerImageSize.TACSHOOTER);
+        this.setCost(425);
         towerType = "TackShooter";
 
-        /** Paths for dart and explosion images used in projectile animation. */
-        projectilePaths = new String[]{
-                "src/ProjectileImages/dart.png",
-
-        };
-        loadProjectileImages(projectilePaths);
+        loadProjectileImages();
 
 
     }
@@ -69,7 +65,7 @@ public class TackShooter extends Tower {
             /** Create new projectile instance and add to list. */
             Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
                     angle, diameter, balloon, 1, false,
-                    getProjectileImage(0), ProjectileImageSize.TAC);
+                    getProjectileImage(0), ProjectileImageSize.TAC,getProjectileDamage());
             projectiles.add(p);
         }
 

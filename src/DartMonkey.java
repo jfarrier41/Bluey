@@ -35,16 +35,12 @@ public class DartMonkey extends Tower {
         this.setFireRate(500);                  // Milliseconds between shots
         this.setRange(200);                     // Radius within which the tower can target balloons
         this.setProjectileSpeed(23);            // Speed of the projectile
-        this.setProjectileDamage(10);           // Damage dealt per hit
+        this.setProjectileDamage(1);           // Damage dealt per hit
         this.setTowerImageSize(TowerImageSize.DARTMONKEY); // Size enum specific to DartMonkey
+        this.setCost(170);
         towerType = "DartMonkey";
 
-        // Load dart and explosion projectile images
-        String[] projectilePaths = new String[]{
-                "src/ProjectileImages/dart.png",
-                "src/ProjectileImages/explosion.png",
-        };
-        loadProjectileImages(projectilePaths);
+        loadProjectileImages();
     }
 
     /**
@@ -104,7 +100,8 @@ public class DartMonkey extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
-                getProjectileImage(0), ProjectileImageSize.DART
+                getProjectileImage(0), ProjectileImageSize.DART,
+                getProjectileDamage()
         );
 
         // Add projectile to active projectile list
@@ -116,6 +113,5 @@ public class DartMonkey extends Tower {
 
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
     }
 }

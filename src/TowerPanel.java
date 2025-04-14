@@ -26,7 +26,7 @@ public class TowerPanel extends JPanel {
     int x;
     int y;
 
-    public TowerPanel(JLayeredPane pane, List<Tower> placedTowers) {
+    public TowerPanel(JLayeredPane pane, List<Tower> placedTowers, GameRunningGUI gameRunningGUI) {
         this.layeredPane = pane;
         setOpaque(false);
 
@@ -41,6 +41,7 @@ public class TowerPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                // check to see if tower has been assigned and is placeable
                 if ((tower != null) && tower.isPlaceable()) {
+                    gameRunningGUI.setCurrentCash(tower.getCost());
                     new SoundEffect("NewTowerIntro.wav", false, .8f);
                     // Set tower postion
                     tower.setPosition(x,y);
@@ -52,8 +53,8 @@ public class TowerPanel extends JPanel {
                     layeredPane.setLayer(TowerPanel.this, JLayeredPane.PALETTE_LAYER);
                     repaint();
                 }
-            }
-        });
+                }
+            });
 
 
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -81,7 +82,6 @@ public class TowerPanel extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         //  Check to see if tower has been assigned
         if(tower == null){
             return;

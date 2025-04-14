@@ -22,7 +22,6 @@ abstract public class Tower {
     protected final JLabel towerJLabel;
     protected BufferedImage currentMap;
     protected String mapName;
-    protected int ImageIndex;
     protected static String[] projectilePaths;
     protected static BufferedImage[] PROJECTILE_IMAGES;
 
@@ -62,6 +61,8 @@ abstract public class Tower {
     protected TowerImageSize type;
     private int imgWidth;
     private int imgHeight;
+
+    private int cost;
 
     /**
      * Constructor for towers that takes JFrame and BufferedImage for the current map.
@@ -362,9 +363,16 @@ abstract public class Tower {
     /**
      * Loads the projectile images from the provided paths.
      *
-     * @param paths The paths to the images for the projectiles.
      */
-    protected void loadProjectileImages(String[] paths) {
+    protected void loadProjectileImages() {
+        String[] paths = {
+                "src/ProjectileImages/dart.png",
+                "src/ProjectileImages/glueDart.png",
+                "src/ProjectileImages/ninjaStar.png",
+                "src/ProjectileImages/energyBall.png",
+                "src/ProjectileImages/bomb.png",
+                "src/ProjectileImages/explosion.png"
+        };
         PROJECTILE_IMAGES = new BufferedImage[paths.length];
 
         for (int i = 0; i < paths.length; i++) {
@@ -414,4 +422,11 @@ abstract public class Tower {
     public int getImgHeight() {
         return imgHeight;
     }
+    public int getCost() {
+        return cost;
+    }
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
 }

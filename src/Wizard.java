@@ -18,16 +18,13 @@ public class Wizard extends Tower {
         // Set default values for DartMonkey (can be overridden if needed)
         this.isRotatable = true;
         this.setFireSpeed(700);
-        this.setRange(400);
+        this.setRange(250);
         this.setProjectileSpeed(8);
-        this.setProjectileDamage(10);
+        this.setProjectileDamage(1);
         this.setTowerImageSize(TowerImageSize.WIZARD);
+        this.setCost(470);
         towerType = "Wizard";
-        String[] projectilePaths = new String[]{
-                "src/ProjectileImages/energyBall.png",
-                "src/ProjectileImages/explosion.png",
-        };
-        loadProjectileImages(projectilePaths);
+        loadProjectileImages();
     }
 
     @Override
@@ -63,7 +60,7 @@ public class Wizard extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 4, false,
-                getProjectileImage(0), ProjectileImageSize.ORB
+                getProjectileImage(3), ProjectileImageSize.ORB,getProjectileDamage()
         );
 
         // Add projectile to active projectile list

@@ -16,20 +16,15 @@ public class SniperMonkey extends Tower {
         super(runGame, currentMap,"SniperMonkey.png");
 
         this.setRotatable(true);                // Tower can rotate toward targets
-        this.setFireRate(600);                  // Milliseconds between shots
-        this.setRange(600);                     // Radius within which the tower can target balloons
+        this.setFireRate(1000);                  // Milliseconds between shots
+        this.setRange(800);                     // Radius within which the tower can target balloons
         this.setProjectileSpeed(70);            // Speed of the projectile
-        this.setProjectileDamage(10);           // Damage dealt per hit
+        this.setProjectileDamage(4);           // Damage dealt per hit
+        this.setCost(300);
         towerType = "Sniper";
         this.setTowerImageSize(TowerImageSize.SNIPERMONKEY); // Size enum specific to DartMonkey
 
-        // Load dart and explosion projectile images
-        String[] projectilePaths = new String[]{
-                "src/ProjectileImages/dart.png",
-                "src/ProjectileImages/bomb.png",
-                "src/ProjectileImages/explosion.png",
-        };
-        loadProjectileImages(projectilePaths);
+        loadProjectileImages();
     }
 
     @Override
@@ -65,7 +60,8 @@ public class SniperMonkey extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, true,
-                getProjectileImage(0), ProjectileImageSize.SNIPERBULLET
+                getProjectileImage(0), ProjectileImageSize.SNIPERBULLET,
+                getProjectileDamage()
         );
 
         // Add projectile to active projectile list

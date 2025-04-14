@@ -18,10 +18,12 @@ public class Balloon {
     private double speed;
     private int level;
     private int health;
+    private BalloonType type;
     private boolean isMoving;
     private boolean animatePop;
     protected boolean gooed;
     protected boolean frozen;
+    private boolean hidden;
 
     /**
      * Constructor for the Balloon class.
@@ -33,7 +35,6 @@ public class Balloon {
      */
     public Balloon(Waypoints waypoints, BufferedImage[] balloonImages, int level) {
         this.waypoints = waypoints;
-        this.speed = 2 + level * .5; // Adjust speed as needed
         this.balloonImages = balloonImages;
         this.level = level;
         this.currentSegmentIndex = 0;
@@ -41,7 +42,19 @@ public class Balloon {
         this.isMoving = true;
         this.x = currentPosition.x;
         this.y = currentPosition.y;
-        this.health = 1;
+        // Determine BalloonType based on level
+        this.type = getBalloonTypeFromLevel(level);
+        this.health = type.getHealth();
+        this.speed = type.getSpeed();
+
+    }
+
+    private BalloonType getBalloonTypeFromLevel(int level) {
+        // You can map levels to types however you want
+        // Here's a simple example mapping 1-10 to each BalloonType in order
+        BalloonType[] types = BalloonType.values();
+        int index = Math.max(0, Math.min(level, types.length - 1));
+        return types[index];
     }
 
     /**
@@ -59,6 +72,20 @@ public class Balloon {
         }
 
         WaypointSegment currentSegment = waypoints.getSegment(currentSegmentIndex);
+        if(waypoints.getMapName().equals("MonkeyLane")){
+            if(currentSegmentIndex == 6){
+                hidden = true;
+            }
+            if(currentSegmentIndex == 7){
+                hidden = false;
+            }
+            if(currentSegmentIndex == 18){
+                hidden = true;
+            }
+            if(currentSegmentIndex == 19){
+                hidden = false;
+            }
+        }
         if (currentSegment.isCurved()) {
             moveAlongCurve(currentSegment);
         } else {
@@ -274,5 +301,8 @@ public class Balloon {
 
     public int getCurrentSegmentIndex() {
         return currentSegmentIndex;
+    }
+    public boolean isHidden(){
+        return hidden;
     }
 }

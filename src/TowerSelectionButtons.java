@@ -23,6 +23,9 @@ public class TowerSelectionButtons extends JPanel {
     private final BufferedImage currentMap;
     private final TowerPanel towerPanel;
     private final JLayeredPane layeredPane;
+    private final GameRunningGUI gameRunningGUI;
+    private String displayTowerName;
+    private int displayTowerCost;
 
 
     // Default tower images used for display purposes
@@ -40,12 +43,15 @@ public class TowerSelectionButtons extends JPanel {
      * @param towerPanel The panel managing tower placement.
      * @param layeredPane The layered pane for managing UI layers.
      */
-    public TowerSelectionButtons(RunGame rungGame, BufferedImage currentMap, TowerPanel towerPanel, JLayeredPane layeredPane) {
+    public TowerSelectionButtons(RunGame rungGame, BufferedImage currentMap, TowerPanel towerPanel, JLayeredPane layeredPane, GameRunningGUI gameRunningGUI) {
         this.towerNames = DEFAULT_TOWER_IMAGES;
         this.runGame = rungGame;
         this.currentMap = currentMap;
         this.towerPanel = towerPanel;
         this.layeredPane = layeredPane;
+        this.gameRunningGUI = gameRunningGUI;
+        this.displayTowerName = "Towers";
+        this.displayTowerCost = 0;
 
         setLayout(new BorderLayout());
         setBackground(new Color(0, 0, 0, 0));
@@ -170,35 +176,47 @@ public class TowerSelectionButtons extends JPanel {
         switch (imageName) {
             case "DartMonkey.png":
                 tower = new DartMonkey(runGame, currentMap);
+                displayTowerName = "Dart Monkey";
                 break;
             case "SuperMonkey.png":
                 tower = new SuperMonkey(runGame, currentMap);
+                displayTowerName = "Super Monkey";
                 break;
             case "BombTower.png":
                 tower = new BombTower(runGame, currentMap);
+                displayTowerName = "Bomb Tower";
                 break;
             case "GlueGunner.png":
                 tower = new GlueGunner(runGame, currentMap);
+                displayTowerName = "Glue Gunner";
                 break;
             case "IceTower.png":
                 tower = new IceTower(runGame, currentMap);
+                displayTowerName = "Frozen Monkey";
                 break;
             case "Ninja.png":
                 tower = new Ninja(runGame, currentMap);
+                displayTowerName = "Ninja Monkey";
                 break;
             case "SniperMonkey.png":
                 tower = new SniperMonkey(runGame, currentMap);
+                displayTowerName = "Sniper Monkey";
                 break;
             case "TackShooter.png":
                 tower = new TackShooter(runGame, currentMap);
+                displayTowerName = "Tack Shooter";
                 break;
             case "Wizard.png":
                 tower = new Wizard(runGame, currentMap);
+                displayTowerName = "Wizard Monkey";
                 break;
             default:
                 return;
         }
-
+        displayTowerCost = tower.getCost();
+        if(tower.getCost() > gameRunningGUI.getCurrentCash()) {
+            return;
+        }
         tower.isSelected = true;
         towerPanel.setTower(tower);
         layeredPane.setLayer(towerPanel, JLayeredPane.DRAG_LAYER);
@@ -234,5 +252,11 @@ public class TowerSelectionButtons extends JPanel {
             currentPage++;
             updateButtonGrid();
         }
+    }
+    public int getDisplayTowerCost(){
+        return displayTowerCost;
+    }
+    public String getDisplayTowerName() {
+        return displayTowerName;
     }
 }

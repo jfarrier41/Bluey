@@ -25,18 +25,14 @@ public class GlueGunner extends Tower {
         // Set default values for the GlueGunner tower (can be overridden if needed)
         this.setRotatable(true);                // The tower can rotate toward targets
         this.setFireRate(500);                  // Milliseconds between shots
-        this.setRange(200);                     // Radius within which the tower can target balloons
+        this.setRange(255);                     // Radius within which the tower can target balloons
         this.setProjectileSpeed(23);            // Speed of the projectile
-        this.setProjectileDamage(10);           // Damage dealt per hit
+        this.setProjectileDamage(1);           // Damage dealt per hit
         this.setTowerImageSize(TowerImageSize.GLUEGUNNER); // Specific size for the GlueGunner tower image
+        this.setCost(365);
         towerType = "GlueGunner";
 
-        // Load dart and explosion projectile images
-        String[] projectilePaths = new String[] {
-                "src/ProjectileImages/glue_dart.png",   // Path for the glue dart projectile image
-                "src/ProjectileImages/explosion.png",   // Path for the explosion image
-        };
-        loadProjectileImages(projectilePaths); // Load the projectile images
+        loadProjectileImages();
     }
 
     /**
@@ -92,7 +88,7 @@ public class GlueGunner extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
-                getProjectileImage(0), ProjectileImageSize.GOO
+                getProjectileImage(1), ProjectileImageSize.GOO,getProjectileDamage()
         );
 
         // Add the created projectile to the active projectiles list

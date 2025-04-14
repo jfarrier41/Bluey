@@ -11,23 +11,19 @@ public class WaveManager {
         initializeWaves();
     }
 
+
     private void initializeWaves() {
-        waves.add(new Wave(List.of(
-                new BloonSpawnInfo(10, 2, 1)
-        )));
 
         waves.add(new Wave(List.of(
-                new BloonSpawnInfo(10, 1, 0.2),
-                new BloonSpawnInfo(15, 2, 0.3),
-                new BloonSpawnInfo(10, 3, 0.35),
-                new BloonSpawnInfo(15, 4, 0.41),
-                new BloonSpawnInfo(10, 5, 0.5),
-                new BloonSpawnInfo(15, 6, 0.4),
-                new BloonSpawnInfo(10, 7, 0.23),
-                new BloonSpawnInfo(1, 8, 6)
+                new BloonSpawnInfo(1, 4, 1)
+        )));
+        waves.add(new Wave(List.of(
+                new BloonSpawnInfo(1, 7, 1)
         )));
 
-        // Add 20 waves...
+        //Empty wave which is used to help end the game
+        waves.add(new Wave(List.of(
+        )));
     }
 
     public Wave getCurrentWave() {
@@ -44,11 +40,8 @@ public class WaveManager {
         }
     }
 
-    public boolean isLastWave() {
-        return currentWaveIndex == waves.size() - 1;
-    }
-
     public int getCurrentWaveIndex() {
         return currentWaveIndex;
     }
+
 }

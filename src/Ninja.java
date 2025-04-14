@@ -19,15 +19,13 @@ public class Ninja extends Tower {
         // Set default values for DartMonkey (can be overridden if needed)
         this.isRotatable = true;
         this.setFireSpeed(450);
-        this.setRange(200);
+        this.setRange(250);
         this.setProjectileSpeed(17);
-        this.setProjectileDamage(10);
+        this.setProjectileDamage(1);
         this.setTowerImageSize(TowerImageSize.NINJA);
+        this.setCost(425);
         towerType = "Ninja";
-        projectilePaths = new String[] {
-                "src/ProjectileImages/ninjaStar.png"
-        };
-        loadProjectileImages(projectilePaths);
+        loadProjectileImages();
     }
 
 
@@ -60,7 +58,7 @@ public class Ninja extends Tower {
         // Correct angle from tower to target
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-        Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,2,false, getProjectileImage(0),ProjectileImageSize.NINJASTAR);
+        Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,2,false, getProjectileImage(2),ProjectileImageSize.NINJASTAR,getProjectileDamage());
         projectiles.add(p);
         setFireTimer();
     }

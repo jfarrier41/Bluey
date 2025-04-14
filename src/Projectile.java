@@ -31,6 +31,8 @@ public class Projectile {
     // The balloon that the projectile is currently targeting
     private Balloon currentTarget;
 
+    private int damage;
+
     /**
      * Constructs a new Projectile object.
      *
@@ -48,7 +50,7 @@ public class Projectile {
      */
     public Projectile(double x, double y, double damageArea, double speed, double angle,
                       int range, Balloon currentTarget, int allowedHits,
-                      boolean tracking, BufferedImage projectileImage, ProjectileImageSize type) {
+                      boolean tracking, BufferedImage projectileImage, ProjectileImageSize type,int damage) {
         this.currentX = x;
         this.currentY = y;
         this.startX = x;
@@ -62,6 +64,7 @@ public class Projectile {
         this.tracking = tracking;
         this.image = projectileImage;
         this.type = type;
+        this.damage = damage;
     }
 
     /**
@@ -132,7 +135,6 @@ public class Projectile {
 
         if (distance <= (damageArea + 10)) {
             if (type == ProjectileImageSize.valueOf("GOO")) {
-                System.out.println("GOO");
                 balloon.goo(); // Apply goo effect if projectile is of type "GOO"
             }
             hitBalloons.add(balloon); // Mark the balloon as hit
@@ -198,5 +200,8 @@ public class Projectile {
      */
     public int getHeight() {
         return type.getHeight();
+    }
+    public int getDamage(){
+        return damage;
     }
 }

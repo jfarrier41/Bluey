@@ -4,10 +4,11 @@ import java.util.List;
 
 public class Waypoints {
     private final List<WaypointSegment> segments;
-
+    String mapName;
     public Waypoints(String mapName) {
         segments = new ArrayList<>();
         loadWaypoints(mapName);
+        this.mapName = mapName;
     }
 
     private void loadWaypoints(String mapName) {
@@ -18,7 +19,10 @@ public class Waypoints {
                 segments.add(new WaypointSegment(new Point(400, 213), new Point(517, 213), false)); // Linear
                 segments.add(new WaypointSegment(new Point(517, 213), new Point(517, 477), false)); // Linear
                 segments.add(new WaypointSegment(new Point(517, 477), new Point(685, 477), false)); // Linear
-                segments.add(new WaypointSegment(new Point(685, 477), new Point(685, 135), false)); // Linear
+                segments.add(new WaypointSegment(new Point(685, 477), new Point(685, 457), false)); // Linear
+                segments.add(new WaypointSegment(new Point(685, 457), new Point(685, 295), false)); // Linear
+
+                segments.add(new WaypointSegment(new Point(685, 295), new Point(685, 135), false)); // Linear
                 segments.add(new WaypointSegment(new Point(685, 135), new Point(400, 135), false)); // Linear
                 segments.add(new WaypointSegment(new Point(400, 135), new Point(400, 60), false)); // Linear
                 segments.add(new WaypointSegment(new Point(400, 60), new Point(400, 56), false)); // Linear
@@ -28,6 +32,10 @@ public class Waypoints {
                 segments.add(new WaypointSegment(new Point(876, 137), new Point(876, 224), false)); // Linear
                 segments.add(new WaypointSegment(new Point(876, 224), new Point(776, 224), false)); // Linear
                 segments.add(new WaypointSegment(new Point(776, 224), new Point(776, 372), false)); // Linear
+
+                segments.add(new WaypointSegment(new Point(776, 372), new Point(610, 372), false)); // Linear
+                segments.add(new WaypointSegment(new Point(610, 372), new Point(430, 372), false)); // Linear
+
                 segments.add(new WaypointSegment(new Point(776, 372), new Point(400, 372), false)); // Linear
                 segments.add(new WaypointSegment(new Point(400, 372), new Point(400, 525), false)); // Linear
                 break;
@@ -104,5 +112,9 @@ public class Waypoints {
     // Retrieve the segment at a specific index
     public WaypointSegment getSegment(int index) {
         return segments.get(index);
+    }
+
+    public String getMapName() {
+        return mapName;
     }
 }

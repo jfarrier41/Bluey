@@ -17,16 +17,13 @@ public class BombTower extends Tower {
         // Set default values for BombTower (can be overridden if needed)
         this.isRotatable = true;
         this.setFireSpeed(600);
-        this.setRange(400);
+        this.setRange(250);
         this.setProjectileSpeed(8);
-        this.setProjectileDamage(10);
+        this.setProjectileDamage(1);
         this.setTowerImageSize(TowerImageSize.BOMBTOWER);
+        this.setCost(555);
         towerType = "Bomb";
-        String[] projectilePaths = new String[]{
-                "src/ProjectileImages/bomb.png",
-                "src/ProjectileImages/explosion.png",
-        };
-        loadProjectileImages(projectilePaths);
+        loadProjectileImages();
     }
 
     @Override
@@ -62,7 +59,7 @@ public class BombTower extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, true,
-                getProjectileImage(0), ProjectileImageSize.BOMB
+                getProjectileImage(4), ProjectileImageSize.BOMB,getProjectileDamage()
         );
 
         // Add projectile to active projectile list
