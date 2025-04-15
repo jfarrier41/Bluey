@@ -23,6 +23,7 @@ abstract public class Tower {
     protected BufferedImage currentMap;
     protected String mapName;
     protected static BufferedImage[] PROJECTILE_IMAGES;
+    protected boolean animateAttack;
 
     protected String towerType;
 
@@ -379,6 +380,10 @@ abstract public class Tower {
      *
      * @return The height of the tower image.
      */
+
+    public void setAnimateAttackFalse(){
+        this.animateAttack = false;
+    }
     public int getImgHeight() {
         return imgHeight;
     }

@@ -1,6 +1,6 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import javax.imageio.ImageIO;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -46,6 +46,7 @@ public class GameRunningGUI extends JPanel {
     private Tower clickedTower = null;
 
     private static final BufferedImage EXPLOSION;
+
     static {
         BufferedImage temp = null;
         try {
@@ -88,7 +89,7 @@ public class GameRunningGUI extends JPanel {
         layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
         add(layeredPane);
 
-        towerPanel = new TowerPanel(layeredPane, placedTowers,this);
+        towerPanel = new TowerPanel(layeredPane, placedTowers, this);
 
         towerPanel.setBounds(0, 0, 700, 520);
         towerPanel.setOpaque(false);
@@ -127,7 +128,7 @@ public class GameRunningGUI extends JPanel {
 
                 // If a closest tower is found within the range, do something with it
                 if (clickedTower != null) {
-                    sellButton.setText("Sell: $" + (int)(clickedTower.getCost() * 0.8));
+                    sellButton.setText("Sell: $" + (int) (clickedTower.getCost() * 0.8));
                     sellButton.setVisible(true);
                 } else {
                     clickedTower = null;
@@ -146,7 +147,7 @@ public class GameRunningGUI extends JPanel {
         waveInProgress = false;
         bloonsRemainingInWave = 0;
 
-        towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage, towerPanel, layeredPane,this);
+        towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage, towerPanel, layeredPane, this);
         towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, 80, MAP_WIDTH / 6, HEIGHT / 2);
         add(towerSelectionButtons);
         setLayout(null);
@@ -262,7 +263,7 @@ public class GameRunningGUI extends JPanel {
      * The main game loop. It updates the game state and repaints the screen at 60 frames per second (FPS).
      */
     private void gameLoop() {
-        if(paused){
+        if (paused) {
             JOptionPane.showConfirmDialog(
                     this,
                     "Game is paused. Click OK to continue.",
@@ -311,7 +312,6 @@ public class GameRunningGUI extends JPanel {
     }
 
 
-
     /**
      * Updates the game state by processing the positions of balloons and the targeting and firing of towers.
      */
@@ -325,13 +325,13 @@ public class GameRunningGUI extends JPanel {
                 currentHealth -= (balloon.getLevel() + 1);
             }
         }
-        if(currentHealth <= 0) {
+        if (currentHealth <= 0) {
             gameInProgress = false;
         }
 
         // All towers will check which balloons are in range and target the best one.
         for (Tower tower : placedTowers) {
-            if(!tower.targets.isEmpty()){
+            if (!tower.targets.isEmpty()) {
                 tower.targets.removeIf(b -> !tower.inRange(b));
             }
             // Step 1: Invalidate current target if it’s no longer in range
@@ -345,7 +345,7 @@ public class GameRunningGUI extends JPanel {
             Balloon bestTarget = null;
             for (Balloon balloon : balloons) {
                 if (tower.inRange(balloon) && !balloon.isHidden()) {
-                    if(tower.towerType.equals("Ice") || tower.towerType.equals("Bomb")) {
+                    if (tower.towerType.equals("Ice") || tower.towerType.equals("Bomb")) {
                         tower.addTarget(balloon);
                     }
                     if (bestTarget == null || compareBalloons(balloon, bestTarget) > 0) {
@@ -358,11 +358,7 @@ public class GameRunningGUI extends JPanel {
 
             // Step 3: Fire if there is a valid target
             if (tower.getTarget() != null && tower.isReadyToFire()) {
-                /*if(!tower.targets.isEmpty()){
-                    tower.fire(tower.getTarget(), curProjectiles, tower.targets);
-                }else {*/
-                    tower.fire(tower.getTarget(), curProjectiles);
-                //}
+                tower.fire(tower.getTarget(), curProjectiles);
             }
         }
 
@@ -381,21 +377,25 @@ public class GameRunningGUI extends JPanel {
             while (balloonIterator.hasNext()) {
                 Balloon b = balloonIterator.next();
                 p.didHit(b);
-                if(p.didHit(b) && p.type.equals(ProjectileImageSize.BOMB)){
+                /*if(p.didHit(b) && p.type.equals(ProjectileImageSize.BOMB)){
                     p.image = EXPLOSION;
-                }
+                }*/
                 if (b.isHit()) {
                     p.removeOneFromHitCount();
+                    p.setTracking(false);
                     b.takeDamage(p.getDamage());  // Apply damage to the balloon
                     currentCash++;
                     // If the balloon is popped, remove it from the list
                     if (b.isPopped()) {
                         new SoundEffect("Pop1.wav", false, .8f);
                         balloonIterator.remove();
-                    }else{
+                    } else {
                         b.gotHit(false);
                     }
 
+                    if (!p.isStillValid()) {
+                        p.setTracking(false);
+                    }
                     // If the projectile has no remaining hits, remove it
                     if (p.getRemainingHits() <= 0) {
                         projectiles.remove();
@@ -456,9 +456,17 @@ public class GameRunningGUI extends JPanel {
                 g2d.setTransform(originalTransform);
             } else {
                 g2d.drawImage(tower.towerImage, drawX, drawY, imgWidth, imgHeight, this);
+                if (tower.towerType.equals("Ice") && tower.animateAttack) {
+                    Color color = new Color(173, 216, 230, 150);
+                    g2d.setColor(color);
+                    int xOffset = (tower.getDiameter() / 2) - (tower.getImgWidth() / 2) - 233;
+                    int yOffset = (tower.getDiameter() / 2) - (tower.getImgHeight() / 2);
+                    g2d.fillOval(tower.xPosition - xOffset, tower.yPosition - yOffset, tower.getDiameter(), tower.getDiameter());
+                    tower.setAnimateAttackFalse();
+                }
             }
         }
-        if(clickedTower != null){
+        if (clickedTower != null) {
             Color color = new Color(128, 128, 128, 128);
             g2d.setColor(color);
             int xOffset = (clickedTower.getDiameter() / 2) - (clickedTower.getImgWidth() / 2) - 233;
@@ -467,7 +475,7 @@ public class GameRunningGUI extends JPanel {
         }
         // Draw balloons.
         for (Balloon balloon : balloons) {
-            if(!balloon.isHidden()) {
+            if (!balloon.isHidden()) {
                 balloon.draw(g);
             }
         }
@@ -510,7 +518,7 @@ public class GameRunningGUI extends JPanel {
         g.drawImage(moneySignImage, xOffset, 120, 30, 30, this); // Image width and height can be adjusted.
         g.drawString("Cash: $" + formattedCash, xOffset + 35, 145);
 
-        if(towerSelectionButtons.getDisplayTowerName().equals("Towers")){
+        if (towerSelectionButtons.getDisplayTowerName().equals("Towers")) {
             g.drawString(towerSelectionButtons.getDisplayTowerName(), 1000, 30);
         } else {
             g.drawString(towerSelectionButtons.getDisplayTowerName(), 975, 30);
@@ -613,7 +621,6 @@ public class GameRunningGUI extends JPanel {
     }
 
 
-
     /**
      * Adds a return home button to the GUI.
      * Clicking this button returns the user to the home screen.
@@ -659,9 +666,11 @@ public class GameRunningGUI extends JPanel {
     public int getCurrentCash() {
         return currentCash;
     }
+
     public void setCurrentCash(int cash) {
         currentCash -= cash;
     }
+
     private void restartGame() {
         this.balloons.clear();
         this.placedTowers.clear();
@@ -673,13 +682,14 @@ public class GameRunningGUI extends JPanel {
         gameInProgress = true;
         promptedForRestart = false;
         finalWaveSpawned = false;
-        if(spawnTimer!=null){
+        if (spawnTimer != null) {
             this.currentCash = 800;
             spawnTimer.stop();
         } else {
             this.currentCash = 1000;
         }
     }
+
     public String loadTowerDescription(String towerName) {
         StringBuilder description = new StringBuilder();
         try {
@@ -696,6 +706,7 @@ public class GameRunningGUI extends JPanel {
         }
         return description.toString().trim();
     }
+
     private void drawWrappedString(Graphics g, String text, int x, int y, int maxWidth) {
         FontMetrics fm = g.getFontMetrics();
         int lineHeight = fm.getHeight();

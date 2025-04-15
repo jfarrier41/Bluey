@@ -11,7 +11,6 @@ Description: Implements tower and defines the Dart Monkey.
 
 public class Ninja extends Tower {
     // Constructor that only takes JFrame and BufferedImage
-    private static String[] projectilePaths;
     private static final double COLLISION_AREA = 25;
     public Ninja(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap,"Ninja.png");
@@ -42,7 +41,7 @@ public class Ninja extends Tower {
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
         Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,
-                2,false, getProjectileImage(2),
+                3,true, getProjectileImage(2),
                 ProjectileImageSize.NINJASTAR,getProjectileDamage(), targets);
         projectiles.add(p);
         setFireTimer();

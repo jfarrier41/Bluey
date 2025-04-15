@@ -11,7 +11,7 @@ Description: Implements tower and defines the Dart Monkey.
 public class TackShooter extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private int darts = 8;
-    private static final int COLLISION_AREA = 40;
+    private static final int COLLISION_AREA = 25;
 
     public TackShooter(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "TackShooter.png");

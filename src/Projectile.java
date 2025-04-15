@@ -248,4 +248,20 @@ public class Projectile {
     public ProjectileImageSize getType(){
         return type;
     }
+
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
+    }
+    public boolean isTracking(){
+        return tracking;
+    }
+
+    public boolean isStillValid() {
+        if(currentTarget.getLevel() <= 0){
+            return false;
+        }
+        return true;
+    }
+
+
 }
