@@ -25,6 +25,11 @@ public class Balloon {
     protected boolean frozen;
     private boolean hidden;
     private boolean hit;
+    private static final BalloonType[] downgradeOrder = {
+            BalloonType.LEAD, BalloonType.MOAB, BalloonType.CERAMIC,
+            BalloonType.RAINBOW, BalloonType.ZEBRA, BalloonType.PINK,
+            BalloonType.YELLOW, BalloonType.GREEN, BalloonType.BLUE, BalloonType.RED
+    };
 
     /**
      * Constructor for the Balloon class.
@@ -202,20 +207,22 @@ public class Balloon {
      * @param g The graphics context used to draw the balloon.
      */
     public void draw(Graphics g) {
-        if(animatePop) {
-            Random rand = new Random();
-            int randomNum = rand.nextInt(4) + 1;
-            String soundFile = "Pop" + randomNum + ".wav";
-            new SoundEffect(soundFile, false, .8f);
-            g.drawImage(balloonImages[balloonImages.length - 1], (int) x-20, (int) y-25, 50, 50, null);
-            animatePop = false;
-        } else if (balloonImages != null && level >= 0 && level < balloonImages.length - 2) {
-            g.drawImage(balloonImages[getLevel()], (int) x - 10, (int) y - 10, 27, 33, null);
-        } else if (balloonImages.length-2 == level) {
-            g.drawImage(balloonImages[getLevel()], (int) x - 50, (int) y - 25, 100, 50, null);
-        } else {
-            g.setColor(Color.RED);
-            g.fillOval((int) x - 10, (int) y - 10, 30, 30);
+        if(balloonImages != null){
+            if(animatePop) {
+                Random rand = new Random();
+                int randomNum = rand.nextInt(4) + 1;
+                String soundFile = "Pop" + randomNum + ".wav";
+                new SoundEffect(soundFile, false, .8f);
+                g.drawImage(balloonImages[balloonImages.length - 1], (int) x-20, (int) y-25, 50, 50, null);
+                animatePop = false;
+            } else if (getLevel() != 8) {
+                g.drawImage(balloonImages[getLevel()], (int) x - 10, (int) y - 10, 27, 33, null);
+            } else if (level == 8) {
+                g.drawImage(balloonImages[getLevel()], (int) x - 50, (int) y - 25, 100, 50, null);
+            } else {
+                g.setColor(Color.RED);
+                g.fillOval((int) x - 10, (int) y - 10, 30, 30);
+            }
         }
     }
 
@@ -226,11 +233,37 @@ public class Balloon {
      * @param damage The amount of damage to deal to the balloon.
      */
     public void takeDamage(int damage) {
-        this.health -= damage;
-        while (this.health <= 0 && level > 0) {
-            animatePop = true;
-            level--;
-            health++;
+        while (damage > 0 && level > -1) {
+            int currentHealth = this.health;
+
+            if (damage >= currentHealth) {
+                // If damage is more than or equal to current health, pop this level
+                damage -= currentHealth;
+                this.health = 0;  // Balloon level is popped
+
+                // Decrement level
+                level--;
+
+                // Set the new type based on the downgraded level
+                if (level > -1) {
+                    int currentIndex = getCurrentTypeIndex();
+                    if (currentIndex < downgradeOrder.length - 1) {
+                        BalloonType newType = downgradeOrder[currentIndex + 1];
+                        setType(newType);
+                        this.health = newType.getHealth();
+                        animatePop = true;
+                    }
+                }
+            } else {
+                // If damage is less than the current health, just apply it
+                this.health -= damage;
+                damage = 0;  // No leftover damage
+            }
+        }
+
+        // If health reaches 0, completely pop the balloon (level is 0)
+        if (level <= -1) {
+            this.health = 0; // Balloon is fully popped
         }
     }
 
@@ -312,6 +345,24 @@ public class Balloon {
     }
     public boolean isHit() {
         return hit;
+    }
+
+    public BalloonType getType(){
+        return type;
+    }
+    public void setType(BalloonType type) {
+        this.type = type;
+        this.health = type.getHealth();
+        this.speed = type.getSpeed(); // If speed matters
+    }
+
+    private int getCurrentTypeIndex() {
+        for (int i = 0; i < downgradeOrder.length; i++) {
+            if (downgradeOrder[i] == this.type) {
+                return i;
+            }
+        }
+        return downgradeOrder.length - 1; // Default to last if not found
     }
 
 }

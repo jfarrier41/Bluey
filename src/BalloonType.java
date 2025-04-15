@@ -1,14 +1,14 @@
 public enum BalloonType {
     RED(1, 2.0),       // health, speed
     BLUE(1, 2.5),
-    GREEN(1, 5.0),
-    YELLOW(1, 3.5),
-    PINK(1, 4.0),
-    BLACK(2, 3.0),
-    ZEBRA(2, 3.2),
-    LEAD(3, 2.5),
-    CERAMIC(5, 2.2),
-    MOAB(3, 1);
+    GREEN(1, 3.0),
+    YELLOW(1, 4.0),
+    PINK(1, 5.0),
+    ZEBRA(3, 3.6),
+    RAINBOW(5, 4),
+    CERAMIC(20, 2),
+    MOAB(200, 1),
+    LEAD(1, 2.5);
 
     private final int health;
     private final double speed;

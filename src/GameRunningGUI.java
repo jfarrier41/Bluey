@@ -45,18 +45,6 @@ public class GameRunningGUI extends JPanel {
     private boolean finalWaveSpawned;
     private Tower clickedTower = null;
 
-    private static final BufferedImage EXPLOSION;
-
-    static {
-        BufferedImage temp = null;
-        try {
-            temp = ImageIO.read(new File("src/ProjectileImages/explosion.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        EXPLOSION = temp;
-    }
-
     /**
      * Constructs a new GameRunningGUI object.
      * Initializes the game state, loads images, and sets up the layout.
@@ -68,7 +56,7 @@ public class GameRunningGUI extends JPanel {
      * @param homeScreenGUI The home screen GUI to navigate back to.
      */
     public GameRunningGUI(RunGame runGame, int width, int height, String selectedMap, HomeScreenGUI homeScreenGUI) {
-        currentCash = 1000;
+        currentCash = 10000;
         currentHealth = 100;
 
         this.MAP_WIDTH = width;
@@ -189,12 +177,13 @@ public class GameRunningGUI extends JPanel {
                 "src/BalloonImages/redbloon.png",
                 "src/BalloonImages/bluebloon.png",
                 "src/BalloonImages/greenbloon.png",
-                "src/BalloonImages/pinkbloon.png",
                 "src/BalloonImages/yellowbloon.png",
+                "src/BalloonImages/pinkbloon.png",
                 "src/BalloonImages/zebrabloon.png",
                 "src/BalloonImages/rainbowbloon.png",
-                "src/BalloonImages/metalbloon.png",
+                "src/BalloonImages/ceramicbloon.png",
                 "src/BalloonImages/moab.png",
+                "src/BalloonImages/metalbloon.png",
                 "src/BalloonImages/pop.png",
         };
 
@@ -345,7 +334,7 @@ public class GameRunningGUI extends JPanel {
             Balloon bestTarget = null;
             for (Balloon balloon : balloons) {
                 if (tower.inRange(balloon) && !balloon.isHidden()) {
-                    if (tower.towerType.equals("Ice") || tower.towerType.equals("Bomb")) {
+                    if (tower.towerType.equals("Ice")) {
                         tower.addTarget(balloon);
                     }
                     if (bestTarget == null || compareBalloons(balloon, bestTarget) > 0) {
@@ -377,13 +366,47 @@ public class GameRunningGUI extends JPanel {
             while (balloonIterator.hasNext()) {
                 Balloon b = balloonIterator.next();
                 p.didHit(b);
-                /*if(p.didHit(b) && p.type.equals(ProjectileImageSize.BOMB)){
-                    p.image = EXPLOSION;
-                }*/
                 if (b.isHit()) {
+                    ArrayList<Balloon> balloonsToTakeDamage = new ArrayList<>();
+                    if(p.getType() == ProjectileImageSize.BOMB){
+                        double explosionRadius = 27.0;
+
+                        // Get the center of the impact (you can also get this from the projectile if it stores it)
+                        double explosionX = b.getX() + 13;
+                        double explosionY = b.getY() + 16;
+
+                        for (Balloon other : balloons) {
+                            double otherX = other.getX() + 13;
+                            double otherY = other.getY() + 16;
+
+                            double distance = Math.hypot(explosionX - otherX, explosionY - otherY);
+
+                            if (distance <= explosionRadius && !other.isHidden()) {
+                                balloonsToTakeDamage.add(other);
+                            }
+                        }
+                    }
                     p.removeOneFromHitCount();
                     p.setTracking(false);
-                    b.takeDamage(p.getDamage());  // Apply damage to the balloon
+                    if (b.getType() == BalloonType.LEAD) {
+                        // Only allow damage to lead if the projectile is from the wizard
+                        if (p.getType() == ProjectileImageSize.ORB) {
+                            b.takeDamage(226);
+                        }
+                    } else {
+                        // All other balloon types can be damaged by any projectile
+                        b.takeDamage(p.getDamage());
+                    }
+
+                      // Apply damage to the balloon
+                    for(Balloon balloon : balloonsToTakeDamage){
+                        if(balloon.getType() != BalloonType.LEAD){
+                            balloon.takeDamage(p.getDamage());
+                        } else {
+                            balloon.takeDamage(226);
+                        }
+                        currentCash++;
+                    }
                     currentCash++;
                     // If the balloon is popped, remove it from the list
                     if (b.isPopped()) {

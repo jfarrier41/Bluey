@@ -134,52 +134,25 @@ public class Projectile {
             return false;
         }
 
-        // Handle the Bomb projectile type.
-        if (type.equals(ProjectileImageSize.BOMB)) {
-            // Only check the target balloons in range (not other balloons that are not in range).
-            for (Balloon b : targets) {
-                int balloonX = b.getX();
-                int balloonY = b.getY();
-                double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
-                if (distance <= (damageArea + 10)) {
-                    b.gotHit(true);
-                    hitBalloons.add(b);
-                    // Iterate over all the targets and hit those that are within the area.
-                    for (Balloon bystander : targets) {
-                        int bX = bystander.getX();
-                        int bY = bystander.getY();
-                        int xDif = Math.abs(balloonX - bX);
-                        int yDif = Math.abs(balloonY - bY);
-                        System.out.println(xDif + " " + yDif);
-                        if (xDif < 45 && yDif < 45) {
-                            hitBalloons.add(bystander);
-                            bystander.gotHit(true);
-                        }
-                    }
+        // For non-Bomb projectiles, only check the original target.
+        // Get the position of the balloon to check if the projectile is within range.
+        int balloonX = balloon.getX();
+        int balloonY = balloon.getY();
 
-                    return true; // The projectile hit the balloon
-                }
+        // Calculate the distance between the current position of the projectile and the target balloon.
+        double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
+
+        // If the distance is within the damage area, hit the balloon.
+        if (distance <= (damageArea + 10)) {
+            if (type == ProjectileImageSize.valueOf("GOO")) {
+                balloon.goo(); // Apply the goo effect if this is a "GOO" projectile.
             }
-        } else {
-            // For non-Bomb projectiles, only check the original target.
-            // Get the position of the balloon to check if the projectile is within range.
-            int balloonX = balloon.getX();
-            int balloonY = balloon.getY();
-
-            // Calculate the distance between the current position of the projectile and the target balloon.
-            double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
-
-            // If the distance is within the damage area, hit the balloon.
-            if (distance <= (damageArea + 10)) {
-                if (type == ProjectileImageSize.valueOf("GOO")) {
-                    balloon.goo(); // Apply the goo effect if this is a "GOO" projectile.
-                }
-                balloon.gotHit(true);
-                hitBalloons.add(balloon); // Mark the balloon as hit.
-                return true; // The projectile hit the balloon
-            }
+            balloon.gotHit(true);
+            hitBalloons.add(balloon); // Mark the balloon as hit.
+            return true; // The projectile hit the balloon
         }
-        return false; // No collision with the balloon
+
+    return false; // No collision with the balloon
     }
 
 
