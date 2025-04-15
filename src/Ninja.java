@@ -18,7 +18,7 @@ public class Ninja extends Tower {
 
         // Set default values for DartMonkey (can be overridden if needed)
         this.isRotatable = true;
-        this.setFireSpeed(450);
+        this.setFireSpeed(650);
         this.setRange(250);
         this.setProjectileSpeed(17);
         this.setProjectileDamage(1);

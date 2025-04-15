@@ -5,7 +5,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,7 +35,7 @@ public class GameRunningGUI extends JPanel {
     private WaveManager waveManager;
     private boolean waveInProgress;
     private int bloonsRemainingInWave;
-    private JButton playButton;
+    private JButton playButton, sellButton;
     private boolean addEndRoundCash;
     private final TowerSelectionButtons towerSelectionButtons;
     private boolean gameInProgress;
@@ -41,6 +43,7 @@ public class GameRunningGUI extends JPanel {
     private boolean paused;
     private Timer spawnTimer;
     private boolean finalWaveSpawned;
+    private Tower clickedTower = null;
 
     private static final BufferedImage EXPLOSION;
     static {
@@ -91,18 +94,67 @@ public class GameRunningGUI extends JPanel {
         towerPanel.setOpaque(false);
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
 
+
+        towerPanel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                new SoundEffect("Click.wav", false, 1f);
+
+                // Get the X and Y coordinates of the mouse click
+                int x = e.getX() - 14;
+                int y = e.getY() - 14;
+
+                // Initialize closestTower and closestDistance for this click
+                clickedTower = null;
+                double closestDistance = Double.MAX_VALUE;
+
+                // Loop through the list of placed towers
+                for (Tower tower : placedTowers) {
+                    // Assuming Tower has a getPosition() method that returns a Point
+                    Point towerPosition = tower.getPosition();
+                    int towerX = towerPosition.x;
+                    int towerY = towerPosition.y;
+
+                    // Calculate the distance between the mouse click and the tower
+                    double distance = Math.sqrt(Math.pow(x - towerX, 2) + Math.pow(y - towerY, 2));
+
+                    // If the distance is within 30 pixels and smaller than the closest found so far
+                    if (distance <= 40 && distance < closestDistance) {
+                        closestDistance = distance;
+                        clickedTower = tower;  // Set the current tower as the closest one
+                        sellButton.setVisible(true);
+                    }
+                }
+
+                // If a closest tower is found within the range, do something with it
+                if (clickedTower != null) {
+                    sellButton.setText("Sell: $" + (int)(clickedTower.getCost() * 0.8));
+                    sellButton.setVisible(true);
+                } else {
+                    clickedTower = null;
+                    sellButton.setVisible(false);
+                }
+            }
+        });
+
+        addMouseListener(new MouseAdapter() {     // Add a MouseListener to detect clicks anywhere on the screen
+            public void mouseClicked(MouseEvent e) {
+                new SoundEffect("Click.wav", false, 1f);
+            }
+        });
+
         waveManager = new WaveManager();
         waveInProgress = false;
         bloonsRemainingInWave = 0;
 
         towerSelectionButtons = new TowerSelectionButtons(runGame, mapImage, towerPanel, layeredPane,this);
-        towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, MAP_WIDTH / 5 + 15, MAP_WIDTH / 6, HEIGHT / 2);
+        towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, 80, MAP_WIDTH / 6, HEIGHT / 2);
         add(towerSelectionButtons);
         setLayout(null);
 
         addPlayButton();
         addResetButton();
         addPauseButton();
+        addSellButton();
         addReturnHomeButton();
 
         // Game loop timer (60 FPS)
@@ -270,7 +322,7 @@ public class GameRunningGUI extends JPanel {
             if (balloon.hasReachedEnd()) {
                 balloons.remove(i);
                 i--;
-                currentHealth -= balloon.getLevel();
+                currentHealth -= (balloon.getLevel() + 1);
             }
         }
         if(currentHealth <= 0) {
@@ -395,14 +447,6 @@ public class GameRunningGUI extends JPanel {
             int drawY = tower.yPosition;
             int imgWidth = tower.getImgWidth();
             int imgHeight = tower.getImgHeight();
-
-            // Draw the hit range circle (temporary visualization).
-            Color color = new Color(128, 128, 128, 128);
-            g2d.setColor(color);
-            int xOffset = (tower.getDiameter() / 2) - (tower.getImgWidth() / 2) - 233;
-            int yOffset = (tower.getDiameter() / 2) - (tower.getImgHeight() / 2);
-            g2d.drawOval(tower.xPosition - xOffset, tower.yPosition - yOffset, tower.getDiameter(), tower.getDiameter());
-
             // Draw the tower's image, with rotation if it has a target.
             if (tower.getTarget() != null && tower.isRotatable) {
                 double angle = tower.getAngle(tower.getTarget().getX(), tower.getTarget().getY());
@@ -414,7 +458,13 @@ public class GameRunningGUI extends JPanel {
                 g2d.drawImage(tower.towerImage, drawX, drawY, imgWidth, imgHeight, this);
             }
         }
-
+        if(clickedTower != null){
+            Color color = new Color(128, 128, 128, 128);
+            g2d.setColor(color);
+            int xOffset = (clickedTower.getDiameter() / 2) - (clickedTower.getImgWidth() / 2) - 233;
+            int yOffset = (clickedTower.getDiameter() / 2) - (clickedTower.getImgHeight() / 2);
+            g2d.fillOval(clickedTower.xPosition - xOffset, clickedTower.yPosition - yOffset, clickedTower.getDiameter(), clickedTower.getDiameter());
+        }
         // Draw balloons.
         for (Balloon balloon : balloons) {
             if(!balloon.isHidden()) {
@@ -461,13 +511,17 @@ public class GameRunningGUI extends JPanel {
         g.drawString("Cash: $" + formattedCash, xOffset + 35, 145);
 
         if(towerSelectionButtons.getDisplayTowerName().equals("Towers")){
-            g.drawString(towerSelectionButtons.getDisplayTowerName(), 1000, 80);
+            g.drawString(towerSelectionButtons.getDisplayTowerName(), 1000, 30);
         } else {
-            g.drawString(towerSelectionButtons.getDisplayTowerName(), 975, 80);
+            g.drawString(towerSelectionButtons.getDisplayTowerName(), 975, 30);
         }
 
-        g.drawImage(moneySignImage, 1000, 90, 30, 30, this);
-        g.drawString(String.valueOf(towerSelectionButtons.getDisplayTowerCost()), 1035, 115);
+        g.drawImage(moneySignImage, 1000, 40, 30, 30, this);
+        g.drawString(String.valueOf(towerSelectionButtons.getDisplayTowerCost()), 1035, 65);
+
+        g.setFont(new Font("Arial", Font.PLAIN, 14));
+        String description = loadTowerDescription(towerSelectionButtons.getDisplayTowerName());
+        drawWrappedString(g, description, 960, 360, 205);  // Draw below header, wrap at 180 pixels
 
         // Check if the wave has ended and update the play button text accordingly.
         if (balloons.isEmpty() && !waveInProgress) {
@@ -512,6 +566,7 @@ public class GameRunningGUI extends JPanel {
 
         // Add an action listener to start the next wave when clicked.
         resetButton.addActionListener(e -> {
+            new SoundEffect("Click.wav", false, 1f);
             restartGame();
         });
 
@@ -526,11 +581,38 @@ public class GameRunningGUI extends JPanel {
 
         // Add an action listener to start the next wave when clicked.
         pauseButton.addActionListener(e -> {
+            new SoundEffect("Click.wav", false, 1f);
             paused = true;
         });
 
         add(pauseButton);
     }
+
+    private void addSellButton() {
+        sellButton = new JButton("Sell Tower");
+        sellButton.setFont(new Font("Arial", Font.BOLD, 14));
+        sellButton.setBounds(47, 300, 140, 40); // Position on screen
+        sellButton.setFocusPainted(false);
+        sellButton.setContentAreaFilled(true);
+        sellButton.setOpaque(true);
+        sellButton.setBackground(new Color(255, 102, 102)); // Light red
+        sellButton.setVisible(false); // Initially hidden
+
+        sellButton.addActionListener(e -> {
+            new SoundEffect("Sell.wav", false, 1f);
+            if (clickedTower != null) {
+                currentCash += (int) (clickedTower.getCost() * 0.8);
+                placedTowers.remove(clickedTower);
+                clickedTower = null;
+                sellButton.setVisible(false);
+                repaint(); // Refresh display
+            }
+        });
+
+        add(sellButton);
+    }
+
+
 
     /**
      * Adds a return home button to the GUI.
@@ -584,19 +666,58 @@ public class GameRunningGUI extends JPanel {
         this.balloons.clear();
         this.placedTowers.clear();
         this.curProjectiles.clear();
-        this.currentCash = 800;
         this.currentHealth = 100;
+        this.clickedTower = null;
         waveManager = new WaveManager();
         waveInProgress = false;
         gameInProgress = true;
         promptedForRestart = false;
         finalWaveSpawned = false;
         if(spawnTimer!=null){
+            this.currentCash = 800;
             spawnTimer.stop();
+        } else {
+            this.currentCash = 1000;
         }
     }
+    public String loadTowerDescription(String towerName) {
+        StringBuilder description = new StringBuilder();
+        try {
+            File file = new File("src/Info/" + towerName + ".txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                description.append(line).append(" ");
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Description not available.";
+        }
+        return description.toString().trim();
+    }
+    private void drawWrappedString(Graphics g, String text, int x, int y, int maxWidth) {
+        FontMetrics fm = g.getFontMetrics();
+        int lineHeight = fm.getHeight();
 
-    public String getSelectedMapString() {
-        return selectedMap;
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        int curY = y;
+
+        for (String word : words) {
+            String testLine = line + word + " ";
+            int lineWidth = fm.stringWidth(testLine);
+            if (lineWidth > maxWidth) {
+                g.drawString(line.toString(), x, curY);
+                line = new StringBuilder(word + " ");
+                curY += lineHeight;
+            } else {
+                line.append(word).append(" ");
+            }
+        }
+        // Draw the last line
+        if (!line.toString().isEmpty()) {
+            g.drawString(line.toString(), x, curY);
+        }
     }
 }

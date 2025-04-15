@@ -1,0 +1,72 @@
+All credit for the game idea, art, and sounds goes to Ninja Kiwi. We simply
+took what we observed while playing the game on our mobile device and
+programmed it in our own private environment. The implementation is
+uniquely ours.
+
+Bloons Tower Defense is a strategy game where your goal is to stop waves
+of colorful balloons (called "bloons") from reaching the end of a winding
+path. You do this by placing different types of towers along the sides of the path. Each tower automatically attacks any bloons that come into range,
+using things like darts or bombs. You earn money by popping bloons,
+which you can use to place more towers or upgrade the ones you have. The
+game gets harder as more and tougher bloons appear, so you'll need to
+think carefully about where to place your towers and how to build your
+defenses. If too many bloons slip through,you lose—so pop them all before it's too late!
+
+There are 9 different towers you can use in the game, each with its own strengths:
+
+Dart Monkey – Most basic tower. Throws 1 dart at 1 balloon causing 1 damage.
+
+Super Monkey – Extremely fast and powerful, but costs a lot to place. Strongest monkey in the game.
+
+Tack Shooter – Fires 8 tacks in all directions at once.
+
+Wizard – Uses magic attacks that can hit several targets in a row.
+
+Ninja – Strong tower with tracking ninja stars whom can hit 3 balloons.
+
+Glue Gunner – Slows down bloons by covering them in sticky glue.
+
+Sniper Monkey – Attacks bloons from anywhere on the map with pinpoint accuracy. Lot's of damage per shot!
+
+Ice Tower – Freezes bloons in place, stopping them temporarily.
+
+Bomb Tower – Launches bombs that deal area damage to groups of bloons.
+
+After clicking Play, you’ll be able to scroll through three different maps, each with a unique path layout. Once you find one you like, select it to begin.
+
+During the game, the tower selection panel is located on the right side of
+the screen. To place a tower, simply click and drag it onto the map, then
+click again to drop it. You can only place a tower if its cost (shown above
+the panel) is less than or equal to your current in-game currency, which is
+displayed at the top. In addition, while placing you will have a colored range
+around the tower. If the color is grey that means the tower can be placed in
+the location and if red it's invalid.
+
+If you accidentally click a tower from the buy panel simply drag it to the
+bottom right of the map to the trashcan. The tower will be removed from
+your cursor and will not be placed with no penalty. If a tower has been
+placed, and you want to get rid of it simply click on the placed tower and
+click the sell button located at *location*. This will give you 80% of the buy
+value of the tower.
+
+There are 4 buttons on the left side of the screen. These are the start wave
+button which will begin the next wave of bloons. The pause button which
+stop all current action in the game. Nothing can be interacted with at this
+time during the game while the popup is on the screen. The there is the
+reset game button which put's you back to wave 1 with all progress lost.
+Finally, there is the red x in the very top left and when clicked it will exit
+the program entirely.
+
+Separate from the buttons there are two values on the left side of the map.
+The value next to the heart is how much lives you have. Balloons will reduce
+this value when they have reached the end of the map. If your health falls
+below zero you have lost and will be prompted if you'd like to restart. Then
+there is your current cash value which is what allows for you to place new
+towers. Ensure that you have enough money for a given tower, or it will not
+let you select it.
+
+There are 30 waves each with their own unique spawn patterns and
+combinations of balloons. If you successfully defeat all of these wave's you
+win! Click play to begin.
+
+Good Luck and have fun!

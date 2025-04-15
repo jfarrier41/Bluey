@@ -30,7 +30,7 @@ public class SuperMonkey extends Tower {
         this.setRotatable(true);
 
         /** Set the fire rate in milliseconds. */
-        this.setFireRate(50);
+        this.setFireRate(65);
 
         /** Set the detection range for targeting balloons. */
         this.setRange(350);

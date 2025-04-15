@@ -95,7 +95,6 @@ public class TowerPanel extends JPanel {
 
         if (tower.isSelected) {
             g.drawImage(trashImage, 658, 472, 45, 45, this);
-            // Remove the cursor from screen, Credit to ChatGPT for this Code
 
             this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                     new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
@@ -128,8 +127,6 @@ public class TowerPanel extends JPanel {
             System.out.println(point);
             int xDif = Math.abs(x - point.x);
             int yDif = Math.abs(y - point.y);
-            System.out.println(xDif);
-            System.out.println(yDif);
             if(xDif < 20 && yDif < 20){
                 tower.placeable = false;
                 break;

@@ -24,7 +24,7 @@ public class GlueGunner extends Tower {
 
         // Set default values for the GlueGunner tower (can be overridden if needed)
         this.setRotatable(true);                // The tower can rotate toward targets
-        this.setFireRate(500);                  // Milliseconds between shots
+        this.setFireRate(800);                  // Milliseconds between shots
         this.setRange(255);                     // Radius within which the tower can target balloons
         this.setProjectileSpeed(23);            // Speed of the projectile
         this.setProjectileDamage(1);           // Damage dealt per hit

@@ -16,7 +16,7 @@ public class BombTower extends Tower {
 
         // Set default values for BombTower (can be overridden if needed)
         this.isRotatable = true;
-        this.setFireSpeed(600);
+        this.setFireSpeed(900);
         this.setRange(250);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(1);

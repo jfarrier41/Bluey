@@ -16,7 +16,7 @@ public class IceTower extends Tower {
         super(runGame, currentMap,"IceTower.png");
 
         // Set default values for DartMonkey (can be overridden if needed)
-        this.setFireSpeed(3000);
+        this.setFireSpeed(2500);
         this.setRange(160);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(10);

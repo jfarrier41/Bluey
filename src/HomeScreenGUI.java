@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 /*
 Filename: RunGame.java
@@ -28,6 +29,7 @@ public class HomeScreenGUI extends JPanel {
         // Dimensions for the screen layout
         setLayout(null);  // Set layout to null to use absolute positioning for components
 
+
         // Create the map selection button
         JButton mapSelectionButton = createStyledButton("Play");
         mapSelectionButton.setBounds((width - 220) / 2, 620, 220, 70);  // Center the button
@@ -39,12 +41,45 @@ public class HomeScreenGUI extends JPanel {
                 runGame.showMapSelectionScreen();
             }
         });
+
+        JButton gameInfoButton = createStyledButton("How To Play");
+        gameInfoButton.setBounds(width - 240, 20, 220, 70);  // Center the button
+        gameInfoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    File file = new File("src/Info/GameDescription.txt");
+                    StringBuilder content = new StringBuilder();
+                    Scanner scanner = new Scanner(file);
+                    while (scanner.hasNextLine()) {
+                        content.append(scanner.nextLine()).append("\n");
+                    }
+                    scanner.close();
+
+                    JTextArea textArea = new JTextArea(content.toString());
+                    textArea.setWrapStyleWord(true);
+                    textArea.setLineWrap(true);
+                    textArea.setEditable(false);
+                    textArea.setCaretPosition(0);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(500, 300));
+
+                    JOptionPane.showMessageDialog(null, scrollPane, "How to Play", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Unable to load game instructions.", "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
+
         try {
             backgroundImage = ImageIO.read(new File("src/DesignImg/homeScreen.png")); // Replace with your image path
         } catch (IOException e) {
             e.printStackTrace();
         }
         add(mapSelectionButton);
+        add(gameInfoButton);
     }
 
     @Override

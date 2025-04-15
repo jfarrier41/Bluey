@@ -11,7 +11,6 @@ Description: Implements tower and defines the Dart Monkey.
 public class TackShooter extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private int darts = 8;
-    private int angleStep = 40;
     private static final int COLLISION_AREA = 40;
 
     public TackShooter(JFrame runGame, BufferedImage currentMap) {
@@ -19,7 +18,7 @@ public class TackShooter extends Tower {
 
 
         // Set default values for DartMonkey (can be overridden if needed)
-        this.setFireRate(500);
+        this.setFireRate(700);
         this.setRange(150);
         this.setProjectileSpeed(10);
         this.setProjectileDamage(1);

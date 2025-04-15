@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 import javax.imageio.ImageIO;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -110,6 +112,14 @@ public class MapSelectionGUI extends JPanel {
         returnHomeButton.setBounds(10, 10, screenWidth / 5, screenHeight / 12);
         returnHomeButton.addActionListener(e -> returnHome());  // Return to HomeScreen
         overlay.add(returnHomeButton);
+
+        // Add a MouseListener to detect clicks anywhere on the screen
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new SoundEffect("Click.wav", false, 1f);
+            }
+        });
     }
 
     /**

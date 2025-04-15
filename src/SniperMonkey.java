@@ -16,7 +16,7 @@ public class SniperMonkey extends Tower {
         super(runGame, currentMap,"SniperMonkey.png");
 
         this.setRotatable(true);                // Tower can rotate toward targets
-        this.setFireRate(1000);                  // Milliseconds between shots
+        this.setFireRate(1600);                  // Milliseconds between shots
         this.setRange(800);                     // Radius within which the tower can target balloons
         this.setProjectileSpeed(70);            // Speed of the projectile
         this.setProjectileDamage(4);           // Damage dealt per hit

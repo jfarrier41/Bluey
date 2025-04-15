@@ -1,0 +1,1 @@
+Select a tower above to begin. When clicked their description will be displayed here. Good Luck!
