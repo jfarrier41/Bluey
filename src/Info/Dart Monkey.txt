@@ -1,1 +1,1 @@
-The Dart Monkey is a basic and reliable tower that throws a single dart at incoming Bloons causing 1 damage at a time. It's inexpensive and effective in the early rounds, making it a great starting option for any strategy.
+The Dart Monkey is a basic and reliable tower that throws a single dart causing 1 damage to 1 bloon. It's inexpensive and effective in the early rounds, making it a great starting option for any strategy.

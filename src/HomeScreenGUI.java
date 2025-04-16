@@ -64,7 +64,7 @@ public class HomeScreenGUI extends JPanel {
                     JScrollPane scrollPane = new JScrollPane(textArea);
                     scrollPane.setPreferredSize(new Dimension(500, 300));
 
-                    JOptionPane.showMessageDialog(null, scrollPane, "How to Play", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, scrollPane, "How to Play", JOptionPane.PLAIN_MESSAGE);
 
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Unable to load game instructions.", "Error", JOptionPane.ERROR_MESSAGE);

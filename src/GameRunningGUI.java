@@ -44,6 +44,7 @@ public class GameRunningGUI extends JPanel {
     private Timer spawnTimer;
     private boolean finalWaveSpawned;
     private Tower clickedTower = null;
+    private final SoundEffect waveThemeSong;
 
     /**
      * Constructs a new GameRunningGUI object.
@@ -139,6 +140,9 @@ public class GameRunningGUI extends JPanel {
         towerSelectionButtons.setBounds(MAP_WIDTH + MAP_WIDTH / 3 + MAP_WIDTH / 12, 80, MAP_WIDTH / 6, HEIGHT / 2);
         add(towerSelectionButtons);
         setLayout(null);
+
+        waveThemeSong = new SoundEffect("rickRoll.wav", true,1F);
+        waveThemeSong.stop();
 
         addPlayButton();
         addResetButton();
@@ -253,15 +257,18 @@ public class GameRunningGUI extends JPanel {
      */
     private void gameLoop() {
         if (paused) {
-            JOptionPane.showConfirmDialog(
+            int result = JOptionPane.showConfirmDialog(
                     this,
                     "Game is paused. Click OK to continue.",
                     "Paused",
                     JOptionPane.DEFAULT_OPTION
             );
 
-            paused = false; // Resume the game after dialog is closed
-            return; // Skip rest of this loop, continue next frame
+            if (result != JOptionPane.CLOSED_OPTION) {
+                paused = false; // Only resume if user actually interacted
+            }
+
+            return; // Always return to skip the loop while paused
         }
 
         if (finalWaveSpawned && balloons.isEmpty() && !promptedForRestart) {
@@ -560,6 +567,13 @@ public class GameRunningGUI extends JPanel {
                 currentCash += 200;
                 addEndRoundCash = false;
             }
+            if(waveThemeSong.isPlaying()){
+                waveThemeSong.stop();
+            }
+            if(!runGame.mainThemeMusic.isPlaying()){
+                runGame.mainThemeMusic.play();
+            }
+
             playButton.setText("Start Wave " + (waveManager.getCurrentWaveIndex() + 1));
             playButton.setEnabled(true);
             playButton.setVisible(true);
@@ -581,6 +595,9 @@ public class GameRunningGUI extends JPanel {
         // Add an action listener to start the next wave when clicked.
         playButton.addActionListener(e -> {
             if (!waveInProgress) {
+                runGame.mainThemeMusic.stop();
+                waveThemeSong.play();
+                //Start game urnning song here
                 new SoundEffect("Click.wav", false, 1f);
                 startNextWave();
             }
@@ -705,6 +722,8 @@ public class GameRunningGUI extends JPanel {
         gameInProgress = true;
         promptedForRestart = false;
         finalWaveSpawned = false;
+        waveThemeSong.stop();
+        runGame.mainThemeMusic.play();
         if (spawnTimer != null) {
             this.currentCash = 800;
             spawnTimer.stop();

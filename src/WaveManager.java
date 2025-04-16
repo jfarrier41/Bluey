@@ -14,7 +14,7 @@ public class WaveManager {
 
     private void initializeWaves() {
         // Waves 1–5: REDs to GREENs
-        waves.add(new Wave(List.of(new BloonSpawnInfo(20, 0, 1.0))));
+        waves.add(new Wave(List.of(new BloonSpawnInfo(20, 0, 1))));
         waves.add(new Wave(List.of(new BloonSpawnInfo(30, 1, 0.9))));
         waves.add(new Wave(List.of(new BloonSpawnInfo(40, 2, 0.8))));
         waves.add(new Wave(List.of(new BloonSpawnInfo(50, 3, 0.7))));

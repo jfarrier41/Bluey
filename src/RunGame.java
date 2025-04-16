@@ -19,6 +19,7 @@ public class RunGame extends JFrame {
     private static final int SCREEN_WIDTH = 1024;   // Width of the game window
     private static final int SCREEN_HEIGHT = 768;   // Height of the game window
 
+    public SoundEffect mainThemeMusic;
     private final HomeScreenGUI homeScreenGUI;  // HomeScreenGUI instance reference
 
     /**
@@ -33,7 +34,7 @@ public class RunGame extends JFrame {
         setLayout(null);  // Disable layout manager to manually set component positions
 
         // Initialize and play background music
-        SoundEffect backgroundMusic = new SoundEffect("maintheme.wav", true, 1f);  // Looping background music
+        mainThemeMusic = new SoundEffect("maintheme.wav", true, 1f);  // Looping background music
 
         // Initialize and show the home screen
         homeScreenGUI = new HomeScreenGUI(this, SCREEN_WIDTH, SCREEN_HEIGHT);
