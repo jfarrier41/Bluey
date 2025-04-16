@@ -2,12 +2,21 @@ import javax.sound.sampled.*;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
+ * Handles loading and playing sound effects for the game.
+ * Allows for playback control, looping, and volume adjustment.
+ */
 public class SoundEffect {
+    /** The Clip object used to play the sound. */
     private Clip clip;
 
     /**
-     * @param soundFileName The name of the sound file (e.g., "maintheme.wav")
-     * @param loop Whether the sound should loop
+     * Creates and initializes a sound effect.
+     *
+     * @param soundFileName The name of the sound file located in the "/Sounds/" directory (e.g., "maintheme.wav")
+     * @param loop Whether the sound should loop continuously
      * @param volume A float from 0.0 (mute) to 1.0 (full volume)
      */
     public SoundEffect(String soundFileName, boolean loop, float volume) {
@@ -26,11 +35,12 @@ public class SoundEffect {
             if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                 FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 
-                // Convert 0.0–1.0 to decibels
+                // Convert 0.0–1.0 range to decibels
                 float min = gainControl.getMinimum();
                 float max = gainControl.getMaximum();
-                float gain = (max - min) * volume + min;
-                gainControl.setValue(gain);
+                float dB = (float) (Math.log10(Math.max(volume, 0.0001)) * 20.0);
+                dB = Math.max(min, Math.min(max, dB));
+                gainControl.setValue(dB);
             }
 
             if (loop) {
@@ -38,42 +48,10 @@ public class SoundEffect {
             } else {
                 clip.start();
             }
+
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            System.err.println("Error playing sound: " + soundFileName);
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * Start the clip if not already running.
-     */
-    public void start() {
-        if (clip != null && !clip.isRunning()) {
-            clip.start();
-        }
-    }
-
-    /**
-     * Stop the clip if it is running.
-     */
-    public void stop() {
-        if (clip != null && clip.isRunning()) {
-            clip.stop();
-        }
-    }
-
-    /**
-     * Adjust the volume (loudness) of the clip.
-     * @param volume A float from 0.0 (mute) to 1.0 (full volume)
-     */
-    public void adjustVolume(float volume) {
-        if (clip != null && clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-
-            // Convert 0.0–1.0 to decibels
-            float min = gainControl.getMinimum();
-            float max = gainControl.getMaximum();
-            float gain = (max - min) * volume + min;
-            gainControl.setValue(gain);
         }
     }
 }

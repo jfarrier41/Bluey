@@ -1,18 +1,18 @@
 import javax.swing.*;
-
+/*
+ * All the images, sounds, and idea as a whole is not our own. All the previously
+ * mentioned was created by Ninja Kiwi. Although all the code and implemented
+ * features is our own.
+ */
 
 /**
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  * RunGame serves as the main entry point for the Bloons Tower Defense game.
  * It initializes the game window, manages transitions between different game screens,
  * and starts the game.
- * <p>
  * This class includes the main method to launch the game and methods to transition
  * to different game screens (HomeScreen, Map Selection, and Game Running).
- * </p>
- *
- * Filename: RunGame.java
- * Authors: Jace Claassen and Joe Farrier
- * Description: Main class for launching the Bloons Tower Defense game.
  */
 public class RunGame extends JFrame {
 

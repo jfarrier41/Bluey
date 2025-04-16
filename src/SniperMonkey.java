@@ -44,7 +44,7 @@ public class SniperMonkey extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, true,
-                getProjectileImage(0), ProjectileImageSize.SNIPERBULLET,
+                getProjectileImage(0), ProjectileImageSize.DART,
                 getProjectileDamage(), targets
         );
 

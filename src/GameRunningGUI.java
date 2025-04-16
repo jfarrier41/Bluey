@@ -391,7 +391,7 @@ public class GameRunningGUI extends JPanel {
                     if (b.getType() == BalloonType.LEAD) {
                         // Only allow damage to lead if the projectile is from the wizard
                         if (p.getType() == ProjectileImageSize.ORB) {
-                            b.takeDamage(226);
+                            b.takeDamage(229);
                         }
                     } else {
                         // All other balloon types can be damaged by any projectile
@@ -403,7 +403,7 @@ public class GameRunningGUI extends JPanel {
                         if(balloon.getType() != BalloonType.LEAD){
                             balloon.takeDamage(p.getDamage());
                         } else {
-                            balloon.takeDamage(226);
+                            balloon.takeDamage(229);
                         }
                         currentCash++;
                     }

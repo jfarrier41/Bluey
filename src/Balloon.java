@@ -1,35 +1,101 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
 import java.util.Random;
 
 /**
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  * The Balloon class represents a balloon object in the Bloons Tower Defense game.
  * Balloons follow a path defined by waypoints and can move along straight or curved segments.
  * Balloons have a level and health, and they can take damage, pop, and animate a popping effect.
  * The class handles the balloon's movement, rendering, and state changes.
  */
 public class Balloon {
-    private Point currentPosition;
-    private int currentSegmentIndex;
-    private Waypoints waypoints;
-    private BufferedImage[] balloonImages;
-    private double x, y;
-    private double speed;
-    private int level;
-    private int health;
-    private BalloonType type;
-    private boolean isMoving;
-    private boolean animatePop;
-    protected boolean gooed;
-    protected boolean frozen;
-    private boolean hidden;
-    private boolean hit;
-    private static final BalloonType[] downgradeOrder = {
+    /**
+     * Represents the current position of the balloon in the game.
+     */
+    private Point currentPosition;  // Current position of the balloon
+
+    /**
+     * Index of the current segment in the waypoints path that the balloon is following.
+     */
+    private int currentSegmentIndex;  // Index of the current segment in the waypoints path
+
+    /**
+     * X and Y coordinates for the balloon's movement.
+     */
+    private double x, y;  // Coordinates for the balloon's movement
+
+    /**
+     * Movement speed of the balloon.
+     */
+    private double speed;  // Movement speed of the balloon
+
+    /**
+     * Indicates whether the balloon is moving along its path.
+     */
+    private boolean isMoving;  // Indicates whether the balloon is moving
+
+    /**
+     * Current level of the balloon, which may affect its strength or damage.
+     */
+    private int level;  // Current level of the balloon (e.g., strength, damage)
+
+    /**
+     * Health of the balloon, which decreases as it takes damage.
+     */
+    private int health;  // Health of the balloon
+
+    /**
+     * Whether the balloon is currently animating its pop effect.
+     */
+    private boolean animatePop;  // Whether the balloon is animating its pop
+
+    /**
+     * Indicates whether the balloon is affected by goo (e.g., slowing down the balloon).
+     */
+    private boolean gooed;  // Whether the balloon is affected by goo (e.g., slowed)
+
+    /**
+     * Whether the balloon is hidden, such as being camouflaged or invisible to certain towers.
+     */
+    private boolean hidden;  // Whether the balloon is hidden (e.g., camouflaged or invisible)
+
+    /**
+     * Whether the balloon has been hit by a tower or a projectile.
+     */
+    private boolean hit;  // Whether the balloon has been hit by a tower
+
+    /**
+     * Array of images used to represent different states or appearances of the balloon.
+     */
+    private final BufferedImage[] balloonImages;  // Array of images for different balloon states or types
+
+    /**
+     * The type of the balloon (e.g., Red, Blue, Lead, etc.), which determines its characteristics.
+     */
+    private BalloonType type;  // Type of the balloon (e.g., Red, Blue, Lead, etc.)
+
+    /**
+     * Represented the progress along the curved bloon movement
+     * */
+    private double t = 0.0;
+
+    /**
+     * Array that defines the downgrade order of balloon types, used for progression or upgrades.
+     * The array follows a specific order:
+     * Lead -> MOAB -> Ceramic -> Rainbow -> Zebra -> Pink -> Yellow -> Green -> Blue -> Red.
+     */
+    protected static final BalloonType[] downgradeOrder = {
             BalloonType.LEAD, BalloonType.MOAB, BalloonType.CERAMIC,
             BalloonType.RAINBOW, BalloonType.ZEBRA, BalloonType.PINK,
             BalloonType.YELLOW, BalloonType.GREEN, BalloonType.BLUE, BalloonType.RED
     };
+
+    /**
+     * Reference to the `Waypoints` object that manages the path the balloon follows.
+     */
+    private final Waypoints waypoints;  // Reference to the waypoints object for the balloon'
 
     /**
      * Constructor for the Balloon class.
@@ -44,20 +110,30 @@ public class Balloon {
         this.balloonImages = balloonImages;
         this.level = level;
         this.currentSegmentIndex = 0;
-        this.currentPosition = new Point(waypoints.getSegments().get(0).getStartPoint()); // Start from first waypoint
+        this.currentPosition = new Point(waypoints.getSegments().getFirst().getStartPoint()); // Start from first waypoint
         this.isMoving = true;
         this.x = currentPosition.x;
         this.y = currentPosition.y;
-        // Determine BalloonType based on level
         this.type = getBalloonTypeFromLevel(level);
         this.health = type.getHealth();
         this.speed = type.getSpeed();
 
     }
 
+    /**
+     * Retrieves the appropriate {@link BalloonType} based on the specified level.
+     * This method maps a given level to a corresponding {@link BalloonType},
+     * using the order of {@link BalloonType} values. The level is clamped between
+     * 0 and the total number of BalloonTypes to ensure it stays within bounds.
+     *
+     * @param level The level for which the corresponding {@link BalloonType} is to be retrieved.
+     *              The level should be a positive integer.
+     * @return The {@link BalloonType} corresponding to the specified level.
+     *         If the level exceeds the number of available {@link BalloonType}s, the highest type is returned.
+     */
     private BalloonType getBalloonTypeFromLevel(int level) {
         // You can map levels to types however you want
-        // Here's a simple example mapping 1-10 to each BalloonType in order
+        // Here's a simple example mapping 0-9 to each BalloonType in order
         BalloonType[] types = BalloonType.values();
         int index = Math.max(0, Math.min(level, types.length - 1));
         return types[index];
@@ -109,7 +185,6 @@ public class Balloon {
      * @param segment The current line segment of the path.
      */
     private void moveAlongLine(WaypointSegment segment) {
-        Point start = segment.getStartPoint();
         Point end = segment.getEndPoint();
 
         // Calculate the distance between the current position and the endpoint
@@ -128,8 +203,6 @@ public class Balloon {
             currentPosition = new Point((int) x, (int) y);
         }
     }
-
-    private double t = 0.0; // Progress along the curve
 
     /**
      * Moves the balloon along a curved segment using a quadratic Bezier curve.
@@ -280,10 +353,6 @@ public class Balloon {
         return level;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
     /**
      * Checks if the balloon has reached the end of the path.
      *
@@ -293,10 +362,22 @@ public class Balloon {
         return currentSegmentIndex >= waypoints.getSegmentCount();
     }
 
+    /**
+     * Retrieves the X coordinate of the balloon's current position, adjusted by a constant offset.
+     * The position is rounded to the nearest integer and an offset of 236 is subtracted.
+     *
+     * @return The adjusted X coordinate of the balloon's current position.
+     */
     public int getX() {
         return Math.round(currentPosition.x) - 236;
     }
 
+    /**
+     * Retrieves the Y coordinate of the balloon's current position, adjusted by a constant offset.
+     * The position is rounded to the nearest integer and an offset of 6 is subtracted.
+     *
+     * @return The adjusted Y coordinate of the balloon's current position.
+     */
     public int getY() {
         return Math.round(currentPosition.y) - 6;
     }
@@ -315,47 +396,99 @@ public class Balloon {
         this.speed = 2 + level * .5;
     }
 
+    /**
+     * Retrieves the current speed of the balloon.
+     *
+     * @return The current speed of the balloon.
+     */
     public double getSpeed() {
         return speed;
     }
 
-    public void goo (){
-        if(!gooed){
+    /**
+     * Halves the balloon's speed when it is "gooed".
+     * This method ensures that the speed is only reduced once.
+     */
+    public void goo() {
+        if (!gooed) {
             gooed = true;
             this.speed = speed / 2;
         }
     }
-    public void unGoo(){
-        if(gooed){
+
+    /**
+     * Restores the balloon's speed when the goo effect is removed.
+     * This method ensures that the speed is only restored once.
+     */
+    public void unGoo() {
+        if (gooed) {
             gooed = false;
             this.speed = speed * 2;
         }
-
     }
 
+    /**
+     * Retrieves the current segment index the balloon is traveling on.
+     *
+     * @return The index of the current waypoint segment.
+     */
     public int getCurrentSegmentIndex() {
         return currentSegmentIndex;
     }
-    public boolean isHidden(){
+
+    /**
+     * Checks if the balloon is hidden.
+     *
+     * @return {@code true} if the balloon is hidden, {@code false} otherwise.
+     */
+    public boolean isHidden() {
         return hidden;
     }
 
+    /**
+     * Marks the balloon as hit, setting the hit status to the provided value.
+     *
+     * @param hit {@code true} if the balloon is hit, {@code false} otherwise.
+     */
     public void gotHit(boolean hit) {
         this.hit = hit;
     }
+
+    /**
+     * Checks if the balloon is hit.
+     *
+     * @return {@code true} if the balloon is hit, {@code false} otherwise.
+     */
     public boolean isHit() {
         return hit;
     }
 
-    public BalloonType getType(){
+    /**
+     * Retrieves the current type of the balloon.
+     *
+     * @return The {@link BalloonType} of the balloon.
+     */
+    public BalloonType getType() {
         return type;
     }
+
+    /**
+     * Sets the type of the balloon and updates its health and speed accordingly.
+     *
+     * @param type The {@link BalloonType} to set for the balloon.
+     */
     public void setType(BalloonType type) {
         this.type = type;
         this.health = type.getHealth();
         this.speed = type.getSpeed(); // If speed matters
     }
 
+    /**
+     * Retrieves the index of the current balloon type in the downgrade order.
+     * This index determines the current type's position in the upgrade/downgrade chain.
+     *
+     * @return The index of the current balloon type in the downgrade order array.
+     */
     private int getCurrentTypeIndex() {
         for (int i = 0; i < downgradeOrder.length; i++) {
             if (downgradeOrder[i] == this.type) {
@@ -364,5 +497,4 @@ public class Balloon {
         }
         return downgradeOrder.length - 1; // Default to last if not found
     }
-
 }

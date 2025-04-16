@@ -7,11 +7,12 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-/*
-Filename: RunGame.java
-Authors: Jace Claassen and Joe Farrier
-Description: The MapSelectionGUI class represents the screen where the player can select a map to play.
-It displays a map preview, description, and navigation buttons to cycle through available maps.
+
+/**
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
+ * The MapSelectionGUI class represents the screen where the player can select a map to play.
+ * It displays a map preview, description, and navigation buttons to cycle through available maps.
  */
 public class MapSelectionGUI extends JPanel {
     private int selectedMapIndex = 0;  // Index to track the currently selected map
@@ -24,9 +25,9 @@ public class MapSelectionGUI extends JPanel {
             "A spring-themed track with lots of curves."
     };
     private final int[][] mapDimensions = {
-            {699,519},  // Maze
-            {700,510},  // MonkeyLane
-            {699,519}   // SpringTrack
+            {699, 519},  // Maze
+            {700, 510},  // MonkeyLane
+            {699, 519}   // SpringTrack
     };
 
     private BufferedImage mapImage;  // BufferedImage to hold the current map image
@@ -41,9 +42,9 @@ public class MapSelectionGUI extends JPanel {
      * Constructor for MapSelectionGUI, initializing the screen with the given width, height, and home screen reference.
      * It sets up map navigation buttons, displays the map preview and description, and adds event listeners.
      *
-     * @param runGame     The RunGame instance used for screen transitions
-     * @param width       The width of the screen
-     * @param height      The height of the screen
+     * @param runGame        The RunGame instance used for screen transitions
+     * @param width          The width of the screen
+     * @param height         The height of the screen
      * @param homeScreenGUI  The HomeScreen instance for returning to the home screen
      */
     public MapSelectionGUI(RunGame runGame, int width, int height, HomeScreenGUI homeScreenGUI) {
@@ -194,7 +195,7 @@ public class MapSelectionGUI extends JPanel {
         new SoundEffect("Click.wav", false, 1f);
         int mapWidth = mapDimensions[selectedMapIndex][0];
         int mapHeight = mapDimensions[selectedMapIndex][1];
-        runGame.startGame(mapNames[selectedMapIndex],mapWidth,mapHeight);  // Notify RunGame and transition to GameRunningGUI
+        runGame.startGame(mapNames[selectedMapIndex], mapWidth, mapHeight);  // Notify RunGame and transition to GameRunningGUI
     }
 
     /**

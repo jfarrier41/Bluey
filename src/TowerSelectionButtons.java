@@ -2,16 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
 
 /**
- * Filename: TowerSelectionButtons.java
- * Author: Jace Claassen
- * Description: TowerSelectionButtons represents a panel displaying tower selection buttons
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
+ * TowerSelectionButtons represents a panel displaying tower selection buttons
  * in a grid format, allowing players to choose towers for placement in the game.
  * It provides scroll functionality using up and down arrow buttons to navigate
  * through multiple pages of available towers.
@@ -31,12 +27,11 @@ public class TowerSelectionButtons extends JPanel {
     private String displayTowerName;
     private int displayTowerCost;
 
-
     // Default tower images used for display purposes
     private static final List<String> DEFAULT_TOWER_IMAGES = List.of(
-            "DartMonkey.png", "TackShooter.png","SniperMonkey.png",
-            "Ninja.png", "BombTower.png","IceTower.png","GlueGunner.png",
-            "Wizard.png","SuperMonkey.png"
+            "DartMonkey.png", "TackShooter.png", "SniperMonkey.png",
+            "Ninja.png", "BombTower.png", "IceTower.png", "GlueGunner.png",
+            "Wizard.png", "SuperMonkey.png"
     );
 
     /**
@@ -152,13 +147,14 @@ public class TowerSelectionButtons extends JPanel {
         button.setBorderPainted(false);
         button.setFocusPainted(false);
 
-
         button.addMouseListener(new MouseAdapter() {
+            /*Yellow if over button*/
             @Override
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(new Color(255, 255, 0, 100));
             }
 
+            /*Gray if not over the button. Default*/
             @Override
             public void mouseExited(MouseEvent e) {
                 button.setBackground(new Color(211, 211, 211, 45));
@@ -218,6 +214,7 @@ public class TowerSelectionButtons extends JPanel {
                 return;
         }
         displayTowerCost = tower.getCost();
+        /*Don't allow user to have a selected tower if there isn't enough money*/
         if(tower.getCost() > gameRunningGUI.getCurrentCash()) {
             return;
         }
@@ -257,9 +254,21 @@ public class TowerSelectionButtons extends JPanel {
             updateButtonGrid();
         }
     }
-    public int getDisplayTowerCost(){
+
+    /**
+     * Returns the cost of the currently selected tower.
+     *
+     * @return The cost of the selected tower.
+     */
+    public int getDisplayTowerCost() {
         return displayTowerCost;
     }
+
+    /**
+     * Returns the name of the currently selected tower.
+     *
+     * @return The name of the selected tower.
+     */
     public String getDisplayTowerName() {
         return displayTowerName;
     }
