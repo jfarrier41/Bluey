@@ -68,7 +68,7 @@ public class TowerPanel extends JPanel {
                     // Get where the mouse is currently at
                     x = e.getX() - (tower.getImgWidth() / 2);
                     y = e.getY() - (tower.getImgHeight() / 2);
-                    if(x > 655 && y > 470){
+                    if(x > 865 && y < 210 && y > 170){
                         tower.isSelected = false;
                         tower = null;
                         setCursor(Cursor.getDefaultCursor());
@@ -94,7 +94,7 @@ public class TowerPanel extends JPanel {
         int diameter = tower.getDiameter();
 
         if (tower.isSelected) {
-            g.drawImage(trashImage, 658, 472, 45, 45, this);
+            g.drawImage(trashImage, 883, 190, 45, 45, this);
 
             this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                     new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
@@ -136,5 +136,12 @@ public class TowerPanel extends JPanel {
 
     public void setTower(Tower tower) {
         this.tower = tower;
+    }
+
+    public boolean isTowerSelected(){
+        if(tower!=null){
+            return true;
+        }
+        return false;
     }
 }

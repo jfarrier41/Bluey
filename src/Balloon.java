@@ -25,6 +25,7 @@ public class Balloon {
     protected boolean frozen;
     private boolean hidden;
     private boolean hit;
+    private boolean popped;
     private static final BalloonType[] downgradeOrder = {
             BalloonType.LEAD, BalloonType.MOAB, BalloonType.CERAMIC,
             BalloonType.RAINBOW, BalloonType.ZEBRA, BalloonType.PINK,
@@ -207,21 +208,18 @@ public class Balloon {
      * @param g The graphics context used to draw the balloon.
      */
     public void draw(Graphics g) {
-        if(balloonImages != null){
-            if(animatePop) {
+        if (balloonImages != null && level >= 0) {
+            if (animatePop) {
                 Random rand = new Random();
                 int randomNum = rand.nextInt(4) + 1;
                 String soundFile = "Pop" + randomNum + ".wav";
                 new SoundEffect(soundFile, false, .8f);
-                g.drawImage(balloonImages[balloonImages.length - 1], (int) x-20, (int) y-25, 50, 50, null);
+                g.drawImage(balloonImages[balloonImages.length - 1], (int) x - 20, (int) y - 25, 50, 50, null);
                 animatePop = false;
-            } else if (getLevel() != 8) {
-                g.drawImage(balloonImages[getLevel()], (int) x - 10, (int) y - 10, 27, 33, null);
-            } else if (level == 8) {
-                g.drawImage(balloonImages[getLevel()], (int) x - 50, (int) y - 25, 100, 50, null);
+            } else if (level != 8) {
+                g.drawImage(balloonImages[level], (int) x - 10, (int) y - 10, 27, 33, null);
             } else {
-                g.setColor(Color.RED);
-                g.fillOval((int) x - 10, (int) y - 10, 30, 30);
+                g.drawImage(balloonImages[level], (int) x - 50, (int) y - 25, 100, 50, null);
             }
         }
     }
@@ -264,6 +262,7 @@ public class Balloon {
         // If health reaches 0, completely pop the balloon (level is 0)
         if (level <= -1) {
             this.health = 0; // Balloon is fully popped
+            popped = true;
         }
     }
 
@@ -273,15 +272,11 @@ public class Balloon {
      * @return true if the balloon has no remaining health and level, false otherwise.
      */
     public boolean isPopped() {
-        return level <= 0 && health <= 0;
+        return popped;
     }
 
     public int getLevel() {
         return level;
-    }
-
-    public int getHealth() {
-        return health;
     }
 
     /**

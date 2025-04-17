@@ -31,6 +31,7 @@ public class GameRunningGUI extends JPanel {
     private final ArrayList<Balloon> balloons;
     private final ArrayList<Tower> placedTowers;
     private final ArrayList<Projectile> curProjectiles;
+    private final ArrayList<Balloon> balloonsToTakeDamage = new ArrayList<>();
     private int currentCash, currentHealth;
     private WaveManager waveManager;
     private boolean waveInProgress;
@@ -75,15 +76,14 @@ public class GameRunningGUI extends JPanel {
         loadBalloonImages();
 
         layeredPane = new JLayeredPane();
-        layeredPane.setBounds(MAP_WIDTH / 3, 0, MAP_WIDTH, HEIGHT);
+        layeredPane.setBounds(MAP_WIDTH / 3, 0, 940, HEIGHT);
         add(layeredPane);
 
         towerPanel = new TowerPanel(layeredPane, placedTowers, this);
 
-        towerPanel.setBounds(0, 0, 700, 520);
+        towerPanel.setBounds(0, 0, 940, 520);
         towerPanel.setOpaque(false);
         layeredPane.add(towerPanel, JLayeredPane.PALETTE_LAYER);
-
 
         towerPanel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -141,7 +141,7 @@ public class GameRunningGUI extends JPanel {
         add(towerSelectionButtons);
         setLayout(null);
 
-        waveThemeSong = new SoundEffect("rickRoll.wav", true,1F);
+        waveThemeSong = new SoundEffect("rickRoll.wav", true,.4F);
         waveThemeSong.stop();
 
         addPlayButton();
@@ -271,6 +271,12 @@ public class GameRunningGUI extends JPanel {
             return; // Always return to skip the loop while paused
         }
 
+        if(towerPanel.isTowerSelected()){
+            layeredPane.setSize(940, HEIGHT);
+        } else {
+            layeredPane.setSize(700, HEIGHT);
+        }
+
         if (finalWaveSpawned && balloons.isEmpty() && !promptedForRestart) {
             promptedForRestart = true;
             int result = JOptionPane.showConfirmDialog(
@@ -315,10 +321,18 @@ public class GameRunningGUI extends JPanel {
         for (int i = 0; i < balloons.size(); i++) {
             Balloon balloon = balloons.get(i);
             balloon.updatePosition();
+
+            // Check if the balloon has reached the end and needs to be removed
             if (balloon.hasReachedEnd()) {
                 balloons.remove(i);
-                i--;
+                i--; // Decrement index to prevent skipping the next balloon
                 currentHealth -= (balloon.getLevel() + 1);
+            }
+
+            // Check if the balloon has been popped
+            if (balloon.isPopped()) {
+                balloons.remove(i);
+                i--; // Decrement index to prevent skipping the next balloon
             }
         }
         if (currentHealth <= 0) {
@@ -374,9 +388,8 @@ public class GameRunningGUI extends JPanel {
                 Balloon b = balloonIterator.next();
                 p.didHit(b);
                 if (b.isHit()) {
-                    ArrayList<Balloon> balloonsToTakeDamage = new ArrayList<>();
                     if(p.getType() == ProjectileImageSize.BOMB){
-                        double explosionRadius = 27.0;
+                        double explosionRadius = 35.0;
 
                         // Get the center of the impact (you can also get this from the projectile if it stores it)
                         double explosionX = b.getX() + 13;
@@ -398,7 +411,7 @@ public class GameRunningGUI extends JPanel {
                     if (b.getType() == BalloonType.LEAD) {
                         // Only allow damage to lead if the projectile is from the wizard
                         if (p.getType() == ProjectileImageSize.ORB) {
-                            b.takeDamage(226);
+                            b.takeDamage(229);
                         }
                     } else {
                         // All other balloon types can be damaged by any projectile
@@ -406,14 +419,17 @@ public class GameRunningGUI extends JPanel {
                     }
 
                       // Apply damage to the balloon
-                    for(Balloon balloon : balloonsToTakeDamage){
-                        if(balloon.getType() != BalloonType.LEAD){
-                            balloon.takeDamage(p.getDamage());
+
+                    for (Balloon balloon : balloonsToTakeDamage) {
+                        if(balloon.getType() == BalloonType.LEAD){
+                            balloon.takeDamage(229);
                         } else {
-                            balloon.takeDamage(226);
+                            balloon.takeDamage(p.getDamage());
                         }
                         currentCash++;
                     }
+                    balloonsToTakeDamage.clear(); // Clear the list after applying damage
+
                     currentCash++;
                     // If the balloon is popped, remove it from the list
                     if (b.isPopped()) {
@@ -697,6 +713,8 @@ public class GameRunningGUI extends JPanel {
      */
     private void returnHome() {
         gameLoopTimer.stop();
+        waveThemeSong.stop();
+        runGame.mainThemeMusic.play();
         runGame.setSize(1024, 768);
         runGame.setContentPane(homeScreenGUI);
         runGame.revalidate();

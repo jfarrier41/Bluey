@@ -18,7 +18,7 @@ public class BombTower extends Tower {
         this.isRotatable = true;
         this.setFireSpeed(900);
         this.setRange(250);
-        this.setProjectileSpeed(10);
+        this.setProjectileSpeed(15);
         this.setProjectileDamage(1);
         this.setTowerImageSize(TowerImageSize.BOMBTOWER);
         this.setCost(555);
