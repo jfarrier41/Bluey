@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -12,8 +11,9 @@ Description: Implements tower and defines the Dart Monkey.
 public class SniperMonkey extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private static final double COLLISION_AREA = 25;
+
     public SniperMonkey(JFrame runGame, BufferedImage currentMap) {
-        super(runGame, currentMap,"SniperMonkey.png");
+        super(runGame, currentMap, "SniperMonkey.png");
 
         this.setRotatable(true);                // Tower can rotate toward targets
         this.setFireRate(1600);                  // Milliseconds between shots
@@ -45,7 +45,7 @@ public class SniperMonkey extends Tower {
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, true,
                 getProjectileImage(0), ProjectileImageSize.SNIPERBULLET,
-                getProjectileDamage(), targets
+                getProjectileDamage()
         );
 
         // Add projectile to active projectile list
@@ -55,8 +55,4 @@ public class SniperMonkey extends Tower {
         setFireTimer();
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
-    }
 }

@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -11,8 +10,9 @@ Description: Implements tower and defines the Bomb Tower.
 public class BombTower extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private static final double COLLISION_AREA = 30;
+
     public BombTower(JFrame runGame, BufferedImage currentMap) {
-        super(runGame, currentMap,"BombTower.png");
+        super(runGame, currentMap, "BombTower.png");
 
         // Set default values for BombTower (can be overridden if needed)
         this.isRotatable = true;
@@ -44,8 +44,7 @@ public class BombTower extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
-                getProjectileImage(4), ProjectileImageSize.BOMB,getProjectileDamage(),
-                targets
+                getProjectileImage(4), ProjectileImageSize.BOMB, getProjectileDamage()
         );
 
         // Add projectile to active projectile list
@@ -55,12 +54,8 @@ public class BombTower extends Tower {
         setFireTimer();
     }
 
-    public ArrayList<Balloon> getTargets(){
+    public ArrayList<Balloon> getTargets() {
         return targets;
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
-    }
 }

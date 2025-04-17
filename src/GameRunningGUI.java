@@ -505,9 +505,9 @@ public class GameRunningGUI extends JPanel {
                 if (tower.towerType.equals("Ice") && tower.animateAttack) {
                     Color color = new Color(173, 216, 230, 150);
                     g2d.setColor(color);
-                    int xOffset = (tower.getDiameter() / 2) - (tower.getImgWidth() / 2) - 233;
-                    int yOffset = (tower.getDiameter() / 2) - (tower.getImgHeight() / 2);
-                    g2d.fillOval(tower.xPosition - xOffset, tower.yPosition - yOffset, tower.getDiameter(), tower.getDiameter());
+                    int xOffset = (tower.getRange() / 2) - (tower.getImgWidth() / 2) - 233;
+                    int yOffset = (tower.getRange() / 2) - (tower.getImgHeight() / 2);
+                    g2d.fillOval(tower.xPosition - xOffset, tower.yPosition - yOffset, tower.getRange(), tower.getRange());
                     tower.setAnimateAttackFalse();
                 }
             }
@@ -515,9 +515,9 @@ public class GameRunningGUI extends JPanel {
         if (clickedTower != null) {
             Color color = new Color(128, 128, 128, 128);
             g2d.setColor(color);
-            int xOffset = (clickedTower.getDiameter() / 2) - (clickedTower.getImgWidth() / 2) - 233;
-            int yOffset = (clickedTower.getDiameter() / 2) - (clickedTower.getImgHeight() / 2);
-            g2d.fillOval(clickedTower.xPosition - xOffset, clickedTower.yPosition - yOffset, clickedTower.getDiameter(), clickedTower.getDiameter());
+            int xOffset = (clickedTower.getRange() / 2) - (clickedTower.getImgWidth() / 2) - 233;
+            int yOffset = (clickedTower.getRange() / 2) - (clickedTower.getImgHeight() / 2);
+            g2d.fillOval(clickedTower.xPosition - xOffset, clickedTower.yPosition - yOffset, clickedTower.getRange(), clickedTower.getRange());
         }
         // Draw balloons.
         for (Balloon balloon : balloons) {

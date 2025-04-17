@@ -7,7 +7,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 /*
  * Joseph Farrier
@@ -91,7 +90,7 @@ public class TowerPanel extends JPanel {
         }
 
         isTowerThere();
-        int diameter = tower.getDiameter();
+        int diameter = tower.getRange();
 
         if (tower.isSelected) {
             g.drawImage(trashImage, 883, 190, 45, 45, this);

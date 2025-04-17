@@ -4,33 +4,65 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The Projectile class represents a projectile that can be fired by a tower.
+ * It tracks its movement, target, and the damage it causes to balloons.
+ * The projectile can move in a straight line or track its target,
+ * and it can hit balloons within a certain damage area.
+ */
 public class Projectile {
-    // Position of the projectile
-    public double currentX, currentY;
-    // Initial position of the projectile (used to check if it has exceeded its range)
+    /**
+     * Starting position to check if the projectile has exceeded its range
+     */
     public final double startX, startY;
-    // The damage area radius of the projectile
+    /**
+     * The damage area radius of the projectile
+     */
     public final double damageArea;
-    // Angle the projectile is traveling in (in radians)
+    /**
+     * Position of the projectile
+     */
+    public double currentX, currentY;
+    /**
+     * Angle the projectile is traveling in (in radians)
+     */
     public double angle;
-    // Maximum range the projectile can travel
-    public int range;
-    // Number of allowed hits for the projectile
-    public int allowedHits;
-    // Whether the projectile is tracking a target (balloon)
-    public boolean tracking;
-    // The type of projectile (e.g., Goo, Dart)
-    protected ProjectileImageSize type;
-    // Set of balloons that the projectile has already hit
-    private Set<Balloon> hitBalloons = new HashSet<>();
 
-    // Speed of the projectile
+    /**
+     * Maximum range the projectile can travel
+     */
+    public int range;
+
+    /**
+     * Number of allowed hits for the projectile
+     */
+    public int allowedHits;
+
+    /**
+     * Whether the projectile is tracking a target (balloon)
+     */
+    public boolean tracking;
+    /**
+     * Speed of the projectile
+     */
     public double speed;
-    // Image representation of the projectile
+    /**
+     * The type of projectile (e.g., Goo, Dart)
+     */
+    protected ProjectileImageSize type;
+    /**
+     * Image representation of the projectile
+     */
     protected BufferedImage image;
-    // The balloon that the projectile is currently targeting
+    /**
+     * Set of balloons that the projectile has already hit
+     */
+    private Set<Balloon> hitBalloons = new HashSet<>();
+    /**
+     * The balloon that the projectile is currently targeting
+     */
     private Balloon currentTarget;
-    private ArrayList<Balloon> targets;
+
 
     private int damage;
 
@@ -51,8 +83,7 @@ public class Projectile {
      */
     public Projectile(double x, double y, double damageArea, double speed, double angle,
                       int range, Balloon currentTarget, int allowedHits,
-                      boolean tracking, BufferedImage projectileImage, ProjectileImageSize type, int damage,
-                      ArrayList<Balloon> targets) {
+                      boolean tracking, BufferedImage projectileImage, ProjectileImageSize type, int damage) {
         this.currentX = x;
         this.currentY = y;
         this.startX = x;
@@ -67,8 +98,6 @@ public class Projectile {
         this.image = projectileImage;
         this.type = type;
         this.damage = damage;
-        this.targets = targets;
-
     }
 
     /**
@@ -134,7 +163,6 @@ public class Projectile {
             return false;
         }
 
-        // For non-Bomb projectiles, only check the original target.
         // Get the position of the balloon to check if the projectile is within range.
         int balloonX = balloon.getX();
         int balloonY = balloon.getY();
@@ -142,19 +170,18 @@ public class Projectile {
         // Calculate the distance between the current position of the projectile and the target balloon.
         double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
 
-        // If the distance is within the damage area, hit the balloon.
+
         if (distance <= (damageArea + 10)) {
             if (type == ProjectileImageSize.valueOf("GOO")) {
-                balloon.goo(); // Apply the goo effect if this is a "GOO" projectile.
+                balloon.goo();
             }
             balloon.gotHit(true);
-            hitBalloons.add(balloon); // Mark the balloon as hit.
-            return true; // The projectile hit the balloon
+            hitBalloons.add(balloon);
+            return true;
         }
 
-    return false; // No collision with the balloon
+        return false; // No collision with the balloon
     }
-
 
     /**
      * Gets the number of remaining hits that the projectile can make.
@@ -182,15 +209,6 @@ public class Projectile {
     }
 
     /**
-     * Sets the type of the projectile.
-     *
-     * @param type The type of projectile (e.g., Goo, Dart).
-     */
-    public void setType(ProjectileImageSize type) {
-        this.type = type;
-    }
-
-    /**
      * Sets the width and height of the projectile (currently not implemented).
      */
     private void setWidthHeight() {
@@ -215,26 +233,60 @@ public class Projectile {
         return type.getHeight();
     }
 
+    /**
+     * Gets the damage value of the projectile.
+     *
+     * @return The damage value of the projectile.
+     */
     public int getDamage() {
         return damage;
     }
-    public ProjectileImageSize getType(){
+
+    /**
+     * Gets the type of projectile.
+     *
+     * @return The type of projectile (e.g., Goo, Dart).
+     */
+    public ProjectileImageSize getType() {
         return type;
     }
 
-    public void setTracking(boolean tracking) {
-        this.tracking = tracking;
+    /**
+     * Sets the type of the projectile.
+     *
+     * @param type The type of projectile (e.g., Goo, Dart).
+     */
+    public void setType(ProjectileImageSize type) {
+        this.type = type;
     }
-    public boolean isTracking(){
+
+    /**
+     * Checks if the projectile is currently tracking a target.
+     *
+     * @return true if the projectile is tracking a target, false otherwise.
+     */
+    public boolean isTracking() {
         return tracking;
     }
 
+    /**
+     * Sets whether the projectile tracks a target balloon.
+     *
+     * @param tracking true if the projectile should track a target, false otherwise.
+     */
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
+    }
+
+    /**
+     * Checks if the projectile is still valid (target's level is greater than zero).
+     *
+     * @return true if the projectile is still valid, false otherwise.
+     */
     public boolean isStillValid() {
-        if(currentTarget.getLevel() <= 0){
+        if (currentTarget.getLevel() <= 0) {
             return false;
         }
         return true;
     }
-
-
 }

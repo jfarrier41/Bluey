@@ -5,17 +5,20 @@ import java.util.ArrayList;
 /**
  * Filename: SuperMonkey.java
  * Authors: Jace Claassen and Joseph Farrier
- *
+ * <p>
  * Description: Implements the Super Monkey tower and defines its behavior.
  * Inherits from the Tower class and sets projectile, range, and visual parameters.
  */
 public class SuperMonkey extends Tower {
 
-    /** Time of the last fire event, used to control fire rate. */
-    private long lastFireTime;
-
-    /** Collision area radius for the projectile. */
+    /**
+     * Collision area radius for the projectile.
+     */
     private static final double COLLISION_AREA = 25;
+    /**
+     * Time of the last fire event, used to control fire rate.
+     */
+    private long lastFireTime;
 
     /**
      * Constructor for the SuperMonkey tower.
@@ -73,15 +76,12 @@ public class SuperMonkey extends Tower {
         /** Create new projectile instance and add to list. */
         Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
                 angleRadians, diameter, currentTarget, 1, false,
-                getProjectileImage(0), ProjectileImageSize.DART,getProjectileDamage(), targets);
+                getProjectileImage(0), ProjectileImageSize.DART, getProjectileDamage()
+        );
         projectiles.add(p);
 
         /** Start cooldown before next fire. */
         setFireTimer();
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
-    }
 }

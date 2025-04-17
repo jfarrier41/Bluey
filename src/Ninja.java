@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -12,8 +11,9 @@ Description: Implements tower and defines the Dart Monkey.
 public class Ninja extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private static final double COLLISION_AREA = 25;
+
     public Ninja(JFrame runGame, BufferedImage currentMap) {
-        super(runGame, currentMap,"Ninja.png");
+        super(runGame, currentMap, "Ninja.png");
 
         // Set default values for DartMonkey (can be overridden if needed)
         this.isRotatable = true;
@@ -40,15 +40,13 @@ public class Ninja extends Tower {
         // Correct angle from tower to target
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-        Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,angleRadians, diameter,  currentTarget,
-                3,true, getProjectileImage(2),
-                ProjectileImageSize.NINJASTAR,getProjectileDamage(), targets);
+        Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed, angleRadians, diameter, currentTarget,
+                3, true, getProjectileImage(2),
+                ProjectileImageSize.NINJASTAR, getProjectileDamage()
+        );
         projectiles.add(p);
         setFireTimer();
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
 
-    }
 }

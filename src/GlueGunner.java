@@ -1,12 +1,11 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
-Filename: DartMonkey.java
-Authors: Jace Claassen and Joseph Farrier
-Description: Implements tower and defines the Dart Monkey.
+ * Filename: DartMonkey.java
+ * Authors: Jace Claassen and Joseph Farrier
+ * Description: Implements tower and defines the Dart Monkey.
  */
 
 public class GlueGunner extends Tower {
@@ -16,7 +15,7 @@ public class GlueGunner extends Tower {
     /**
      * Constructor that initializes a GlueGunner tower.
      *
-     * @param runGame The JFrame for the running game, used for GUI updates.
+     * @param runGame    The JFrame for the running game, used for GUI updates.
      * @param currentMap The current game map, used for rendering the tower.
      */
     public GlueGunner(JFrame runGame, BufferedImage currentMap) {
@@ -57,7 +56,7 @@ public class GlueGunner extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
-                getProjectileImage(1), ProjectileImageSize.GOO,getProjectileDamage(),targets
+                getProjectileImage(1), ProjectileImageSize.GOO, getProjectileDamage()
         );
 
         // Add the created projectile to the active projectiles list
@@ -67,8 +66,4 @@ public class GlueGunner extends Tower {
         setFireTimer();
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
-    }
 }

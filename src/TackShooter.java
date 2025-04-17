@@ -9,9 +9,9 @@ Description: Implements tower and defines the Dart Monkey.
  */
 
 public class TackShooter extends Tower {
+    private static final int COLLISION_AREA = 25;
     // Constructor that only takes JFrame and BufferedImage
     private int darts = 8;
-    private static final int COLLISION_AREA = 25;
 
     public TackShooter(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "TackShooter.png");
@@ -48,7 +48,8 @@ public class TackShooter extends Tower {
             /** Create new projectile instance and add to list. */
             Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
                     angle, diameter, balloon, 1, false,
-                    getProjectileImage(0), ProjectileImageSize.TAC,getProjectileDamage(), targets);
+                    getProjectileImage(0), ProjectileImageSize.TAC, getProjectileDamage()
+            );
             projectiles.add(p);
         }
 
@@ -57,8 +58,4 @@ public class TackShooter extends Tower {
 
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
-    }
 }

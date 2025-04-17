@@ -3,7 +3,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
-
 /**
  * Filename: DartMonkey.java
  * Authors: Jace Claassen and Joseph Farrier
@@ -14,7 +13,9 @@ import java.util.ArrayList;
  */
 public class DartMonkey extends Tower {
 
-    /** Collision area of the dart projectile (radius in pixels). */
+    /**
+     * Collision area of the dart projectile (radius in pixels).
+     */
     private static final double COLLISION_AREA = 25;
 
     /**
@@ -65,8 +66,7 @@ public class DartMonkey extends Tower {
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
                 getProjectileImage(0), ProjectileImageSize.DART,
-                getProjectileDamage(),
-                targets
+                getProjectileDamage()
         );
 
         // Add projectile to active projectile list
@@ -76,7 +76,4 @@ public class DartMonkey extends Tower {
         setFireTimer();
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-    }
 }

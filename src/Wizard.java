@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -12,8 +11,9 @@ Description: Implements tower and defines the Dart Monkey.
 public class Wizard extends Tower {
     // Constructor that only takes JFrame and BufferedImage
     private static final double COLLISION_AREA = 25;
+
     public Wizard(JFrame runGame, BufferedImage currentMap) {
-        super(runGame, currentMap,"Wizard.png");
+        super(runGame, currentMap, "Wizard.png");
 
         // Set default values for DartMonkey (can be overridden if needed)
         this.isRotatable = true;
@@ -44,8 +44,7 @@ public class Wizard extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 4, false,
-                getProjectileImage(3), ProjectileImageSize.ORB,getProjectileDamage(),
-                targets
+                getProjectileImage(3), ProjectileImageSize.ORB, getProjectileDamage()
         );
 
         // Add projectile to active projectile list
@@ -55,8 +54,4 @@ public class Wizard extends Tower {
         setFireTimer();
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
-    }
 }

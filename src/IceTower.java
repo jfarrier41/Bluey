@@ -38,9 +38,4 @@ public class IceTower extends Tower {
         setFireTimer();
     }
 
-    @Override
-    public void fire(Balloon currentTarget, ArrayList<Projectile> projectile, ArrayList<Balloon> targets) {
-
-    }
-
 }
