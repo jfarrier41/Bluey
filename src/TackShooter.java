@@ -2,22 +2,26 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-/*
-Filename: DartMonkey.java
-Authors: Jace Claassen and Joseph Farrier
-Description: Implements tower and defines the Dart Monkey.
+/**
+ * Defines the TackShooter tower, which fires multiple projectiles in a radial spread.
+ * Authors: Jace Claassen and Joseph Farrier
  */
-
 public class TackShooter extends Tower {
+
+    /** Radius of the projectile's collision area */
     private static final int COLLISION_AREA = 25;
-    // Constructor that only takes JFrame and BufferedImage
+
+    /** Number of projectiles fired in one shot */
     private int darts = 8;
 
+    /**
+     * Constructs a TackShooter with default properties and image.
+     *
+     * @param runGame    the main game window
+     * @param currentMap the current map image
+     */
     public TackShooter(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "TackShooter.png");
-
-
-        // Set default values for DartMonkey (can be overridden if needed)
         this.setFireRate(700);
         this.setRange(150);
         this.setProjectileSpeed(10);
@@ -25,37 +29,39 @@ public class TackShooter extends Tower {
         this.setTowerImageSize(TowerImageSize.TACSHOOTER);
         this.setCost(425);
         towerType = "TackShooter";
-
         loadProjectileImages();
-
-
     }
 
+    /**
+     * Sets the number of darts (projectiles) fired per attack.
+     *
+     * @param num number of darts to fire
+     */
     public void setDarts(int num) {
         darts = num;
     }
 
+    /**
+     * Fires multiple projectiles in a circular spread pattern.
+     *
+     * @param balloon     the target balloon (not specifically tracked)
+     * @param projectiles the list of active projectiles
+     */
     @Override
     public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
 
-        /** Calculate direction angle from tower to target. */
-
         for (int i = 0; i < darts - 1; i++) {
             double angle = Math.toRadians((360 / darts) * i);
-
-            /** Create new projectile instance and add to list. */
-            Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
-                    angle, diameter, balloon, 1, false,
+            Projectile p = new Projectile(
+                    x, y, COLLISION_AREA, projectileSpeed, angle,
+                    diameter, balloon, 1, false,
                     getProjectileImage(0), ProjectileImageSize.TAC, getProjectileDamage()
             );
             projectiles.add(p);
         }
 
-        /** Start cooldown before next fire. */
         setFireTimer();
-
     }
-
 }

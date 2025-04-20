@@ -2,57 +2,57 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-/*
-Filename: DartMonkey.java
-Authors: Jace Claassen and Joseph Farrier
-Description: Implements tower and defines the Dart Monkey.
+/**
+ * Defines the Sniper Monkey tower, which shoots long-range, high-speed projectiles at balloons.
+ * Authors: Jace Claassen and Joseph Farrier
  */
-
 public class SniperMonkey extends Tower {
-    // Constructor that only takes JFrame and BufferedImage
+
+    /** Radius of the projectile's collision area */
     private static final double COLLISION_AREA = 25;
 
+    /**
+     * Constructs a Sniper Monkey with default attributes.
+     *
+     * @param runGame    the main game window
+     * @param currentMap the current map image
+     */
     public SniperMonkey(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "SniperMonkey.png");
 
-        this.setRotatable(true);                // Tower can rotate toward targets
-        this.setFireRate(1600);                  // Milliseconds between shots
-        this.setRange(800);                     // Radius within which the tower can target balloons
-        this.setProjectileSpeed(70);            // Speed of the projectile
-        this.setProjectileDamage(4);           // Damage dealt per hit
+        this.setRotatable(true);
+        this.setFireRate(1600);
+        this.setRange(800);
+        this.setProjectileSpeed(70);
+        this.setProjectileDamage(4);
         this.setCost(300);
+        this.setTowerImageSize(TowerImageSize.SNIPERMONKEY);
         towerType = "Sniper";
-        this.setTowerImageSize(TowerImageSize.SNIPERMONKEY); // Size enum specific to DartMonkey
 
         loadProjectileImages();
     }
 
+    /**
+     * Fires a high-speed projectile at the targeted balloon.
+     *
+     * @param currentTarget the balloon to attack
+     * @param projectiles   the list of active projectiles
+     */
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
-        // Get center of the target balloon
-        double targetX = currentTarget.getX() + 27 / 2.0; // Approximate center X
-        double targetY = currentTarget.getY() + 33 / 2.0; // Approximate center Y
-
-        // Get center of the DartMonkey tower image
+        double targetX = currentTarget.getX() + 27 / 2.0;
+        double targetY = currentTarget.getY() + 33 / 2.0;
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
-
-        // Calculate angle (in radians) from tower to balloon
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-        // Create a new projectile with computed parameters
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, true,
-                getProjectileImage(0), ProjectileImageSize.SNIPERBULLET,
-                getProjectileDamage()
+                getProjectileImage(0), ProjectileImageSize.SNIPERBULLET, getProjectileDamage()
         );
 
-        // Add projectile to active projectile list
         projectiles.add(p);
-
-        // Begin fire cooldown
         setFireTimer();
     }
-
 }
