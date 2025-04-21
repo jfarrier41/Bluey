@@ -4,8 +4,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
+ * @author Joseph Farrier
+ * @author Jace Classen
  * Implements the Ice Tower that freezes or unfreezes balloons within range.
- * Authors: Jace Claassen and Joseph Farrier
  */
 public class IceTower extends Tower {
 

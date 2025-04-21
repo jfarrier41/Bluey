@@ -3,6 +3,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
+ * @author Joseph Farrier
+ * @author Jace Classen
  * Defines the Sniper Monkey tower, which shoots long-range, high-speed projectiles at balloons.
  * Authors: Jace Claassen and Joseph Farrier
  */

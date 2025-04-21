@@ -8,139 +8,156 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-/*
- * Joseph Farrier
- * 3/16/2025
- * Description: This class is used to handle the drawing and animations for the Tower Class
- * This class works in connection with both the GUI and the Tower Class. Using mouse listerns
- * to determine if the user is ready to place a tower, and track where the user is tracing.
- * It also uses a list to keep track of all towers place and draw them to the screen
- * */
+
+/**
+ * @author Joseph Farrier
+ * @author Jace Classen
+ * TowerPanel handles the visual representation and user interaction
+ * for placing towers within the game.
+ * It listens for mouse movement and clicks to determine if a tower is being placed
+ * and draws the tower image and its range circle accordingly. It also shows a
+ * trash icon if the player decides to cancel placement.
+ */
 public class TowerPanel extends JPanel {
+
+    /** The current tower being placed by the player */
     private Tower tower;
 
+    /** Reference to the layered pane used for drawing towers on top of other UI elements */
     private final JLayeredPane layeredPane;
+
+    /** Image used for the trash icon (to cancel tower placement) */
     private BufferedImage trashImage;
+
+    /** List of towers already placed on the map */
     private List<Tower> placedTowers;
 
+    /** Mouse x and y coordinates used to position the tower image */
     int x;
     int y;
 
+    /**
+     * Constructs the TowerPanel.
+     *
+     * @param pane           the layered pane that manages z-order of components
+     * @param placedTowers   the list of already placed towers
+     * @param gameRunningGUI the main game GUI for cash updates and state changes
+     */
     public TowerPanel(JLayeredPane pane, List<Tower> placedTowers, GameRunningGUI gameRunningGUI) {
         this.layeredPane = pane;
         this.placedTowers = placedTowers;
-
-        setOpaque(false);
+        setOpaque(false); // Make panel transparent
 
         try {
-            trashImage = ImageIO.read(new File("src/DesignImg/trash.png")); // Update with your correct path
+            trashImage = ImageIO.read(new File("src/DesignImg/trash.png"));
         } catch (IOException e) {
             System.err.println("Failed to load trash image.");
             trashImage = null;
         }
 
+        // Handle mouse click: attempts to place the tower
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                // check to see if tower has been assigned and is placeable
                 if ((tower != null) && tower.isPlaceable()) {
                     gameRunningGUI.setCurrentCash(tower.getCost());
-                    new SoundEffect("NewTowerIntro.wav", false, .8f);
-                    // Set tower postion
-                    tower.setPosition(x,y);
-                    // Add it to list of placed towers
+                    new SoundEffect("NewTowerIntro.wav", false, 0.8f);
+
+                    tower.setPosition(x, y);
                     placedTowers.add(tower);
-                    // remove current tower from Panel
                     tower = null;
-                    // Set the layer back to the Pallete Layer
+
                     layeredPane.setLayer(TowerPanel.this, JLayeredPane.PALETTE_LAYER);
                     repaint();
                 }
             }
         });
 
-
+        // Handle mouse movement: track cursor for tower positioning
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                // If tower is assigned and selected
                 if (tower != null && tower.isSelected) {
-                    // Get where the mouse is currently at
                     x = e.getX() - (tower.getImgWidth() / 2);
                     y = e.getY() - (tower.getImgHeight() / 2);
-                    if(x > 865 && y < 210 && y > 170){
+
+                    // Trash can area detection
+                    if (x > 865 && y < 210 && y > 170) {
                         tower.isSelected = false;
                         tower = null;
                         setCursor(Cursor.getDefaultCursor());
                         return;
                     }
 
-                    // Check to see if it is in a placeable area
-                    tower.isPlaceable(x + (tower.getImgWidth()/2), y + (tower.getImgHeight()/2));
+                    tower.isPlaceable(x + (tower.getImgWidth() / 2), y + (tower.getImgHeight() / 2));
                     repaint();
                 }
             }
         });
     }
 
+    /**
+     * Draws the tower being placed, its range, and the trash icon if selected.
+     */
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //  Check to see if tower has been assigned
-        if(tower == null){
-            return;
-        }
+        if (tower == null) return;
 
-        isTowerThere();
+        isTowerThere(); // Check for overlap with other towers
+
         int diameter = tower.getRange();
-
         if (tower.isSelected) {
             g.drawImage(trashImage, 883, 190, 45, 45, this);
 
-            this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
+            setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                     new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
                     new Point(0, 0),
                     "InvisibleCursor"));
-            // Check to see if tower is placeable
-            Color color;
-            if (tower.isPlaceable()) {
-                // If so, make the range color a transparent gray
-                color = new Color(128, 128, 128, 128);
-                // ChatGPT formula for drawing circle
-            } else {
-                // If not placeable make the range a transparent red
-                color = new Color(225, 0, 0, 128);
-            }
+
+            Color color = tower.isPlaceable() ?
+                    new Color(128, 128, 128, 128) : // Transparent gray
+                    new Color(225, 0, 0, 128);      // Transparent red
+
             g.setColor(color);
+
             int xOffset = (diameter / 2) - (tower.getImgWidth() / 2);
             int yOffset = (diameter / 2) - (tower.getImgHeight() / 2);
             g.fillOval(x - xOffset, y - yOffset, diameter, diameter);
-            // Always draw the tower and center it in the range
-            Image towerImage = tower.towerImage;
-            g.drawImage(towerImage, x, y,tower.getImgWidth(),tower.getImgHeight(), this);
 
+            g.drawImage(tower.towerImage, x, y, tower.getImgWidth(), tower.getImgHeight(), this);
         }
     }
 
+    /**
+     * Prevents overlapping towers by checking nearby tower positions.
+     */
     private void isTowerThere() {
         for (Tower placedTower : placedTowers) {
             Point point = placedTower.getPosition();
-            System.out.println(point);
             int xDif = Math.abs(x - point.x);
             int yDif = Math.abs(y - point.y);
-            if(xDif < 20 && yDif < 20){
+            if (xDif < 20 && yDif < 20) {
                 tower.placeable = false;
                 break;
             }
         }
     }
 
+    /**
+     * Assigns a new tower to be placed by the player.
+     *
+     * @param tower the tower being placed
+     */
     public void setTower(Tower tower) {
         this.tower = tower;
     }
 
-    public boolean isTowerSelected(){
-        if(tower!=null){
-            return true;
-        }
-        return false;
+    /**
+     * Returns whether the player is currently placing a tower.
+     *
+     * @return true if a tower is selected for placement
+     */
+    public boolean isTowerSelected() {
+        return tower != null;
     }
 }

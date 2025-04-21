@@ -3,10 +3,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * Filename: SuperMonkey.java
- * Authors: Jace Claassen and Joseph Farrier
- * <p>
- * Description: Implements the Super Monkey tower and defines its behavior.
+ * @author Joseph Farrier
+ * @author Jace Classen
+ * Implements the Super Monkey tower and defines its behavior.
  * Inherits from the Tower class and sets projectile, range, and visual parameters.
  */
 public class SuperMonkey extends Tower {

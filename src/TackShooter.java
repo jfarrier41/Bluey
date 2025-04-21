@@ -3,6 +3,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
+ * @author Joseph Farrier
+ * @author Jace Classen
  * Defines the TackShooter tower, which fires multiple projectiles in a radial spread.
  * Authors: Jace Claassen and Joseph Farrier
  */

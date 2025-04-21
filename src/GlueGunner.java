@@ -3,8 +3,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * Filename: DartMonkey.java
- * Authors: Jace Claassen and Joseph Farrier
+ * @author Joseph Farrier
+ * @author Jace Classen
  * Description: Implements tower and defines the Dart Monkey.
  */
 

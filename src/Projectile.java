@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * @author Joseph Farrier
+ * @author Jace Classen
  * The Projectile class represents a projectile that can be fired by a tower.
  * It tracks its movement, target, and the damage it causes to balloons.
  * The projectile can move in a straight line or track its target,

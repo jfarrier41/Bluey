@@ -9,6 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
+ * @author Joseph Farrier
+ * @author Jace Classen
  * Abstract base class for all towers in the game.
  * Handles shared logic like placement, targeting, and projectile firing.
  * Subclasses define specific attack behavior and visuals.
