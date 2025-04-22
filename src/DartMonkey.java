@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * This class represents a Dart Monkey tower in the tower defense game.
  * It extends the abstract Tower class and implements behavior specific to the Dart Monkey,
  * including projectile behavior, image settings, and attack logic.
@@ -26,13 +26,13 @@ public class DartMonkey extends Tower {
     public DartMonkey(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "DartMonkey.png");
 
-        // Set default values for DartMonkey (can be adjusted in subclass or later)
-        this.setRotatable(true);                // Tower can rotate toward targets
-        this.setFireRate(500);                  // Milliseconds between shots
-        this.setRange(200);                     // Radius within which the tower can target balloons
-        this.setProjectileSpeed(23);            // Speed of the projectile
-        this.setProjectileDamage(1);           // Damage dealt per hit
-        this.setTowerImageSize(TowerImageSize.DARTMONKEY); // Size enum specific to DartMonkey
+        /**Set default values for DartMonkey (can be adjusted in subclass or later)*/
+        this.setRotatable(true);
+        this.setFireRate(500);
+        this.setRange(200);
+        this.setProjectileSpeed(23);
+        this.setProjectileDamage(1);
+        this.setTowerImageSize(TowerImageSize.DARTMONKEY);
         this.setCost(170);
         towerType = "DartMonkey";
 
@@ -49,18 +49,16 @@ public class DartMonkey extends Tower {
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
 
-        // Get center of the target balloon
-        double targetX = currentTarget.getX() + 27 / 2.0; // Approximate center X
-        double targetY = currentTarget.getY() + 33 / 2.0; // Approximate center Y
+        /**Code to find center and angle to balloon provided by CHATGPT and tweaked */
+        double targetX = currentTarget.getX() + 27 / 2.0;
+        double targetY = currentTarget.getY() + 33 / 2.0;
 
-        // Get center of the DartMonkey tower image
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
 
-        // Calculate angle (in radians) from tower to balloon
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-        // Create a new projectile with computed parameters
+
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
@@ -68,10 +66,7 @@ public class DartMonkey extends Tower {
                 getProjectileDamage()
         );
 
-        // Add projectile to active projectile list
         projectiles.add(p);
-
-        // Begin fire cooldown
         setFireTimer();
     }
 

@@ -10,22 +10,22 @@ import java.util.TimerTask;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * Abstract base class for all towers in the game.
  * Handles shared logic like placement, targeting, and projectile firing.
  * Subclasses define specific attack behavior and visuals.
  */
 abstract public class Tower {
-    /* Shared visual/projectile data */
+    /** Shared visual/projectile data */
     protected static BufferedImage[] PROJECTILE_IMAGES;
 
-    /*Tower placement and GUI references*/
+    /**Tower placement and GUI references*/
     protected final Container parentWindow;
     protected final JLabel towerJLabel;
     protected BufferedImage currentMap;
     protected Image towerImage;
 
-    /*Combat and behavior properties*/
+    /**Combat and behavior properties*/
     protected int projectileSpeed;
     protected int projectileDamage;
     protected int fireRate;
@@ -34,7 +34,7 @@ abstract public class Tower {
     protected String towerType;
     private int cost;
 
-    /*Combat state tracking*/
+    /**Combat state tracking*/
     protected ArrayList<Projectile> projectiles = new ArrayList<>();
     protected ArrayList<Balloon> targets = new ArrayList<>();
     protected Balloon target;
@@ -42,7 +42,7 @@ abstract public class Tower {
     protected Timer fireTimer;
     protected boolean readyToFire = true;
 
-    /*Placement flags and values*/
+    /**Placement flags and values*/
     protected boolean placeable;
     protected boolean isSelected = false;
     protected boolean placed = false;
@@ -50,7 +50,7 @@ abstract public class Tower {
     protected int xPosition;
     protected int yPosition;
 
-    /* tower image values*/
+    /** tower image values*/
     private int imgWidth;
     private int imgHeight;
 
@@ -156,6 +156,7 @@ abstract public class Tower {
      * @return True if the balloon is within range.
      */
     public boolean inRange(Balloon balloon) {
+        /** Math to determine if balloon is in range Provided by CHATGPT*/
         int targetX = balloon.getX() + 13;
         int targetY = balloon.getY() + 16;
         double distanceSquared = Math.pow(targetX - this.xPosition - (getImgWidth() / 2), 2) +
@@ -173,6 +174,7 @@ abstract public class Tower {
      * @return The angle in degrees, adjusted for sprite rotation.
      */
     public double getAngle(int x, int y) {
+        /** Math to determine angle provided by CHATGPT*/
         int centerX = this.xPosition + towerImage.getWidth(null) / 2;
         int centerY = this.yPosition + towerImage.getHeight(null) / 2;
 
@@ -181,8 +183,8 @@ abstract public class Tower {
 
         while (angleDegrees < 0) angleDegrees += 360;
         while (angleDegrees > 360) angleDegrees -= 360;
-
-        return angleDegrees + 90; // Adjust for default sprite facing
+        /** Add ninty to account for default orintation*/
+        return angleDegrees + 90;
     }
     /**
      * Returns the target balloon for the tower.
@@ -308,14 +310,6 @@ abstract public class Tower {
         this.isSelected = false;
     }
 
-    /**
-     * Sets the fire speed (same as fire rate).
-     *
-     * @param fireSpeed The fire speed in milliseconds.
-     */
-    public void setFireSpeed(int fireSpeed) {
-        this.fireRate = fireSpeed;
-    }
 
     /**
      * Enables or disables tower rotation behavior.
@@ -403,26 +397,23 @@ abstract public class Tower {
      * Prevents spamming of projectiles by enforcing cooldown between shots.
      */
     public void setFireTimer() {
-        // If there is already a fireTimer running, do nothing
         if (!readyToFire) return;
 
-        // Disable the tower from firing again immediately
         readyToFire = false;
 
-        // Cancel any previous fire timer to ensure only one is running at a time
         if (fireTimer != null) {
             fireTimer.cancel();
             fireTimer.purge();
         }
 
-        // Create a new timer to allow firing after a delay
+        /** Create new fire timer after firing*/
         fireTimer = new Timer();
         fireTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                readyToFire = true; // Re-enable firing after the fireRate delay
+                readyToFire = true;
             }
-        }, fireRate); // Delay in milliseconds before the tower can fire again
+        }, fireRate); /** Delay in milliseconds before the tower can fire again*/
     }
 
     /**

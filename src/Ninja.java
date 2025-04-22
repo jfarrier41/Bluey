@@ -4,13 +4,15 @@ import java.util.ArrayList;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * Defines the Ninja tower, which throws fast, rotating projectiles at targets.
  * Authors: Jace Claassen and Joseph Farrier
  */
 public class Ninja extends Tower {
 
-    /** Radius of the projectile's collision area */
+    /**
+     * Radius of the projectile's collision area
+     */
     private static final double COLLISION_AREA = 25;
 
     /**
@@ -22,7 +24,7 @@ public class Ninja extends Tower {
     public Ninja(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "Ninja.png");
         this.isRotatable = true;
-        this.setFireSpeed(650);
+        this.setFireRate(650);
         this.setRange(250);
         this.setProjectileSpeed(17);
         this.setProjectileDamage(1);
@@ -40,10 +42,14 @@ public class Ninja extends Tower {
      */
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+
+        /**Code to find center and angle to balloon provided by CHATGPT and tweaked */
         double targetX = currentTarget.getX() + 27 / 2.0;
         double targetY = currentTarget.getY() + 33 / 2.0;
+
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
+
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
         Projectile p = new Projectile(

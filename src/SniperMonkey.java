@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * Defines the Sniper Monkey tower, which shoots long-range, high-speed projectiles at balloons.
  * Authors: Jace Claassen and Joseph Farrier
  */
@@ -42,10 +42,14 @@ public class SniperMonkey extends Tower {
      */
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+
+        /**Code to find center and angle to balloon provided by CHATGPT and tweaked */
         double targetX = currentTarget.getX() + 27 / 2.0;
         double targetY = currentTarget.getY() + 33 / 2.0;
+
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
+
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
         Projectile p = new Projectile(

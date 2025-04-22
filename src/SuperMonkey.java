@@ -4,20 +4,14 @@ import java.util.ArrayList;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * Implements the Super Monkey tower and defines its behavior.
  * Inherits from the Tower class and sets projectile, range, and visual parameters.
  */
 public class SuperMonkey extends Tower {
 
-    /**
-     * Collision area radius for the projectile.
-     */
+    /** Collision radius for the projectile. */
     private static final double COLLISION_AREA = 25;
-    /**
-     * Time of the last fire event, used to control fire rate.
-     */
-    private long lastFireTime;
 
     /**
      * Constructor for the SuperMonkey tower.
@@ -28,22 +22,11 @@ public class SuperMonkey extends Tower {
     public SuperMonkey(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "SuperMonkey.png");
 
-        /** Set whether this tower should rotate to face targets. */
         this.setRotatable(true);
-
-        /** Set the fire rate in milliseconds. */
         this.setFireRate(65);
-
-        /** Set the detection range for targeting balloons. */
         this.setRange(350);
-
-        /** Set the speed of fired projectiles. */
         this.setProjectileSpeed(20);
-
-        /** Set the damage dealt by projectiles. */
         this.setProjectileDamage(1);
-
-        /** Set the visual size used for the SuperMonkey tower image. */
         this.setTowerImageSize(TowerImageSize.SUPERMONKEY);
         this.setCost(2650);
         towerType = "SuperMonkey";
@@ -61,25 +44,21 @@ public class SuperMonkey extends Tower {
      */
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
-        /** Compute target center coordinates (adjusted). */
+
+        /**Code to find center and angle to balloon provided by CHATGPT and tweaked */
         double targetX = currentTarget.getX() + 13;
         double targetY = currentTarget.getY();
 
-        /** Compute tower center coordinates for firing origin. */
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
 
-        /** Calculate direction angle from tower to target. */
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-        /** Create new projectile instance and add to list. */
         Projectile p = new Projectile(x, y, COLLISION_AREA, projectileSpeed,
                 angleRadians, diameter, currentTarget, 1, false,
                 getProjectileImage(0), ProjectileImageSize.DART, getProjectileDamage()
         );
         projectiles.add(p);
-
-        /** Start cooldown before next fire. */
         setFireTimer();
     }
 

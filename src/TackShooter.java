@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * Defines the TackShooter tower, which fires multiple projectiles in a radial spread.
  * Authors: Jace Claassen and Joseph Farrier
  */
@@ -36,7 +36,6 @@ public class TackShooter extends Tower {
 
     /**
      * Sets the number of darts (projectiles) fired per attack.
-     *
      * @param num number of darts to fire
      */
     public void setDarts(int num) {
@@ -45,12 +44,12 @@ public class TackShooter extends Tower {
 
     /**
      * Fires multiple projectiles in a circular spread pattern.
-     *
      * @param balloon     the target balloon (not specifically tracked)
      * @param projectiles the list of active projectiles
      */
     @Override
     public void fire(Balloon balloon, ArrayList<Projectile> projectiles) {
+
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
 

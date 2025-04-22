@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * TowerPanel handles the visual representation and user interaction
  * for placing towers within the game.
  * It listens for mouse movement and clicks to determine if a tower is being placed
@@ -20,21 +20,24 @@ import java.util.List;
  */
 public class TowerPanel extends JPanel {
 
-    /** The current tower being placed by the player */
-    private Tower tower;
-
-    /** Reference to the layered pane used for drawing towers on top of other UI elements */
+    /**
+     * Reference to the layered pane used for drawing towers on top of other UI elements
+     */
     private final JLayeredPane layeredPane;
-
-    /** Image used for the trash icon (to cancel tower placement) */
-    private BufferedImage trashImage;
-
-    /** List of towers already placed on the map */
-    private List<Tower> placedTowers;
-
-    /** Mouse x and y coordinates used to position the tower image */
+    /**
+     * Mouse x and y coordinates used to position the tower image
+     */
     int x;
     int y;
+    /**
+     * The current tower being placed by the player
+     */
+    private Tower tower;
+    /**
+     * Image used to cancel tower placement
+     */
+    private BufferedImage trashImage;
+    private List<Tower> placedTowers;
 
     /**
      * Constructs the TowerPanel.
@@ -46,7 +49,7 @@ public class TowerPanel extends JPanel {
     public TowerPanel(JLayeredPane pane, List<Tower> placedTowers, GameRunningGUI gameRunningGUI) {
         this.layeredPane = pane;
         this.placedTowers = placedTowers;
-        setOpaque(false); // Make panel transparent
+        setOpaque(false);
 
         try {
             trashImage = ImageIO.read(new File("src/DesignImg/trash.png"));
@@ -55,7 +58,7 @@ public class TowerPanel extends JPanel {
             trashImage = null;
         }
 
-        // Handle mouse click: attempts to place the tower
+        /** Handless mouse clicks during placement*/
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if ((tower != null) && tower.isPlaceable()) {
@@ -72,7 +75,7 @@ public class TowerPanel extends JPanel {
             }
         });
 
-        // Handle mouse movement: track cursor for tower positioning
+        /** Tracks Mouse movement when tower selected */
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -102,24 +105,26 @@ public class TowerPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (tower == null) return;
-
-        isTowerThere(); // Check for overlap with other towers
+        /** Check for tower overlap*/
+        isTowerThere();
 
         int diameter = tower.getRange();
         if (tower.isSelected) {
             g.drawImage(trashImage, 883, 190, 45, 45, this);
-
+            /** Syntax for removing mouse visual provided by CHATGPT*/
             setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                     new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
                     new Point(0, 0),
                     "InvisibleCursor"));
 
             Color color = tower.isPlaceable() ?
-                    new Color(128, 128, 128, 128) : // Transparent gray
-                    new Color(225, 0, 0, 128);      // Transparent red
+                    /** If Tower placeable show transparent gray */
+                    new Color(128, 128, 128, 128) :
+                    /** If Tower not placeable show transparent red */
+                    new Color(225, 0, 0, 128);
 
             g.setColor(color);
-
+            /** Math to draw proper circle around tower provided by CHATGPT*/
             int xOffset = (diameter / 2) - (tower.getImgWidth() / 2);
             int yOffset = (diameter / 2) - (tower.getImgHeight() / 2);
             g.fillOval(x - xOffset, y - yOffset, diameter, diameter);

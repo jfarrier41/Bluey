@@ -1,71 +1,29 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * The Projectile class represents a projectile that can be fired by a tower.
  * It tracks its movement, target, and the damage it causes to balloons.
  * The projectile can move in a straight line or track its target,
  * and it can hit balloons within a certain damage area.
  */
 public class Projectile {
-    /**
-     * Starting position to check if the projectile has exceeded its range
-     */
     public final double startX, startY;
-    /**
-     * The damage area radius of the projectile
-     */
     public final double damageArea;
-    /**
-     * Position of the projectile
-     */
     public double currentX, currentY;
-    /**
-     * Angle the projectile is traveling in (in radians)
-     */
     public double angle;
-
-    /**
-     * Maximum range the projectile can travel
-     */
     public int range;
-
-    /**
-     * Number of allowed hits for the projectile
-     */
     public int allowedHits;
-
-    /**
-     * Whether the projectile is tracking a target (balloon)
-     */
     public boolean tracking;
-    /**
-     * Speed of the projectile
-     */
     public double speed;
-    /**
-     * The type of projectile (e.g., Goo, Dart)
-     */
     protected ProjectileImageSize type;
-    /**
-     * Image representation of the projectile
-     */
     protected BufferedImage image;
-    /**
-     * Set of balloons that the projectile has already hit
-     */
     private Set<Balloon> hitBalloons = new HashSet<>();
-    /**
-     * The balloon that the projectile is currently targeting
-     */
     private Balloon currentTarget;
-
-
     private int damage;
 
     /**
@@ -107,6 +65,7 @@ public class Projectile {
      * If the projectile is tracking a target, it moves toward that target; otherwise, it moves in a straight line.
      */
     public void update() {
+        /** Math for updating angle provided by CHATGPT*/
         if (tracking == false) {
             this.currentX += Math.cos(angle) * speed;
             this.currentY += Math.sin(angle) * speed;
@@ -160,18 +119,15 @@ public class Projectile {
      * @return true if the projectile hits the balloon, otherwise false.
      */
     public boolean didHit(Balloon balloon) {
-        // If the balloon has already been hit, do not check again.
         if (hitBalloons.contains(balloon)) {
             return false;
         }
 
-        // Get the position of the balloon to check if the projectile is within range.
         int balloonX = balloon.getX();
         int balloonY = balloon.getY();
 
-        // Calculate the distance between the current position of the projectile and the target balloon.
+        /** Math to Calculate the distance between the current position and Target Provided by ChatGPT */
         double distance = Math.sqrt(Math.pow(currentX - balloonX, 2) + Math.pow(currentY - balloonY, 2));
-
 
         if (distance <= (damageArea + 10)) {
             if (type == ProjectileImageSize.valueOf("GOO")) {
@@ -182,7 +138,7 @@ public class Projectile {
             return true;
         }
 
-        return false; // No collision with the balloon
+        return false;
     }
 
     /**
@@ -208,13 +164,6 @@ public class Projectile {
      */
     public Image getImage() {
         return image;
-    }
-
-    /**
-     * Sets the width and height of the projectile (currently not implemented).
-     */
-    private void setWidthHeight() {
-        // Placeholder for width and height logic (currently unused)
     }
 
     /**
@@ -251,24 +200,6 @@ public class Projectile {
      */
     public ProjectileImageSize getType() {
         return type;
-    }
-
-    /**
-     * Sets the type of the projectile.
-     *
-     * @param type The type of projectile (e.g., Goo, Dart).
-     */
-    public void setType(ProjectileImageSize type) {
-        this.type = type;
-    }
-
-    /**
-     * Checks if the projectile is currently tracking a target.
-     *
-     * @return true if the projectile is tracking a target, false otherwise.
-     */
-    public boolean isTracking() {
-        return tracking;
     }
 
     /**

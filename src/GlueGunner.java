@@ -9,7 +9,8 @@ import java.util.ArrayList;
  */
 
 public class GlueGunner extends Tower {
-    // Constant for the collision area radius of the projectile
+
+    /** Collision radius for the Wizard's projectile. */
     private static final double COLLISION_AREA = 25;
 
     /**
@@ -42,27 +43,23 @@ public class GlueGunner extends Tower {
      */
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
-        double targetX = currentTarget.getX() + 27 / 2.0; // Approximate center X of the target balloon
-        double targetY = currentTarget.getY() + 33 / 2.0; // Approximate center Y of the target balloon
 
-        // Get the center of the GlueGunner tower image
+        /**Code to find center and angle to balloon provided by CHATGPT and tweaked */
+        double targetX = currentTarget.getX() + 27 / 2.0;
+        double targetY = currentTarget.getY() + 33 / 2.0;
+
         double x = this.xPosition + (getImgWidth() / 2.0);
         double y = this.yPosition + (getImgHeight() / 2.0);
 
-        // Calculate the angle (in radians) from the tower to the target balloon
         double angleRadians = Math.atan2(targetY - y, targetX - x);
 
-        // Create a new projectile with the calculated parameters
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, false,
                 getProjectileImage(1), ProjectileImageSize.GOO, getProjectileDamage()
         );
 
-        // Add the created projectile to the active projectiles list
         projectiles.add(p);
-
-        // Start the fire cooldown timer
         setFireTimer();
     }
 

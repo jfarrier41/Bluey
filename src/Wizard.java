@@ -3,8 +3,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- *  * @author Joseph Farrier
- *  * @author Jace Classen
+ *  @author Joseph Farrier
+ *  @author Jace Classen
  * Implements the Wizard tower that fires orb projectiles at balloons.
  * Authors: Joseph Farrier and Jace Claassen
  */
@@ -22,7 +22,7 @@ public class Wizard extends Tower {
     public Wizard(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "Wizard.png");
         this.isRotatable = true;
-        this.setFireSpeed(700);
+        this.setFireRate(700);
         this.setRange(250);
         this.setProjectileSpeed(8);
         this.setProjectileDamage(1);
@@ -40,6 +40,8 @@ public class Wizard extends Tower {
      */
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+
+        /**Code to find center and angle to balloon provided by CHATGPT and tweaked */
         double targetX = currentTarget.getX() + 27 / 2.0;
         double targetY = currentTarget.getY() + 33 / 2.0;
 

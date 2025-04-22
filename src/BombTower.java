@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * Defines the Bomb Tower, a tower that fires explosive projectiles at balloons.
- * Authors: Jace Claassen and Joseph Farrier
  */
 public class BombTower extends Tower {
 
-    /** Radius of the projectile's collision area */
+    /**
+     * Radius of the projectile's collision area
+     */
     private static final double COLLISION_AREA = 30;
 
     /**
@@ -22,7 +23,7 @@ public class BombTower extends Tower {
     public BombTower(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "BombTower.png");
         this.isRotatable = true;
-        this.setFireSpeed(900);
+        this.setFireRate(900);
         this.setRange(250);
         this.setProjectileSpeed(15);
         this.setProjectileDamage(1);
@@ -40,6 +41,8 @@ public class BombTower extends Tower {
      */
     @Override
     public void fire(Balloon currentTarget, ArrayList<Projectile> projectiles) {
+
+        /**Code to find center and angle to balloon provided by CHATGPT and tweaked */
         double targetX = currentTarget.getX() + 27 / 2.0;
         double targetY = currentTarget.getY() + 33 / 2.0;
 
@@ -58,12 +61,4 @@ public class BombTower extends Tower {
         setFireTimer();
     }
 
-    /**
-     * Returns the list of targetable balloons currently in range.
-     *
-     * @return list of balloons in range
-     */
-    public ArrayList<Balloon> getTargets() {
-        return targets;
-    }
 }

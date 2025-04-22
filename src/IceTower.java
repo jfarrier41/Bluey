@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 /**
  * @author Joseph Farrier
- * @author Jace Classen
+ * @author Jace Claassen
  * Implements the Ice Tower that freezes or unfreezes balloons within range.
  */
 public class IceTower extends Tower {
@@ -18,10 +18,8 @@ public class IceTower extends Tower {
      */
     public IceTower(JFrame runGame, BufferedImage currentMap) {
         super(runGame, currentMap, "IceTower.png");
-        this.setFireSpeed(2500);
+        this.setFireRate(2500);
         this.setRange(160);
-        this.setProjectileSpeed(10);
-        this.setProjectileDamage(10);
         this.setTowerImageSize(TowerImageSize.ICETOWER);
         this.setCost(205);
         towerType = "Ice";
