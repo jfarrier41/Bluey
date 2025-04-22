@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 
 /**
- * @author Joseph Farrier
- * @author Jace Claassen
  * This class represents a Dart Monkey tower in the tower defense game.
  * It extends the abstract Tower class and implements behavior specific to the Dart Monkey,
  * including projectile behavior, image settings, and attack logic.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class DartMonkey extends Tower {
 

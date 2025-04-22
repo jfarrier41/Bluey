@@ -3,10 +3,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- *  @author Joseph Farrier
- *  @author Jace Classen
  * Implements the Wizard tower that fires orb projectiles at balloons.
- * Authors: Joseph Farrier and Jace Claassen
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
+ *
  */
 public class Wizard extends Tower {
 

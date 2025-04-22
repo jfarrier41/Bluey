@@ -5,14 +5,10 @@ import javax.swing.*;
  * RunGame serves as the main entry point for the Bloons Tower Defense game.
  * It initializes the game window, manages transitions between different game screens,
  * and starts the game.
- * <p>
  * This class includes the main method to launch the game and methods to transition
  * to different game screens (HomeScreen, Map Selection, and Game Running).
- * </p>
- *
- * Filename: RunGame.java
- * Authors: Jace Claassen and Joe Farrier
- * Description: Main class for launching the Bloons Tower Defense game.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class RunGame extends JFrame {
 

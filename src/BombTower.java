@@ -3,9 +3,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * @author Joseph Farrier
- * @author Jace Claassen
  * Defines the Bomb Tower, a tower that fires explosive projectiles at balloons.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class BombTower extends Tower {
 

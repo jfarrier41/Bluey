@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -212,8 +211,8 @@ public class Balloon {
             if (animatePop) {
                 Random rand = new Random();
                 int randomNum = rand.nextInt(4) + 1;
-                String soundFile = "Pop" + randomNum + ".wav";
-                new SoundEffect(soundFile, false, .8f);
+                String pop = "Pop" + randomNum + ".wav";
+                new SoundEffect(pop, false, .8f);
                 g.drawImage(balloonImages[balloonImages.length - 1], (int) x - 20, (int) y - 25, 50, 50, null);
                 animatePop = false;
             } else if (level != 8) {

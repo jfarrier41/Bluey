@@ -2,15 +2,41 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@code Waypoints} class represents the full path of enemy movement
+ * for a specific map in the tower defense game.
+ * It is composed of multiple {@link WaypointSegment} instances that define
+ * linear or curved movement from one point to another. Each map has its own
+ * unique sequence of segments.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
+ */
 public class Waypoints {
+
+    /** A list of segments representing the full path on the map. */
     private final List<WaypointSegment> segments;
+
+    /** The name of the map associated with these waypoints. */
     String mapName;
+
+    /**
+     * Constructs a {@code Waypoints} object for the given map name and
+     * loads the corresponding waypoint segments.
+     *
+     * @param mapName the name of the map (e.g., "MonkeyLane")
+     */
     public Waypoints(String mapName) {
         segments = new ArrayList<>();
         loadWaypoints(mapName);
         this.mapName = mapName;
     }
 
+    /**
+     * Loads the waypoint segments based on the provided map name.
+     * This method hardcodes the movement path for each map.
+     *
+     * @param mapName the name of the map whose waypoints should be loaded
+     */
     private void loadWaypoints(String mapName) {
         switch (mapName) {
             case "MonkeyLane":
@@ -21,7 +47,6 @@ public class Waypoints {
                 segments.add(new WaypointSegment(new Point(517, 477), new Point(685, 477), false)); // Linear
                 segments.add(new WaypointSegment(new Point(685, 477), new Point(685, 457), false)); // Linear
                 segments.add(new WaypointSegment(new Point(685, 457), new Point(685, 295), false)); // Linear
-
                 segments.add(new WaypointSegment(new Point(685, 295), new Point(685, 135), false)); // Linear
                 segments.add(new WaypointSegment(new Point(685, 135), new Point(400, 135), false)); // Linear
                 segments.add(new WaypointSegment(new Point(400, 135), new Point(400, 60), false)); // Linear
@@ -32,10 +57,8 @@ public class Waypoints {
                 segments.add(new WaypointSegment(new Point(876, 137), new Point(876, 224), false)); // Linear
                 segments.add(new WaypointSegment(new Point(876, 224), new Point(776, 224), false)); // Linear
                 segments.add(new WaypointSegment(new Point(776, 224), new Point(776, 372), false)); // Linear
-
                 segments.add(new WaypointSegment(new Point(776, 372), new Point(610, 372), false)); // Linear
                 segments.add(new WaypointSegment(new Point(610, 372), new Point(430, 372), false)); // Linear
-
                 segments.add(new WaypointSegment(new Point(776, 372), new Point(400, 372), false)); // Linear
                 segments.add(new WaypointSegment(new Point(400, 372), new Point(400, 525), false)); // Linear
                 break;
@@ -99,21 +122,40 @@ public class Waypoints {
         }
     }
 
-    // Returns a list of WaypointSegment
+    /**
+     * Returns the list of all waypoint segments for this map.
+     *
+     * @return a {@link List} of {@link WaypointSegment} objects
+     */
     public List<WaypointSegment> getSegments() {
         return segments;
     }
 
-    // Get the total number of segments
+    /**
+     * Returns the total number of segments in the waypoint path.
+     *
+     * @return the number of segments
+     */
     public int getSegmentCount() {
         return segments.size();
     }
 
-    // Retrieve the segment at a specific index
+    /**
+     * Retrieves the waypoint segment at the specified index.
+     *
+     * @param index the index of the segment to retrieve
+     * @return the {@link WaypointSegment} at the given index
+     * @throws IndexOutOfBoundsException if the index is out of range
+     */
     public WaypointSegment getSegment(int index) {
         return segments.get(index);
     }
 
+    /**
+     * Returns the name of the map associated with these waypoints.
+     *
+     * @return the map name
+     */
     public String getMapName() {
         return mapName;
     }

@@ -3,10 +3,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * @author Joseph Farrier
- * @author Jace Claassen
  * Implements the Super Monkey tower and defines its behavior.
  * Inherits from the Tower class and sets projectile, range, and visual parameters.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class SuperMonkey extends Tower {
 

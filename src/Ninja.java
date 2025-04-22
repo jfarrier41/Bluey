@@ -3,10 +3,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * @author Joseph Farrier
- * @author Jace Claassen
  * Defines the Ninja tower, which throws fast, rotating projectiles at targets.
- * Authors: Jace Claassen and Joseph Farrier
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class Ninja extends Tower {
 

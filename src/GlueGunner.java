@@ -3,9 +3,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * @author Joseph Farrier
- * @author Jace Classen
  * Description: Implements tower and defines the Dart Monkey.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 
 public class GlueGunner extends Tower {

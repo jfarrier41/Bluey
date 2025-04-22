@@ -5,6 +5,8 @@ import java.net.URL;
 /**
  * This class is used to handle sound effects in the game. It allows for playing, pausing,
  * resuming, and looping sound clips with customizable volume.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class SoundEffect {
     private Clip clip;

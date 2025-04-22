@@ -3,10 +3,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
- * @author Joseph Farrier
- * @author Jace Claassen
  * Defines the Sniper Monkey tower, which shoots long-range, high-speed projectiles at balloons.
  * Authors: Jace Claassen and Joseph Farrier
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class SniperMonkey extends Tower {
 
@@ -55,7 +55,7 @@ public class SniperMonkey extends Tower {
         Projectile p = new Projectile(
                 x, y, COLLISION_AREA, projectileSpeed, angleRadians,
                 diameter, currentTarget, 1, true,
-                getProjectileImage(0), ProjectileImageSize.SNIPERBULLET, getProjectileDamage()
+                getProjectileImage(0), ProjectileImageSize.DART, getProjectileDamage()
         );
 
         projectiles.add(p);

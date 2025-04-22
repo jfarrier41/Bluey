@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author Joseph Farrier
- * @author Jace Claassen
  * TowerPanel handles the visual representation and user interaction
  * for placing towers within the game.
  * It listens for mouse movement and clicks to determine if a tower is being placed
  * and draws the tower image and its range circle accordingly. It also shows a
  * trash icon if the player decides to cancel placement.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class TowerPanel extends JPanel {
 
@@ -63,7 +63,7 @@ public class TowerPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if ((tower != null) && tower.isPlaceable()) {
                     gameRunningGUI.setCurrentCash(tower.getCost());
-                    new SoundEffect("NewTowerIntro.wav", false, 0.8f);
+                    new SoundEffect("NewTowerIntro.wav", false, 0.2f);
 
                     tower.setPosition(x, y);
                     placedTowers.add(tower);
