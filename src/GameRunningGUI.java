@@ -58,7 +58,7 @@ public class GameRunningGUI extends JPanel {
      * @param homeScreenGUI The home screen GUI to navigate back to.
      */
     public GameRunningGUI(RunGame runGame, int width, int height, String selectedMap, HomeScreenGUI homeScreenGUI) {
-        currentCash = 10000;
+        currentCash = 1000;
         currentHealth = 100;
 
         this.MAP_WIDTH = width;
@@ -426,11 +426,11 @@ public class GameRunningGUI extends JPanel {
                         } else {
                             balloon.takeDamage(p.getDamage());
                         }
-                        currentCash++;
+                        currentCash+=2;
                     }
                     balloonsToTakeDamage.clear(); // Clear the list after applying damage
 
-                    currentCash++;
+                    currentCash+=2;
                     // If the balloon is popped, remove it from the list
                     if (b.isPopped()) {
                         new SoundEffect("Pop1.wav", false, .8f);

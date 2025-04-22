@@ -20,13 +20,13 @@ Super Monkey – Extremely fast and powerful, but costs a lot to place. Stronges
 
 Tack Shooter – Fires 8 tacks in all directions at once.
 
-Wizard – Uses magic attacks that can hit several targets in a row.
+Wizard – Uses magic attacks that can hit 5 targets in a row.
 
 Ninja – Strong tower with tracking ninja stars whom can hit 3 balloons.
 
 Glue Gunner – Slows down bloons by covering them in sticky glue.
 
-Sniper Monkey – Attacks bloons from anywhere on the map with pinpoint accuracy. Lot's of damage per shot!
+Sniper Monkey – Attacks bloons from anywhere on the map with pinpoint accuracy. Lots of damage per shot!
 
 Ice Tower – Freezes bloons in place, stopping them temporarily.
 
@@ -43,10 +43,10 @@ around the tower. If the color is grey that means the tower can be placed in
 the location and if red it's invalid.
 
 If you accidentally click a tower from the buy panel simply drag it to the
-bottom right of the map to the trashcan. The tower will be removed from
+right and hover your cursor over the garbage icon. The tower will be removed from
 your cursor and will not be placed with no penalty. If a tower has been
 placed, and you want to get rid of it simply click on the placed tower and
-click the sell button located at *location*. This will give you 80% of the buy
+click the sell button located on the left panel. This will give you 80% of the buy
 value of the tower.
 
 There are 4 buttons on the left side of the screen. These are the start wave
@@ -55,7 +55,7 @@ stop all current action in the game. Nothing can be interacted with at this
 time during the game while the popup is on the screen. The there is the
 reset game button which put's you back to wave 1 with all progress lost.
 Finally, there is the red x in the very top left and when clicked it will exit
-the program entirely.
+to the home screen.
 
 Separate from the buttons there are two values on the left side of the map.
 The value next to the heart is how much lives you have. Balloons will reduce
