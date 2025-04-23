@@ -1,7 +1,8 @@
 All credit for the game idea, art, and sounds goes to Ninja Kiwi. We simply
 took what we observed while playing the game on our mobile device and
 programmed it in our own private environment. The implementation is
-uniquely ours.
+uniquely ours. Credit for "Never Gonna Give You Up" is to Rick Astley.
+We did not make the song, although, I wish we did because we'd be rich.
 
 Bloons Tower Defense is a strategy game where your goal is to stop waves
 of colorful balloons (called "bloons") from reaching the end of a winding
@@ -65,8 +66,10 @@ there is your current cash value which is what allows for you to place new
 towers. Ensure that you have enough money for a given tower, or it will not
 let you select it.
 
-There are 30 waves each with their own unique spawn patterns and
-combinations of balloons. If you successfully defeat all of these wave's you
-win! Click play to begin.
+At the home screen you can toggle on and off Nate Demo mode which sets
+your beginning cash to $100,000 and 5 waves that we believe demonstrates
+all game mechanics. If not clicked you will be in default mode where there
+are 30 waves each with their own unique spawn patterns and combinations
+of balloons. If you successfully defeat all of these wave's you win!
 
 Good Luck and have fun!

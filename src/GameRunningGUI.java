@@ -45,10 +45,10 @@ public class GameRunningGUI extends JPanel {
     private boolean gameInProgress;
     private boolean promptedForRestart = false;
     private boolean paused;
-    private Timer spawnTimer;
     private boolean finalWaveSpawned;
     private Tower clickedTower = null;
     private final SoundEffect waveThemeSong;
+    private ArrayList<Timer> activeSpawnTimers = new ArrayList<>();
 
     /**
      * Constructs a new GameRunningGUI object.
@@ -61,7 +61,11 @@ public class GameRunningGUI extends JPanel {
      * @param homeScreenGUI The home screen GUI to navigate back to.
      */
     public GameRunningGUI(RunGame runGame, int width, int height, String selectedMap, HomeScreenGUI homeScreenGUI) {
-        currentCash = 1000;
+        if(runGame.isNateDemo()){
+            currentCash = 100000;
+        } else {
+            currentCash = 1000;
+        }
         currentHealth = 100;
 
         this.MAP_WIDTH = width;
@@ -135,7 +139,7 @@ public class GameRunningGUI extends JPanel {
             }
         });
 
-        waveManager = new WaveManager();
+        waveManager = new WaveManager(runGame.isNateDemo());
         waveInProgress = false;
         bloonsRemainingInWave = 0;
 
@@ -210,19 +214,20 @@ public class GameRunningGUI extends JPanel {
      * Starts the next wave of balloons if the current wave is finished and there are no balloons remaining.
      */
     private void startNextWave() {
+        stopAllSpawnTimers();
         // Only start the wave if the balloons list is empty
-        if (balloons.isEmpty()) {
-            addEndRoundCash = true;
-            waveInProgress = true;
+        addEndRoundCash = true;
+        waveInProgress = true;
 
-            Wave currentWave = waveManager.getCurrentWave();
-            bloonsRemainingInWave = 0;
+        Wave currentWave = waveManager.getCurrentWave();
+        bloonsRemainingInWave = 0;
 
-            for (BloonSpawnInfo bloonInfo : currentWave.getBloons()) {
-                bloonsRemainingInWave += bloonInfo.getAmount();
-                spawnBloonsForWave(bloonInfo);
-            }
+        for (BloonSpawnInfo bloonInfo : currentWave.getBloons()) {
+            bloonsRemainingInWave += bloonInfo.getAmount();
+            spawnBloonsForWave(bloonInfo);
         }
+        waveManager.nextWave();
+
     }
 
     /**
@@ -231,7 +236,7 @@ public class GameRunningGUI extends JPanel {
      * @param bloonInfo The information about the balloons to spawn.
      */
     private void spawnBloonsForWave(BloonSpawnInfo bloonInfo) {
-        spawnTimer = new Timer((int) (bloonInfo.getSpawnRate() * 1000), e -> {
+        Timer spawnTimer = new Timer((int) (bloonInfo.getSpawnRate() * 1000), e -> {
             // Check if there are still balloons left to spawn in this group
             if (bloonInfo.getAmount() > 0) {
                 // Spawn a balloon and decrement the amount
@@ -241,18 +246,17 @@ public class GameRunningGUI extends JPanel {
             }
 
             // Check if all balloons have been spawned
-            if (bloonsRemainingInWave == 0 && bloonInfo.getAmount() == 0) {
+            if (bloonsRemainingInWave <= 0 && balloons.isEmpty()) {
                 ((Timer) e.getSource()).stop(); // Stop the timer once all balloons are spawned
-                waveManager.nextWave(); // Move to the next wave
                 if (waveManager.hasNextWave()) {
                     waveInProgress = false;
-                    startNextWave(); // Start the next wave
                 } else {
                     finalWaveSpawned = true;
                 }
             }
         });
         spawnTimer.start();  // Start the timer
+        activeSpawnTimers.add(spawnTimer);
     }
 
     /**
@@ -268,6 +272,7 @@ public class GameRunningGUI extends JPanel {
             );
 
             if (result != JOptionPane.CLOSED_OPTION) {
+                waveThemeSong.play();
                 paused = false; // Only resume if user actually interacted
             }
 
@@ -658,6 +663,7 @@ public class GameRunningGUI extends JPanel {
         // Add an action listener to start the next wave when clicked.
         pauseButton.addActionListener(e -> {
             new SoundEffect("Click.wav", false, 1f);
+            waveThemeSong.stop();
             paused = true;
         });
 
@@ -729,6 +735,7 @@ public class GameRunningGUI extends JPanel {
      * Handles returning to the home screen. Stops the game loop and switches to the home screen GUI.
      */
     private void returnHome() {
+        stopAllSpawnTimers();
         gameLoopTimer.stop();
         waveThemeSong.stop();
         runGame.mainThemeMusic.play();
@@ -736,6 +743,7 @@ public class GameRunningGUI extends JPanel {
         runGame.setContentPane(homeScreenGUI);
         runGame.revalidate();
         runGame.repaint();
+
     }
 
     /**
@@ -765,18 +773,19 @@ public class GameRunningGUI extends JPanel {
         this.curProjectiles.clear();
         this.currentHealth = 100;
         this.clickedTower = null;
-        waveManager = new WaveManager();
+        waveManager = new WaveManager(runGame.isNateDemo());
         waveInProgress = false;
         gameInProgress = true;
         promptedForRestart = false;
         finalWaveSpawned = false;
+        addEndRoundCash = false;
         waveThemeSong.stop();
         runGame.mainThemeMusic.play();
-        if (spawnTimer != null) {
-            this.currentCash = 800;
-            spawnTimer.stop();
+        stopAllSpawnTimers();
+        if (runGame.isNateDemo()) {
+            currentCash = 100000;
         } else {
-            this.currentCash = 1000;
+            currentCash = 1000;
         }
     }
 
@@ -840,5 +849,15 @@ public class GameRunningGUI extends JPanel {
         if (!line.toString().isEmpty()) {
             g.drawString(line.toString(), x, curY);
         }
+    }
+
+    /**
+     * Method to stop all the active spawn timers
+     */
+    public void stopAllSpawnTimers() {
+        for (Timer t : activeSpawnTimers) {
+            t.stop();
+        }
+        activeSpawnTimers.clear();
     }
 }

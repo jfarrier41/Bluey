@@ -82,8 +82,36 @@ public class HomeScreenGUI extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        JButton nateDemoButton = createStyledButton("Nate Demo");
+        nateDemoButton.setBounds(20, 20, 220, 70);
+        nateDemoButton.addActionListener(new ActionListener() {
+             public void actionPerformed(ActionEvent e) {
+                 if(runGame.isNateDemo()){
+                     runGame.setNateDemo(false);
+                     JOptionPane.showConfirmDialog(
+                             runGame,
+                             "Nate Demo Has Been Disabled. Back to Default.",
+                             "Normal",
+                             JOptionPane.DEFAULT_OPTION
+                     );
+                 } else {
+                     runGame.setNateDemo(true);
+                     JOptionPane.showConfirmDialog(
+                             runGame,
+                             "Nate Demo Enabled. You will have $100,000\n" +
+                                     "and 5 waves. Reminder that metal balloons can\n" +
+                                     "only be popped by wizard or bomb tower. Click\n" +
+                                     "again to toggle off nate demo mode.",
+                             "Nate Demo",
+                             JOptionPane.DEFAULT_OPTION
+                     );
+                 }
+
+             }
+        });
         add(mapSelectionButton);
         add(gameInfoButton);
+        add(nateDemoButton);
     }
 
     /**

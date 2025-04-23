@@ -26,10 +26,14 @@ public class WaveManager {
      * Constructs a new {@code WaveManager} and initializes the list of waves.
      * The constructor also calls {@link #initializeWaves()} to populate the waves with data.
      */
-    public WaveManager() {
+    public WaveManager(boolean nateWave) {
         this.waves = new ArrayList<>();
         this.currentWaveIndex = 0;
-        initializeWaves();
+        if (nateWave) {
+            initializeNateWaves();
+        } else {
+            initializeWaves();
+        }
     }
 
     /**
@@ -75,6 +79,18 @@ public class WaveManager {
 
         // Empty wave which is used to help end the game
         waves.add(new Wave(List.of()));
+    }
+
+    private void initializeNateWaves(){
+        waves.add(new Wave(List.of(new BloonSpawnInfo(20, 0, 1.0),new BloonSpawnInfo(10,1, 1.6),new BloonSpawnInfo(7,2,2.3))));
+        waves.add(new Wave(List.of(new BloonSpawnInfo(50,2,.1))));
+        waves.add(new Wave(List.of(new BloonSpawnInfo(5, 3, 1.0),new BloonSpawnInfo(10,4, 1.6),new BloonSpawnInfo(7,5,2.3),new BloonSpawnInfo(6,5,1.5),new BloonSpawnInfo(3,6,4),new BloonSpawnInfo(4,7,3.2))));
+        waves.add(new Wave(List.of(new BloonSpawnInfo(1, 8, 1.5))));
+        waves.add(new Wave(List.of(new BloonSpawnInfo(10, 9, .2))));
+
+        //Empty wave indicating the end of the game
+        waves.add(new Wave(List.of()));
+
     }
 
     /**

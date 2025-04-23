@@ -1,4 +1,10 @@
 import javax.swing.*;
+/**
+ * A large majority of this code (80%) is written by Jace Claassen and Joseph Farrier.
+ * However, all credit for the sounds, images and idea as a whole goes to the
+ * original developers Ninja Kiwi. Credit for the wave song "Never Gonna Give You Up"
+ * goes to Rick Astley.
+ */
 
 /**
  * RunGame serves as the main entry point for the Bloons Tower Defense game.
@@ -16,6 +22,7 @@ public class RunGame extends JFrame {
 
     public SoundEffect mainThemeMusic;
     private final HomeScreenGUI homeScreenGUI;  // HomeScreenGUI instance reference
+    private boolean nateDemo;
 
     /**
      * Constructor for RunGame.
@@ -72,6 +79,25 @@ public class RunGame extends JFrame {
         setContentPane(mapSelectionGUI);  // Set MapSelectionGUI as the new content pane
         revalidate();  // Revalidate the layout
         repaint();  // Repaint the content to reflect changes
+    }
+
+    /**
+     * This method lets the main game gui know if it should run the nate waves or not
+     *
+     * @return A boolean used to set money and specific wave for nate in demo
+     */
+    public boolean isNateDemo() {
+        return nateDemo;
+    }
+
+    /**
+     * setNateDemo is a boolean that is set on and off by clicking the home "nate demo"
+     * button.
+     *
+     * @param nateDemo current state of boolean for if it is a nate demo or not
+     */
+    public void setNateDemo(boolean nateDemo) {
+        this.nateDemo = nateDemo;
     }
 
     /**
