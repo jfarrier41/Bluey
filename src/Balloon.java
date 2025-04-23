@@ -11,11 +11,11 @@ import java.util.Random;
  * @Author: Joseph Farrier
  */
 public class Balloon {
-    private Point currentPosition;
-    private int currentSegmentIndex;
-    private Waypoints waypoints;
-    private double t = 0.0; // Progress along the curve
     private BufferedImage[] balloonImages;
+    private Point currentPosition;
+    private final Waypoints waypoints;
+    private int currentSegmentIndex;
+    private double t = 0.0; // Progress along the curve
     private double x, y;
     private double speed;
     private int level;
@@ -24,7 +24,6 @@ public class Balloon {
     private boolean isMoving;
     private boolean animatePop;
     protected boolean gooed;
-    protected boolean frozen;
     private boolean hidden;
     private boolean hit;
     private boolean popped;
@@ -66,7 +65,7 @@ public class Balloon {
      */
     private BalloonType getBalloonTypeFromLevel(int level) {
         // You can map levels to types however you want
-        // Here's a simple example mapping 1-10 to each BalloonType in order
+        // Here's a simple example mapping 0-9 to each BalloonType in order
         BalloonType[] types = BalloonType.values();
         int index = Math.max(0, Math.min(level, types.length - 1));
         return types[index];
@@ -332,7 +331,7 @@ public class Balloon {
      * Unfreezes the balloon, restoring its movement speed.
      */
     public void unfreeze() {
-        this.speed = 2 + level * .5;
+        speed = this.type.getSpeed();
     }
 
     /**
@@ -360,7 +359,7 @@ public class Balloon {
     public void unGoo() {
         if (gooed) {
             gooed = false;
-            this.speed = speed * 2;
+            this.speed = type.getSpeed();
         }
     }
 
@@ -417,7 +416,7 @@ public class Balloon {
     public void setType(BalloonType type) {
         this.type = type;
         this.health = type.getHealth();
-        this.speed = type.getSpeed(); // If speed matters
+        this.speed = type.getSpeed();
     }
 
     /**
