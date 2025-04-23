@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 /**
  * Defines the Sniper Monkey tower, which shoots long-range, high-speed projectiles at balloons.
- * Authors: Jace Claassen and Joseph Farrier
  * @Author: Jace Claassen
  * @Author: Joseph Farrier
  */
