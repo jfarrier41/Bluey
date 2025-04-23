@@ -7,11 +7,14 @@ import java.util.Random;
  * Balloons follow a path defined by waypoints and can move along straight or curved segments.
  * Balloons have a level and health, and they can take damage, pop, and animate a popping effect.
  * The class handles the balloon's movement, rendering, and state changes.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class Balloon {
     private Point currentPosition;
     private int currentSegmentIndex;
     private Waypoints waypoints;
+    private double t = 0.0; // Progress along the curve
     private BufferedImage[] balloonImages;
     private double x, y;
     private double speed;
@@ -55,6 +58,12 @@ public class Balloon {
 
     }
 
+    /**
+     * Returns a BalloonType based on the given level.
+     *
+     * @param level the level to determine the balloon type for
+     * @return the corresponding BalloonType, clamped within the valid range
+     */
     private BalloonType getBalloonTypeFromLevel(int level) {
         // You can map levels to types however you want
         // Here's a simple example mapping 1-10 to each BalloonType in order
@@ -78,6 +87,7 @@ public class Balloon {
         }
 
         WaypointSegment currentSegment = waypoints.getSegment(currentSegmentIndex);
+        //Invisibility on monkey lane when going under the tunnel
         if(waypoints.getMapName().equals("MonkeyLane")){
             if(currentSegmentIndex == 6){
                 hidden = true;
@@ -129,9 +139,8 @@ public class Balloon {
         }
     }
 
-    private double t = 0.0; // Progress along the curve
-
     /**
+     * ChatGPT is fully responsible for the math of the curve.
      * Moves the balloon along a curved segment using a quadratic Bezier curve.
      *
      * @param segment The current curved segment of the path.
@@ -226,6 +235,7 @@ public class Balloon {
     /**
      * Reduces the health of the balloon when it is hit by a projectile.
      * If the balloon's health reaches zero, it decreases in level and animates a popping effect.
+     * If the health is at 0 and level 0 the popped flag will be set to true.
      *
      * @param damage The amount of damage to deal to the balloon.
      */
@@ -287,10 +297,26 @@ public class Balloon {
         return currentSegmentIndex >= waypoints.getSegmentCount();
     }
 
+    /**
+     * Returns the X-coordinate of the current position, adjusted by a constant value.
+     * This value is significant because it's the size of the wood panel. The way we
+     * coded the monkey was it thinks it's position on the map begins at 0 whereas the
+     * balloons starts at 0 on the wood panel. So when the balloon is actually visible
+     * it's x was 236 and technically way out of range of the tower even though we see
+     * them right next to eachother. With this constant change once the balloon is on
+     * map screen it would have an x that is relative to the towers.
+     *
+     * @return the adjusted X-coordinate
+     */
     public int getX() {
         return Math.round(currentPosition.x) - 236;
     }
 
+    /**
+     * Returns the Y-coordinate of the current position, adjusted by a constant value.
+     *
+     * @return the adjusted Y-coordinate
+     */
     public int getY() {
         return Math.round(currentPosition.y) - 6;
     }
@@ -309,47 +335,96 @@ public class Balloon {
         this.speed = 2 + level * .5;
     }
 
+    /**
+     * Returns the current speed of the balloon.
+     *
+     * @return the speed of the balloon
+     */
     public double getSpeed() {
         return speed;
     }
 
-    public void goo (){
-        if(!gooed){
+    /**
+     * Halves the balloon's speed if it hasn't already been gooed.
+     */
+    public void goo() {
+        if (!gooed) {
             gooed = true;
             this.speed = speed / 2;
         }
     }
-    public void unGoo(){
-        if(gooed){
+
+    /**
+     * Restores the balloon's speed if it was gooed.
+     */
+    public void unGoo() {
+        if (gooed) {
             gooed = false;
             this.speed = speed * 2;
         }
-
     }
 
+    /**
+     * Returns the index of the current segment the balloon is in.
+     *
+     * @return the current segment index
+     */
     public int getCurrentSegmentIndex() {
         return currentSegmentIndex;
     }
-    public boolean isHidden(){
+
+    /**
+     * Checks if the balloon is hidden.
+     *
+     * @return {@code true} if the balloon is hidden, {@code false} otherwise
+     */
+    public boolean isHidden() {
         return hidden;
     }
 
+    /**
+     * Sets the hit status of the balloon.
+     *
+     * @param hit {@code true} if the balloon is hit, {@code false} otherwise
+     */
     public void gotHit(boolean hit) {
         this.hit = hit;
     }
+
+    /**
+     * Checks if the balloon is hit.
+     *
+     * @return {@code true} if the balloon is hit, {@code false} otherwise
+     */
     public boolean isHit() {
         return hit;
     }
 
-    public BalloonType getType(){
+    /**
+     * Returns the type of the balloon.
+     *
+     * @return the balloon's type
+     */
+    public BalloonType getType() {
         return type;
     }
+
+    /**
+     * Sets the type of the balloon, which affects its health and speed.
+     *
+     * @param type the new balloon type
+     */
     public void setType(BalloonType type) {
         this.type = type;
         this.health = type.getHealth();
         this.speed = type.getSpeed(); // If speed matters
     }
 
+    /**
+     * Returns the index of the current balloon type in the downgrade order.
+     *
+     * @return the index of the current balloon type in the downgrade order
+     */
     private int getCurrentTypeIndex() {
         for (int i = 0; i < downgradeOrder.length; i++) {
             if (downgradeOrder[i] == this.type) {

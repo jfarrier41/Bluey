@@ -15,7 +15,10 @@ import java.util.Iterator;
 /**
  * This class represents the graphical user interface (GUI) for the running game.
  * It handles the display of game elements, such as the map, towers, balloons, and projectiles,
- * and updates their states during the game loop.
+ * and updates their states during the game loop. This is the most important class
+ * where all of our components come together to create a functioning game.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class GameRunningGUI extends JPanel {
     private BufferedImage mapImage, woodTexture, heartsImage, moneySignImage;
@@ -31,7 +34,7 @@ public class GameRunningGUI extends JPanel {
     private final ArrayList<Balloon> balloons;
     private final ArrayList<Tower> placedTowers;
     private final ArrayList<Projectile> curProjectiles;
-    private final ArrayList<Balloon> balloonsToTakeDamage = new ArrayList<>();
+    private final ArrayList<Balloon> balloonsToTakeDamage = new ArrayList<>(); //used for bomb tower explosion radius
     private int currentCash, currentHealth;
     private WaveManager waveManager;
     private boolean waveInProgress;
@@ -315,7 +318,10 @@ public class GameRunningGUI extends JPanel {
 
 
     /**
-     * Updates the game state by processing the positions of balloons and the targeting and firing of towers.
+     * Updates the game state by processing balloons, projectiles, and towers.
+     * This includes moving balloons, checking if they reach the end or are popped,
+     * checking towers' targets, firing projectiles, and applying damage to balloons.
+     * In general takes care of all entity interactions.
      */
     private void updateGameState() {
         for (int i = 0; i < balloons.size(); i++) {
@@ -418,8 +424,6 @@ public class GameRunningGUI extends JPanel {
                         b.takeDamage(p.getDamage());
                     }
 
-                      // Apply damage to the balloon
-
                     for (Balloon balloon : balloonsToTakeDamage) {
                         if(balloon.getType() == BalloonType.LEAD){
                             balloon.takeDamage(229);
@@ -477,7 +481,6 @@ public class GameRunningGUI extends JPanel {
      *
      * @param g The graphics context in which to paint.
      */
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -622,6 +625,11 @@ public class GameRunningGUI extends JPanel {
         add(playButton);
     }
 
+    /**
+     * Adds the reset button to the GUI, which set the game back to the beginning.
+     * This means all your towers are gone, it's wave 1, health is 100 and money
+     * is back to 1000.
+     */
     private void addResetButton() {
         JButton resetButton = new JButton("Reset Game");
         resetButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -637,6 +645,10 @@ public class GameRunningGUI extends JPanel {
         add(resetButton);
     }
 
+    /**
+     * All movement and updates are paused. Cant click any other
+     * button than the one that prompts you to contine the game.
+     */
     private void addPauseButton() {
         JButton pauseButton = new JButton("Pause Game");
         pauseButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -652,6 +664,11 @@ public class GameRunningGUI extends JPanel {
         add(pauseButton);
     }
 
+    /**
+     * When a tower is clicked the sell button will appear on the left side
+     * of the screen. If clicked it will remove the tower from the list of
+     * towers and give you an 80% refund for the tower.
+     */
     private void addSellButton() {
         sellButton = new JButton("Sell Tower");
         sellButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -721,14 +738,27 @@ public class GameRunningGUI extends JPanel {
         runGame.repaint();
     }
 
+    /**
+     * Gets the current amount of cash the player has.
+     *
+     * @return The current cash amount.
+     */
     public int getCurrentCash() {
         return currentCash;
     }
 
+    /**
+     * Sets the current cash by subtracting the specified amount from the player's cash.
+     *
+     * @param cash The amount of cash to subtract from the current cash.
+     */
     public void setCurrentCash(int cash) {
         currentCash -= cash;
     }
 
+    /**
+     * Resets all important values to the game. Essentially restarting it.
+     */
     private void restartGame() {
         this.balloons.clear();
         this.placedTowers.clear();
@@ -750,6 +780,15 @@ public class GameRunningGUI extends JPanel {
         }
     }
 
+    /**
+     * Loads the description of a tower from a text file.
+     * The description is expected to be stored in a file with the name matching the tower's name,
+     * located in the "src/Info/" directory. The content of the file is read line by line and concatenated
+     * into a single string.
+     *
+     * @param towerName The name of the tower whose description is to be loaded.
+     * @return A string containing the description of the tower, or "Description not available" if an error occurs.
+     */
     public String loadTowerDescription(String towerName) {
         StringBuilder description = new StringBuilder();
         try {
@@ -767,6 +806,17 @@ public class GameRunningGUI extends JPanel {
         return description.toString().trim();
     }
 
+    /**
+     * Draws a string of text that wraps within a specified width, breaking lines where necessary.
+     * The text is drawn starting from the specified coordinates (x, y), and each line will be
+     * drawn on a new line if it exceeds the given maximum width.
+     *
+     * @param g The Graphics object used for drawing the text.
+     * @param text The string of text to be wrapped and drawn.
+     * @param x The x-coordinate where the text will start being drawn.
+     * @param y The y-coordinate where the text will start being drawn.
+     * @param maxWidth The maximum width allowed for each line of text before wrapping to the next line.
+     */
     private void drawWrappedString(Graphics g, String text, int x, int y, int maxWidth) {
         FontMetrics fm = g.getFontMetrics();
         int lineHeight = fm.getHeight();

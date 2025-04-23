@@ -13,11 +13,9 @@ public class BloonSpawnInfo {
 
     /**
      * The strength level of the Bloons.
-     * <p>
      * Strength corresponds to the Bloon type index:
      * 0 = Red, 1 = Blue, 2 = Green, 3 = Yellow, 4 = Pink,
      * 5 = Zebra, 6 = Rainbow, 7 = Ceramic, 8 = MOAB, 9 = Lead.
-     * </p>
      */
     private final int strength;
 

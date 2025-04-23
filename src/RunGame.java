@@ -1,6 +1,5 @@
 import javax.swing.*;
 
-
 /**
  * RunGame serves as the main entry point for the Bloons Tower Defense game.
  * It initializes the game window, manages transitions between different game screens,

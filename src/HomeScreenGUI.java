@@ -8,27 +8,30 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-/*
-Filename: RunGame.java
-Authors: Jace Claassen and Joe Farrier
-Description: The HomeScreen class represents the main menu screen of the Tower Defense Game.
-It contains the title label and a button to navigate to the map selection screen.
+/**
+ * The HomeScreenGUI class represents the main menu screen of the Tower Defense Game.
+ * It provides a graphical interface containing the game's title and a "Play" button.
+ * When the "Play" button is clicked, the application transitions to the map selection screen.
+ * This class extends JPanel and is intended to be used as the initial view displayed
+ * to the player when launching the game.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class HomeScreenGUI extends JPanel {
     private BufferedImage backgroundImage;
+
     /**
-     * Constructor for HomeScreen, initializing the screen with the given width and height.
-     * It sets up the title and the "Play" button that allows the user to navigate to the map selection screen.
+     * Constructor for HomeScreenGUI, initializing the screen with the given width and height.
+     * It sets up the main menu interface, including a "Play" button to navigate to the map
+     * selection screen and a "How To Play" button to display game instructions.
      *
-     * @param runGame The RunGame instance used to transition to the map selection screen
-     * @param width   The width of the screen
-     * @param height  The height of the screen
+     * @param runGame The RunGame instance used to transition to the map selection screen.
+     * @param width   The width of the window, used to position components.
+     * @param height  The height of the window, used for layout scaling.
      */
     public HomeScreenGUI(RunGame runGame, int width, int height) {
-        // Instance of the RunGame class to handle screen transitions
-        // Dimensions for the screen layout
-        setLayout(null);  // Set layout to null to use absolute positioning for components
-
+        // Set layout to null to use absolute positioning for components
+        setLayout(null);
 
         // Create the map selection button
         JButton mapSelectionButton = createStyledButton("Play");
@@ -42,6 +45,7 @@ public class HomeScreenGUI extends JPanel {
             }
         });
 
+        // Create and configure the "How To Play" button
         JButton gameInfoButton = createStyledButton("How To Play");
         gameInfoButton.setBounds(width - 240, 20, 220, 70);  // Center the button
         gameInfoButton.addActionListener(new ActionListener() {
@@ -82,6 +86,13 @@ public class HomeScreenGUI extends JPanel {
         add(gameInfoButton);
     }
 
+    /**
+     * Paints the component by drawing the background image if it exists.
+     * This method overrides the default paint behavior to provide a custom background
+     * for the home screen panel.
+     *
+     * @param g the Graphics object used for drawing the component
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

@@ -7,11 +7,11 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-/*
-Filename: RunGame.java
-Authors: Jace Claassen and Joe Farrier
-Description: The MapSelectionGUI class represents the screen where the player can select a map to play.
-It displays a map preview, description, and navigation buttons to cycle through available maps.
+/**
+ *The MapSelectionGUI class represents the screen where the player can select a map to play.
+ * It displays a map preview, description, and navigation buttons to cycle through available maps.
+ * @Author: Jace Claassen
+ * @Author: Joseph Farrier
  */
 public class MapSelectionGUI extends JPanel {
     private int selectedMapIndex = 0;  // Index to track the currently selected map
@@ -23,6 +23,7 @@ public class MapSelectionGUI extends JPanel {
             "A winding lane with plenty of obstacles.",
             "A spring-themed track with lots of curves."
     };
+    //Double indexed array representing the dimensions of the map
     private final int[][] mapDimensions = {
             {699,519},  // Maze
             {700,510},  // MonkeyLane
