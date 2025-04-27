@@ -104,6 +104,9 @@ public class Projectile {
      * @return true if the projectile has missed (i.e., exceeded its range), otherwise false.
      */
     public boolean missed() {
+        if (type == ProjectileImageSize.valueOf("NINJASTAR") && currentTarget.getLevel() <= 0 && currentTarget.getHealth() <= 0) {
+            return true;
+        }
         double dx = Math.abs(currentX - startX);
         double dy = Math.abs(currentY - startY);
         double dist = (dx * dx + dy * dy);
@@ -119,6 +122,7 @@ public class Projectile {
      * @return true if the projectile hits the balloon, otherwise false.
      */
     public boolean didHit(Balloon balloon) {
+
         if (hitBalloons.contains(balloon)) {
             return false;
         }

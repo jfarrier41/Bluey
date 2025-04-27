@@ -43,7 +43,7 @@ public class WaveManager {
     private void initializeWaves() {
         waves.add(new Wave(List.of(new BloonSpawnInfo(20, 0, 1.0)))); // 20 red
         waves.add(new Wave(List.of(new BloonSpawnInfo(15, 1, 0.9)))); // 15 blue
-        waves.add(new Wave(List.of(new BloonSpawnInfo(10, 2, 0.8), new BloonSpawnInfo(10, 0, 1.0))));
+        waves.add(new Wave(List.of(new BloonSpawnInfo(10, 0, 0.8))));
         waves.add(new Wave(List.of(new BloonSpawnInfo(25, 2, 0.7))));
         waves.add(new Wave(List.of(new BloonSpawnInfo(20, 3, 0.6), new BloonSpawnInfo(10, 1, 0.8))));
 

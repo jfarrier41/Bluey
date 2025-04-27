@@ -283,8 +283,18 @@ public class Balloon {
         return popped;
     }
 
+    /**
+     * @return level of the balloon 0-9
+     */
     public int getLevel() {
         return level;
+    }
+
+    /**
+     * @return current health of the balloon
+     */
+    public int getHealth(){
+        return health;
     }
 
     /**
