@@ -118,7 +118,6 @@ public class Balloon {
      * @param segment The current line segment of the path.
      */
     private void moveAlongLine(WaypointSegment segment) {
-        Point start = segment.getStartPoint();
         Point end = segment.getEndPoint();
 
         // Calculate the distance between the current position and the endpoint
